@@ -4,7 +4,7 @@
 from PySFML import sf
 import os.path
 from img import GestionnaireImages
-from map import Map
+from mapmng import Map
 from constantes import chemins
 
 
