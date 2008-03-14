@@ -18,3 +18,4 @@ tailles = utils.ConstsContainer()
 
 tailles.LARGEUR_TUILES = 128
 tailles.HAUTEUR_TUILES = 80
+tailles.DECALAGE_TUILES = 0
