@@ -84,7 +84,10 @@ class Map(dict):
                     # A FAIRE : VERIFICATION : VOIR SI L'ELEMENT NE DEBORDE PAS DE LA MAP
                     
                     # POSITIONNEMENT DE CHAQUE SPRITE : (Par rapport au point en haut à gauche de la map)
-                    tuileX = colonne * tailles.LARGEUR_TUILES
+                    try:
+                        tuileX = colonne*(tailles.LARGEUR_TUILES-abs(tailles.DECALAGE_TUILES))+((tailles.DECALAGE_TUILES)*(ligne-(self.hauteur)*((-tailles.DECALAGE_TUILES/abs(tailles.DECALAGE_TUILES)+1)/2)))
+                    except ZeroDivisionError:
+                        tuileX=colonne*tailles.LARGEUR_TUILES
                     tuileY = ligne * tailles.HAUTEUR_TUILES
                     if typeObj == "tuiles":
                         sprite.SetPosition(tuileX, tuileY)
