@@ -16,7 +16,7 @@ class Map(dict):
         # Chaque case des listes du dico contient un sf.Sprite
         # sauf la case "infos" qui contient une liste dont chaque case contient un conteneur de Constantes qui possède les attributs "tuile", "gdElement" et "ptElement"
         
-        self.gestImages = gestImages # SECURITE : Tant qu'une référence vers le gestionnaire existe quelque part, les images restent en mémoire
+        self.gestImages = gestImages    # SECURITE : Tant qu'une référence vers le gestionnaire existe quelque part, les images restent en mémoire
         
         tabsNums = self.__parserMap(map)
         
@@ -50,7 +50,7 @@ class Map(dict):
             
             tabsNums[i] = [int(x.strip(), 16) for x in map_strs[i].split("|")]
             if len(tabsNums[i]) != self.hauteur * self.largeur:
-                raise Exception, "Hauteur/Largeur ne correspondent pas à la liste de nums pour les %s dans %s" % (i, map)
+                raise Exception, "Hauteur et/ou largeur ne correspondent pas à la liste de nums pour les %s dans la map %s" % (i, map)
         
         return tabsNums
     
@@ -59,21 +59,33 @@ class Map(dict):
         """Comme son nom l'indique...
         Ne s'occupe pas des personnages"""
         
-        # Dictionnaire temporaire pour récupérer et traiter les infos nécéssaires sur chaque image:
+        # Dictionnaire temporaire pour récupérer et traiter les infos nécessaires sur chaque image:
         infosImages = {"tuiles":[], "gdsElements":[], "ptsElements":[]}
         
         # Constructions des listes de sprites :
         for typeObj in ["tuiles", "gdsElements", "ptsElements"]:
             ligne, colonne = 0, 0
+            recopier, remonterDe = 0, 1    # recopier est un int, qui indique si l'élément de la case précédente doit chevaucher encore d'autres cases et si oui, combien (ex. recopier == 2 si l'élément de la case précédent s'étale encore sur 2 cases)
+            # remonterDe sert pour les infos : si un élément s'étend sur 3 cases, et que la case concernée est la dernière de ces 3 cases, alors remonterDe == 2
             for num in tabsNums[typeObj]:
+                sprite, infos = None, None
                 
-                if num >= 0x01:
+                if recopier >= 1: # L'élément s'étend sur plusieurs cases, on recopie les infos de la case précédente
+                    infos = remonterDe
+                    recopier -= 1
+                    remonterDe += 1
+                
+                elif num >= 0x01:
                     imgETinfos = gestImages[typeObj][num]
                     sprite = sf.Sprite(imgETinfos.image)
                     infos = imgETinfos.infos
+                    etalement = infos["etalement"]
+                    
+                    # A FAIRE : VERIFICATION : VOIR SI L'ELEMENT NE DEBORDE PAS DE LA MAP
+                    
                     # POSITIONNEMENT DE CHAQUE SPRITE : (Par rapport au point en haut à gauche de la map)
-                    tuileX = colonne*tailles.LARGEUR_TUILES
-                    tuileY = ligne*tailles.HAUTEUR_TUILES
+                    tuileX = colonne * tailles.LARGEUR_TUILES
+                    tuileY = ligne * tailles.HAUTEUR_TUILES
                     if typeObj == "tuiles":
                         sprite.SetPosition(tuileX, tuileY)
                     else:
@@ -81,26 +93,22 @@ class Map(dict):
                             elemY = tuileY - sprite.GetHeight() + tailles.HAUTEUR_TUILES/2
                         else:
                             elemY = tuileY - sprite.GetHeight() + int(tailles.HAUTEUR_TUILES*(3.0/4))
-                        elemX = (tailles.LARGEUR_TUILES*infos["etalement"])/2 + tuileX - sprite.GetWidth()/2
+                        elemX = (tailles.LARGEUR_TUILES * etalement)/2 + tuileX - sprite.GetWidth()/2
                         sprite.SetPosition(elemX, elemY)
-                
-                elif num == 0x00: # Pas de ce type d'objet pour cette case
-                    sprite = None
-                    infos = None
-                
-                elif num == -0x01: # L'élément s'étend sur plusieurs cases, on recopie les infos de la case précédente
-                    sprite = None
-                    infos = "=precedent"
+                    
+                    if etalement >= 2:
+                        remonterDe = 1
+                        recopier = etalement - 1
                 
                 self[typeObj].append(sprite)
                 infosImages[typeObj].append(infos)
                 
-                colonne = colonne + 1
+                colonne += 1
                 if colonne == self.largeur:
                     colonne = 0
-                    ligne = ligne + 1
+                    ligne += 1
         
-        for i in range(0, self.hauteur*self.largeur): # Traitement du dictionnaire temporaire infoImages
+        for i in range(0, self.hauteur * self.largeur): # Traitement du dictionnaire temporaire infoImages
             grpInfos = ConstsContainer()
             grpInfos.tuile = infosImages["tuiles"][i]
             grpInfos.gdElement = infosImages["gdsElements"][i]
@@ -108,41 +116,48 @@ class Map(dict):
             self["infos"].append(grpInfos)
     
     
-    def pathfinding(coord, mvt, origine="0", coordsPossibles=[], chemin=[], route=[]):
-        """Renvoie un tuple de 2 listes : les positions accessibles et les chemins correspondants a parcourir
-        Arguments: coord: la case actuelle du perso
-        mvt: le nombre de cases dont peut se deplacer le perso
+    def pathfinding(self, coord, mvt, origine="0", coordsPossibles=[], chemin=[], route=[], mvtRestant=[]):
+        """Renvoie 3 listes : les coords accessibles, le chemin à parcourir pour chaque et le mouvement restant au personnage pour chaque
+        Arguments:
+        - coord: la case actuelle du perso
+        - mvt: la capacité de mouvement du perso
         Les autres arguments servent pour la recursivité"""
         
-        if not (coord in coordsPossibles):
+        if not coord in coordsPossibles:
             coordsPossibles.append(coord)
             chemin.append(copy.copy(route))
+            mvtRestant.append(mvt)
+        else:
+            index = coordsPossibles.index(coord)
+            if mvtRestant[index] < mvt:
+                chemin[index] = copy.copy(route)
+                mvtRestant[index] = mvt
         
-        terrain = 1 # Cout de la case actuelle (coord) en mouvement POUR SORTIR DE LA CASE
+        terrain = 1   # Cout de la case actuelle (coord) en mouvement POUR SORTIR DE LA CASE
         
         if mvt-terrain >= 0:
-            if True and origine != "D":
-                route.append("D")
-                self.pathfinding(coord+1,mvt-terrain,"G",coordsPossibles,chemin,route)
+            if (coord+1)%self.largeur != 0 and origine != "d" and True:
+                route.append("d")
+                self.pathfinding(coord+1,mvt-terrain,"g",coordsPossibles,chemin,route,mvtRestant)
                 route.pop()
             
-            if True and origine != "G":
-                route.append("G")
-                self.pathfinding(coord-1,mvt-terrain,"D",coordsPossibles,chemin,route)
+            if coord%self.largeur != 0 and origine != "g" and True:
+                route.append("g")
+                self.pathfinding(coord-1,mvt-terrain,"d",coordsPossibles,chemin,route,mvtRestant)
                 route.pop()
             
-            if True and origine != "H":
-                route.append("H")
-                self.pathfinding(coord-self.largeur,mvt-terrain,"B",coordsPossibles,chemin,route)
+            if coord-self.largeur >= 0 and origine != "h" and True:
+                route.append("h")
+                self.pathfinding(coord-self.largeur,mvt-terrain,"b",coordsPossibles,chemin,route,mvtRestant)
                 route.pop()
             
-            if True and origine != "B":
-                route.append("B")
-                self.pathfinding(coord+self.largeur,mvt-terrain,"H",coordsPossibles,chemin,route)
+            if coord+self.largeur < self.largeur*self.hauteur and origine != "b" and True:
+                route.append("b")
+                self.pathfinding(coord+self.largeur,mvt-terrain,"h",coordsPossibles,chemin,route,mvtRestant)
                 route.pop()
         
-        return coordsPossibles, chemin
-    
+        return coordsPossibles, chemin, mvtRestant
+
     
     def dessinerSur(self, renderWindow):
         """On dessine la Map en (0,0) sur la fenêtre"""
