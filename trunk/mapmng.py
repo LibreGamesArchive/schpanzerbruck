@@ -84,19 +84,17 @@ class Map(dict):
                     # A FAIRE : VERIFICATION : VOIR SI L'ELEMENT NE DEBORDE PAS DE LA MAP
                     
                     # POSITIONNEMENT DE CHAQUE SPRITE : (Par rapport au point en haut à gauche de la map)
-                    try:
-                        tuileX = colonne*(tailles.LARGEUR_TUILES-abs(tailles.DECALAGE_TUILES))+((tailles.DECALAGE_TUILES)*(ligne-(self.hauteur)*((-tailles.DECALAGE_TUILES/abs(tailles.DECALAGE_TUILES)+1)/2)))
-                    except ZeroDivisionError:
-                        tuileX=colonne*tailles.LARGEUR_TUILES
+                    tuileX = colonne * tailles.LARGEUR_TUILES + ligne * tailles.DECALAGE_TUILES
                     tuileY = ligne * tailles.HAUTEUR_TUILES
                     if typeObj == "tuiles":
                         sprite.SetPosition(tuileX, tuileY)
                     else:
                         if typeObj == "gdsElements":
-                            elemY = tuileY - sprite.GetHeight() + tailles.HAUTEUR_TUILES/2
+                            elemX = tuileX + tailles.DECALAGE_GDS_ELEMENTS_X + (tailles.LARGEUR_TUILES * etalement)/2 - sprite.GetWidth()/2
+                            elemY = tuileY + tailles.DECALAGE_GDS_ELEMENTS_Y - sprite.GetHeight()
                         else:
-                            elemY = tuileY - sprite.GetHeight() + int(tailles.HAUTEUR_TUILES*(3.0/4))
-                        elemX = (tailles.LARGEUR_TUILES * etalement)/2 + tuileX - sprite.GetWidth()/2
+                            elemX = tuileX + tailles.DECALAGE_PTS_ELEMENTS_X + (tailles.LARGEUR_TUILES * etalement)/2 - sprite.GetWidth()/2
+                            elemY = tuileY + tailles.DECALAGE_PTS_ELEMENTS_Y - sprite.GetHeight()
                         sprite.SetPosition(elemX, elemY)
                     
                     if etalement >= 2:
