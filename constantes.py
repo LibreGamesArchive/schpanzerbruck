@@ -18,4 +18,9 @@ tailles = utils.ConstsContainer()
 
 tailles.LARGEUR_TUILES = 128
 tailles.HAUTEUR_TUILES = 80
-tailles.DECALAGE_TUILES = 0
+tailles.DECALAGE_TUILES = 30
+
+tailles.DECALAGE_PTS_ELEMENTS_Y = int(tailles.HAUTEUR_TUILES*(3.0/4))
+tailles.DECALAGE_PTS_ELEMENTS_X = int(tailles.DECALAGE_TUILES*(3.0/4))   # Th. de Thalès
+tailles.DECALAGE_GDS_ELEMENTS_Y = tailles.HAUTEUR_TUILES/2
+tailles.DECALAGE_GDS_ELEMENTS_X = tailles.DECALAGE_TUILES/2   # Th. de Thalès
