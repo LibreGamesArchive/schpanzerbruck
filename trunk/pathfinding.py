@@ -1,3 +1,5 @@
+### A ETE RAJOUTE DANS MAPMNG.PY ###
+
 import copy, sys
 
 def pathfinding(coord, mvt, origine="0", coordsPossibles=[], chemin=[], route=[], mvtRestant=[]):
