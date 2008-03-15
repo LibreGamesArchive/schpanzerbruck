@@ -84,7 +84,7 @@ class Map(dict):
                     # A FAIRE : VERIFICATION : VOIR SI L'ELEMENT NE DEBORDE PAS DE LA MAP
                     
                     # POSITIONNEMENT DE CHAQUE SPRITE : (Par rapport au point en haut à gauche de la map)
-                    tuileX = colonne * tailles.LARGEUR_TUILES + ligne * tailles.DECALAGE_TUILES
+                    tuileX = colonne * tailles.LARGEUR_TUILES + (self.hauteur-1 - ligne) * tailles.DECALAGE_TUILES
                     tuileY = ligne * tailles.HAUTEUR_TUILES
                     if typeObj == "tuiles":
                         sprite.SetPosition(tuileX, tuileY)
@@ -167,9 +167,11 @@ class Map(dict):
             if tuile != None:
                 renderWindow.Draw(tuile)
         
-        for x in [0, 1]: # DESSIN DES ELEMENTS DES CASES PAIRES, PUIS IMPAIRES
-            while x < self.hauteur * self.largeur:
-                for typeObj in ["gdsElements", "ptsElements"]:
-                    if self[typeObj][x] != None:
-                        renderWindow.Draw(self[typeObj][x])
-                x += 2
+        for i in range(0, self.hauteur):
+            for x in [0, 1]: # DESSIN DES ELEMENTS DES CASES PAIRES, PUIS IMPAIRES
+                while x < self.largeur:
+                    for typeObj in ["gdsElements", "ptsElements"]:
+                        elemCourant = self[typeObj][i*self.largeur + x]
+                        if elemCourant != None:
+                            renderWindow.Draw(elemCourant)
+                    x += 2

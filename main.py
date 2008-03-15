@@ -27,7 +27,7 @@ from mapmng import Map
 from constantes import chemins
 
 
-app = sf.RenderWindow(sf.VideoMode(800, 600, 32), "SCHPANZERBRUCK", sf.Style.Close)
+app = sf.RenderWindow(sf.VideoMode.GetDesktopMode(), "SCHPANZERBRUCK", sf.Style.Close | sf.Style.Fullscreen)
 
 gest = GestionnaireImages()
 
