@@ -6,6 +6,7 @@ from xml.dom import minidom
 from constantes import chemins, tailles
 from utils import ConstsContainer
 
+
 def tord(image, decalage, antialiasing=False, background=sf.Color(0,0,0,0)):
     """Tord une image pour lui donner un effet de perspective."""
     nHauteur=image.GetHeight()
@@ -25,6 +26,7 @@ def tord(image, decalage, antialiasing=False, background=sf.Color(0,0,0,0)):
             if nx>=0:
                 nImage.SetPixel(nx, y, pix)
     return nImage
+
 
 class InfosImage(dict):
     """Contient tous les renseignement nécessaires sur une image

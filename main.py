@@ -28,9 +28,9 @@ from constantes import chemins, defaut
 import parser
 
 # Parser de ligne de commande
-options=parser.retourneOptions()
+options = parser.retourneOptions()
 
-if options.pleinecran:
+if options.plein_ecran:
     videoMode=sf.VideoMode.GetDesktopMode()
     style=sf.Style.Close | sf.Style.Fullscreen
 else:
@@ -49,7 +49,7 @@ else:
 map = Map(carte, gest)
 
 
-# MAIN LOOP:
+# BOUCLE PRINCIPALE :
 run = True
 evt = sf.Event()
 while run:

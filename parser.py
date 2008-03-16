@@ -19,6 +19,8 @@
 ### along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
 
+
+
 from optparse import OptionParser, make_option
 from constantes import defaut
 
@@ -44,7 +46,7 @@ class ParserTraduit(OptionParser):
 
 # Ajouter des options ci-dessous. Utiliser u"" pour contourner le bug d'encodage.
 optionList=[make_option(u"-c", u"--carte", action=u"store", type=u"string", dest=u"carte", help=u"charge la carte à partir de FICHIER", metavar=u"FICHIER", default=defaut.CARTE),
-            make_option(u"-f", u"--fenetre", action=u"store_false", dest=u"pleinecran", default=defaut.PLEINECRAN, help=u"lance le jeu en mode fenêtré"),
+            make_option(u"-f", u"--fenetre", action=u"store_false", dest=u"plein_ecran", default=defaut.PLEIN_ECRAN, help=u"lance le jeu en mode fenêtré"),
            ]
 
 # Instanciation du parser
