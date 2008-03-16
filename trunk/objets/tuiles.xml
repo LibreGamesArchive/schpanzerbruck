@@ -3,5 +3,9 @@
 <tuiles>
 
 <obj num="1" fichier="plaine1.png" nivpass="2"/>
+<obj num="2" fichier="cheminplaine1.png" nivpass="2"/>
+<obj num="3" fichier="cheminplaine2.png" nivpass="2"/>
+<obj num="4" fichier="cheminplaine3.png" nivpass="2"/>
+<obj num="5" fichier="cheminplaine4.png" nivpass="2"/>
 
 </tuiles>
