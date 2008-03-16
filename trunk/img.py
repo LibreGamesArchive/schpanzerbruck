@@ -3,9 +3,27 @@
 from PySFML import sf
 import os.path
 from xml.dom import minidom
-from constantes import chemins
+from constantes import chemins, tailles
 from utils import ConstsContainer
 
+def tord(image, decalage, antialiasing=True, background=sf.Color(0,0,0,0)):
+    """Tord une image pour lui donner un effet de perspective."""
+    nHauteur=image.GetHeight()
+    nLargeur=image.GetWidth()+abs(decalage)
+    nImage=sf.Image(Width=nLargeur, Height=nHauteur, Color=background)
+    nImage.SetSmooth(False)
+    for y in range(image.GetHeight()):
+        for x in range(image.GetWidth()):
+            pix=image.GetPixel(x, y)
+            if antialiasing:
+                if x==0 or x==image.GetWidth():
+                    pix=sf.Color(pix.r, pix.g, pix.b, 200)
+                elif x==1 or x==image.GetWidth()-1:
+                    pix=sf.Color(pix.r, pix.g, pix.b, 100)
+            nx=x+decalage-int((y*decalage)/nHauteur)
+            if nx>=0:
+                nImage.SetPixel(nx, y, pix)
+    return nImage
 
 class InfosImage(dict):
     """Contient tous les renseignement nécessaires sur une image
@@ -66,6 +84,8 @@ class GestionnaireImages(dict):
                     img = sf.Image()
                     if not img.LoadFromFile(os.path.join(eval("chemins.IMGS_%s" % typeObj.upper()), infosImg["fichier"])):
                         chargementOK = False
+                    if typeObj == "tuiles":
+                        img=tord(img, tailles.DECALAGE_TUILES, False)
                     self[typeObj][num] = ConstsContainer()
                     self[typeObj][num].infos = infosImg
                     self[typeObj][num].image = img

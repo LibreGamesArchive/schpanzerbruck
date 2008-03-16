@@ -16,7 +16,7 @@ chemins.MAPS = os.path.join(cheminDossierRacine, "maps")
 
 tailles = utils.ConstsContainer()
 
-tailles.LARGEUR_TUILES = 124    # On met une valeur légèrement plus faible que la taille réelle pour éviter qu'on voie trop les bords des tuiles
+tailles.LARGEUR_TUILES = 128
 tailles.HAUTEUR_TUILES = 80
 tailles.DECALAGE_TUILES = 30
 
