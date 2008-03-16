@@ -6,7 +6,7 @@ from xml.dom import minidom
 from constantes import chemins, tailles
 from utils import ConstsContainer
 
-def tord(image, decalage, antialiasing=True, background=sf.Color(0,0,0,0)):
+def tord(image, decalage, antialiasing=False, background=sf.Color(0,0,0,0)):
     """Tord une image pour lui donner un effet de perspective."""
     nHauteur=image.GetHeight()
     nLargeur=image.GetWidth()+abs(decalage)
@@ -20,7 +20,7 @@ def tord(image, decalage, antialiasing=True, background=sf.Color(0,0,0,0)):
                     pix=sf.Color(pix.r, pix.g, pix.b, 200)
                 elif x==1 or x==image.GetWidth()-1:
                     pix=sf.Color(pix.r, pix.g, pix.b, 100)
-            nx=x+decalage-int((y*decalage)/nHauteur)
+            nx=x+decalage-(y*decalage)/nHauteur
             if nx>=0:
                 nImage.SetPixel(nx, y, pix)
     return nImage
@@ -85,7 +85,7 @@ class GestionnaireImages(dict):
                     if not img.LoadFromFile(os.path.join(eval("chemins.IMGS_%s" % typeObj.upper()), infosImg["fichier"])):
                         chargementOK = False
                     if typeObj == "tuiles":
-                        img=tord(img, tailles.DECALAGE_TUILES, False)
+                        img=tord(img, tailles.DECALAGE_TUILES)
                     self[typeObj][num] = ConstsContainer()
                     self[typeObj][num].infos = infosImg
                     self[typeObj][num].image = img
