@@ -13,6 +13,7 @@ def tord(image, decalage, antialiasing=False, background=sf.Color(0,0,0,0)):
     nImage=sf.Image(Width=nLargeur, Height=nHauteur, Color=background)
     nImage.SetSmooth(False)
     for y in range(image.GetHeight()):
+        decalageLigne=decalage-(y*decalage)/nHauteur
         for x in range(image.GetWidth()):
             pix=image.GetPixel(x, y)
             if antialiasing:
@@ -20,7 +21,7 @@ def tord(image, decalage, antialiasing=False, background=sf.Color(0,0,0,0)):
                     pix=sf.Color(pix.r, pix.g, pix.b, 200)
                 elif x==1 or x==image.GetWidth()-1:
                     pix=sf.Color(pix.r, pix.g, pix.b, 100)
-            nx=x+decalage-(y*decalage)/nHauteur
+            nx=x+decalageLigne
             if nx>=0:
                 nImage.SetPixel(nx, y, pix)
     return nImage
