@@ -24,8 +24,10 @@ tailles.DECALAGE_PTS_ELEMENTS_Y = int(tailles.HAUTEUR_TUILES*(3.0/4))
 tailles.DECALAGE_PTS_ELEMENTS_X = int(tailles.DECALAGE_TUILES*(1.0/4))   # Th. de Thalès
 tailles.DECALAGE_GDS_ELEMENTS_Y = tailles.HAUTEUR_TUILES/2
 tailles.DECALAGE_GDS_ELEMENTS_X = tailles.DECALAGE_TUILES/2   # Th. de Thalès
+# A RAJOUTER : DECALAGE_PERSOS
 
-defaut=utils.ConstsContainer()
 
-defaut.CARTE=u"maptest.xml"
-defaut.PLEINECRAN=True
+defaut = utils.ConstsContainer()
+
+defaut.CARTE = u"maptest2.xml"
+defaut.PLEIN_ECRAN = True
