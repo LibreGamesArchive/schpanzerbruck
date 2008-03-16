@@ -24,14 +24,29 @@ from PySFML import sf
 import os.path
 from img import GestionnaireImages
 from mapmng import Map
-from constantes import chemins
+from constantes import chemins, defaut
+import parser
 
+# Parser de ligne de commande
+options=parser.retourneOptions()
 
-app = sf.RenderWindow(sf.VideoMode.GetDesktopMode(), "SCHPANZERBRUCK", sf.Style.Close | sf.Style.Fullscreen)
+if options.pleinecran:
+    videoMode=sf.VideoMode.GetDesktopMode()
+    style=sf.Style.Close | sf.Style.Fullscreen
+else:
+    videoMode=sf.VideoMode(1024, 768, 32)
+    style=sf.Style.Close
+
+app = sf.RenderWindow(videoMode, "SCHPANZERBRUCK", style)
 
 gest = GestionnaireImages()
 
-map = Map(os.path.join(chemins.MAPS, "maptest.xml"), gest)
+if os.path.exists(os.path.join(chemins.MAPS, options.carte)):
+    carte=os.path.join(chemins.MAPS, options.carte)
+else:
+    carte=os.path.join(chemins.MAPS, defaut.CARTE)
+
+map = Map(carte, gest)
 
 
 # MAIN LOOP:
