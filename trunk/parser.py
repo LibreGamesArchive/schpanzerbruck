@@ -24,6 +24,7 @@
 from optparse import OptionParser, make_option
 from constantes import defaut
 
+
 def retourneOptions():
     """Renvoie la liste des options"""
     return __options

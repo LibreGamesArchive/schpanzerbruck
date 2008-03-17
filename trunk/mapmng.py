@@ -67,7 +67,7 @@ class Map(dict):
             ligne, colonne = 0, 0
             recopier, remonterDe = 0, 1    # recopier est un int, qui indique si l'élément de la case précédente doit chevaucher encore d'autres cases et si oui, combien (ex. recopier == 2 si l'élément de la case précédent s'étale encore sur 2 cases)
             # remonterDe sert pour les infos : si un élément s'étend sur 3 cases, et que la case concernée est la dernière de ces 3 cases, alors remonterDe == 2
-            for num in tabsNums[typeObj]:
+            for ind, num in enumerate(tabsNums[typeObj]):
                 sprite, infos = None, None
                 
                 if recopier >= 1: # L'élément s'étend sur plusieurs cases, on recopie les infos de la case précédente
@@ -75,7 +75,7 @@ class Map(dict):
                     recopier -= 1
                     remonterDe += 1
                 
-                elif num >= 0x01:
+                elif num >= 0x01 and (typeObj=="tuiles" or (typeObj != "tuiles" and self["tuiles"][ind] != None)):   # Si il n'y a pas de tuile à cet endroit-là (0x00), on ne met pas non plus d'élément(s)
                     imgETinfos = gestImages[typeObj][num]
                     sprite = sf.Sprite(imgETinfos.image)
                     infos = imgETinfos.infos
@@ -84,8 +84,11 @@ class Map(dict):
                     # A FAIRE : VERIFICATION : VOIR SI L'ELEMENT NE DEBORDE PAS DE LA MAP
                     
                     # POSITIONNEMENT DE CHAQUE SPRITE : (Par rapport au point en haut à gauche de la map)
-                    tuileX = colonne * tailles.LARGEUR_TUILES + (self.hauteur-1 - ligne) * tailles.DECALAGE_TUILES
-                    tuileY = ligne * tailles.HAUTEUR_TUILES
+                    if tailles.DECALAGE_TUILES >= 0:
+                        tuileX = colonne * tailles.LARGEUR_TUILES + (self.hauteur-1 - ligne) * tailles.DECALAGE_TUILES
+                    else:
+                        tuileX = colonne * tailles.LARGEUR_TUILES + ligne * abs(tailles.DECALAGE_TUILES)
+                    tuileY = (ligne+1) * tailles.HAUTEUR_TUILES   # "ligne+1" pour décaler la map vers le bas, afin que les éléments sur les premières cases soient quand même visibles en entier
                     if typeObj == "tuiles":
                         sprite.SetPosition(tuileX, tuileY)
                     else:

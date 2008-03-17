@@ -14,7 +14,12 @@ def tord(image, decalage, antialiasing=False, background=sf.Color(0,0,0,0)):
     nImage=sf.Image(Width=nLargeur, Height=nHauteur, Color=background)
     nImage.SetSmooth(False)
     for y in range(image.GetHeight()):
-        decalageLigne=decalage-(y*decalage)/nHauteur
+        
+        if decalage >= 0:   # On voit si la perspective est Droite ou Gauche
+            decalageLigne = decalage-(y*decalage)/nHauteur
+        else:
+            decalageLigne = -(y*decalage)/nHauteur
+        
         for x in range(image.GetWidth()):
             pix=image.GetPixel(x, y)
             if antialiasing:
@@ -88,7 +93,7 @@ class GestionnaireImages(dict):
                     if not img.LoadFromFile(os.path.join(eval("chemins.IMGS_%s" % typeObj.upper()), infosImg["fichier"])):
                         chargementOK = False
                     if typeObj == "tuiles":
-                        img=tord(img, tailles.DECALAGE_TUILES)
+                        img = tord(img, tailles.DECALAGE_TUILES)
                     self[typeObj][num] = ConstsContainer()
                     self[typeObj][num].infos = infosImg
                     self[typeObj][num].image = img
