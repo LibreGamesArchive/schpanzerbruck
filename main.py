@@ -31,11 +31,11 @@ import parser
 options = parser.retourneOptions()
 
 if options.plein_ecran:
-    videoMode=sf.VideoMode.GetDesktopMode()
-    style=sf.Style.Close | sf.Style.Fullscreen
+    videoMode = sf.VideoMode.GetDesktopMode()
+    style = sf.Style.Close | sf.Style.Fullscreen
 else:
-    videoMode=sf.VideoMode(1024, 768, 32)
-    style=sf.Style.Close
+    videoMode = sf.VideoMode(1024, 768, 32)
+    style = sf.Style.Close
 
 app = sf.RenderWindow(videoMode, "SCHPANZERBRUCK", style)
 
@@ -54,11 +54,11 @@ run = True
 evt = sf.Event()
 while run:
     while app.GetEvent(evt):
-            if evt.Type == sf.Event.Closed:
-                  run = False
-            elif evt.Type == sf.Event.KeyPressed:
-                  if evt.Key.Code == sf.Key.Escape:
-                        run = False
+        if evt.Type == sf.Event.Closed:
+            run = False
+        elif evt.Type == sf.Event.KeyPressed:
+            if evt.Key.Code == sf.Key.Escape:
+                run = False
     
     map.dessinerSur(app)
     app.Display()
