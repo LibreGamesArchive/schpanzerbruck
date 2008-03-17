@@ -18,21 +18,10 @@ tailles = utils.ConstsContainer()
 
 tailles.LARGEUR_TUILES = 128
 tailles.HAUTEUR_TUILES = 80
-tailles.DECALAGE_TUILES = 30   # Positif: Perspective droite, Négatif: Perspective gauche
 
-tailles.DECALAGE_PTS_ELEMENTS_Y = int(tailles.HAUTEUR_TUILES*(3.0/4))
-tailles.DECALAGE_GDS_ELEMENTS_Y = tailles.HAUTEUR_TUILES/2
-tailles.DECALAGE_PERSOS_Y = int(tailles.HAUTEUR_TUILES*(5.0/8))
-if tailles.DECALAGE_TUILES >= 0:
-    tailles.DECALAGE_PTS_ELEMENTS_X = int(tailles.DECALAGE_TUILES*(1.0/4))   # Th. de Thalès
-    tailles.DECALAGE_GDS_ELEMENTS_X = tailles.DECALAGE_TUILES/2   # Th. de Thalès
-    tailles.DECALAGE_PERSOS_X = int(tailles.DECALAGE_TUILES*(3.0/8))    # Th. de Thalès
-else:
-    tailles.DECALAGE_PTS_ELEMENTS_X = -int(tailles.DECALAGE_TUILES*(3.0/4))
-    tailles.DECALAGE_GDS_ELEMENTS_X = -tailles.DECALAGE_TUILES/2
-    tailles.DECALAGE_PERSOS_X = -int(tailles.DECALAGE_TUILES*(5.0/8))
 
 defaut = utils.ConstsContainer()
 
+defaut.PERSPECTIVE = 30   # Positif: Perspective droite, Négatif: Perspective gauche
 defaut.CARTE = u"maptest2.xml"
-defaut.PLEIN_ECRAN = True
+defaut.PLEIN_ECRAN = False

@@ -2,25 +2,38 @@
 
 from PySFML import sf
 from xml.dom import minidom
-from constantes import tailles
+from constantes import tailles, defaut
 from utils import ConstsContainer
 import copy
 
 
 class Map(dict):
     
-    def __init__(self, map, gestImages):
+    def __init__(self, map, gestImages, perspective = defaut.PERSPECTIVE):
         """Parse un fichier XML de carte pour initialiser l'objet Map"""
         
         dict.__init__(self, { "tuiles":[], "gdsElements":[], "ptsElements":[], "persos":[], "infos":[] })
         # Chaque case des listes du dico contient un sf.Sprite
         # sauf la case "infos" qui contient une liste dont chaque case contient un conteneur de Constantes qui possède les attributs "tuile", "gdElement" et "ptElement"
         
+        self.PERSPECTIVE = perspective
+        self.DECALAGE_PTS_ELEMENTS_Y = int(tailles.HAUTEUR_TUILES*(3.0/4))
+        self.DECALAGE_GDS_ELEMENTS_Y = tailles.HAUTEUR_TUILES/2
+        self.DECALAGE_PERSOS_Y = int(tailles.HAUTEUR_TUILES*(5.0/8))
+        if perspective >= 0:
+            self.DECALAGE_PTS_ELEMENTS_X = int(perspective*(1.0/4))   # Th. de Thalès
+            self.DECALAGE_GDS_ELEMENTS_X = perspective/2   # Th. de Thalès
+            self.DECALAGE_PERSOS_X = int(perspective*(3.0/8))    # Th. de Thalès
+        else:
+            self.DECALAGE_PTS_ELEMENTS_X = -int(perspective*(3.0/4))
+            self.DECALAGE_GDS_ELEMENTS_X = -perspective/2
+            self.DECALAGE_PERSOS_X = -int(perspective*(5.0/8))
+        
         self.gestImages = gestImages    # SECURITE : Tant qu'une référence vers le gestionnaire existe quelque part, les images restent en mémoire
         
         tabsNums = self.__parserMap(map)
         
-        gestImages.chargerImagesMap(**tabsNums) # On "dépaquète" le dictionnaire pour le changer en une liste d'arguments
+        gestImages.chargerImagesMap(perspective, **tabsNums) # On "dépaquète" le dictionnaire pour le changer en une liste d'arguments
         # C'est comme si on faisait gestImages.chargerImagesMap(tuiles=listeNumsTuiles, gdsElements=listeNumsGdsElements, ptsElements=listeNumsPtsElements)
         
         self.__creerSpritesEtInfosSurMap(tabsNums, gestImages) # On remplit le dico self
@@ -84,20 +97,20 @@ class Map(dict):
                     # A FAIRE : VERIFICATION : VOIR SI L'ELEMENT NE DEBORDE PAS DE LA MAP
                     
                     # POSITIONNEMENT DE CHAQUE SPRITE : (Par rapport au point en haut à gauche de la map)
-                    if tailles.DECALAGE_TUILES >= 0:
-                        tuileX = colonne * tailles.LARGEUR_TUILES + (self.hauteur-1 - ligne) * tailles.DECALAGE_TUILES
+                    if self.PERSPECTIVE >= 0:
+                        tuileX = colonne * tailles.LARGEUR_TUILES + (self.hauteur-1 - ligne) * self.PERSPECTIVE
                     else:
-                        tuileX = colonne * tailles.LARGEUR_TUILES + ligne * abs(tailles.DECALAGE_TUILES)
+                        tuileX = colonne * tailles.LARGEUR_TUILES + ligne * abs(self.PERSPECTIVE)
                     tuileY = (ligne+1) * tailles.HAUTEUR_TUILES   # "ligne+1" pour décaler la map vers le bas, afin que les éléments sur les premières cases soient quand même visibles en entier
                     if typeObj == "tuiles":
                         sprite.SetPosition(tuileX, tuileY)
                     else:
                         if typeObj == "gdsElements":
-                            elemX = tuileX + tailles.DECALAGE_GDS_ELEMENTS_X + (tailles.LARGEUR_TUILES * etalement)/2 - sprite.GetWidth()/2
-                            elemY = tuileY + tailles.DECALAGE_GDS_ELEMENTS_Y - sprite.GetHeight()
+                            elemX = tuileX + self.DECALAGE_GDS_ELEMENTS_X + (tailles.LARGEUR_TUILES * etalement)/2 - sprite.GetWidth()/2
+                            elemY = tuileY + self.DECALAGE_GDS_ELEMENTS_Y - sprite.GetHeight()
                         else:
-                            elemX = tuileX + tailles.DECALAGE_PTS_ELEMENTS_X + (tailles.LARGEUR_TUILES * etalement)/2 - sprite.GetWidth()/2
-                            elemY = tuileY + tailles.DECALAGE_PTS_ELEMENTS_Y - sprite.GetHeight()
+                            elemX = tuileX + self.DECALAGE_PTS_ELEMENTS_X + (tailles.LARGEUR_TUILES * etalement)/2 - sprite.GetWidth()/2
+                            elemY = tuileY + self.DECALAGE_PTS_ELEMENTS_Y - sprite.GetHeight()
                         sprite.SetPosition(elemX, elemY)
                     
                     if etalement >= 2:
