@@ -38,6 +38,8 @@ else:
     style = sf.Style.Close
 
 app = sf.RenderWindow(videoMode, "SCHPANZERBRUCK", style)
+app.UseVerticalSync(True)
+app.SetFramerateLimit(60)
 
 gest = GestionnaireImages()
 

@@ -3,7 +3,7 @@
 from PySFML import sf
 import os.path
 from xml.dom import minidom
-from constantes import chemins, tailles
+from constantes import chemins
 from utils import ConstsContainer
 
 
@@ -65,7 +65,7 @@ class GestionnaireImages(dict):
         dict.__init__(self, { "tuiles":{}, "gdsElements":{}, "ptsElements":{}, "persos":{}, "interface":{} })
     
     
-    def chargerImagesMap(self, **tabsNums):
+    def chargerImagesMap(self, perspective, **tabsNums):
         """Charge les tuiles, gdsElements et ptsElements:
         
         gestionnaire.chargerImagesMap(tuiles=listeNumsTuiles, gdsElements=listeNumsGdsElements, ptsElements=listeNumsPtsElements)"""
@@ -93,7 +93,7 @@ class GestionnaireImages(dict):
                     if not img.LoadFromFile(os.path.join(eval("chemins.IMGS_%s" % typeObj.upper()), infosImg["fichier"])):
                         chargementOK = False
                     if typeObj == "tuiles":
-                        img = tord(img, tailles.DECALAGE_TUILES)
+                        img = tord(img, perspective)
                     self[typeObj][num] = ConstsContainer()
                     self[typeObj][num].infos = infosImg
                     self[typeObj][num].image = img
