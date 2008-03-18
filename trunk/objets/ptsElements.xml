@@ -2,6 +2,7 @@
 
 <ptsElements>
 
-<obj num="1" fichier="herbe1.png"/>
+    <obj num="1" fichier="herbe1.png"/>
+    <obj num="2" fichier="herbe2.png"/>
 
 </ptsElements>

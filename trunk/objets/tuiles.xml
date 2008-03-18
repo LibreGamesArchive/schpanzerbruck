@@ -15,4 +15,17 @@
     <obj num="11" fichier="cheminplaine10.png" nivpass="2"/>
     <obj num="12" fichier="cheminplaine11.png" nivpass="2"/>
 
+    <obj num="21" fichier="neige01.png" nivpass="2"/>
+    <obj num="22" fichier="cheminneige01.png" nivpass="2"/>
+    <obj num="23" fichier="cheminneige02.png" nivpass="2"/>
+    <obj num="24" fichier="cheminneige03.png" nivpass="2"/>
+    <obj num="25" fichier="cheminneige04.png" nivpass="2"/>
+    <obj num="26" fichier="cheminneige05.png" nivpass="2"/>
+    <obj num="27" fichier="cheminneige06.png" nivpass="2"/>
+    <obj num="28" fichier="cheminneige07.png" nivpass="2"/>
+    <obj num="29" fichier="cheminneige08.png" nivpass="2"/>
+    <obj num="30" fichier="cheminneige09.png" nivpass="2"/>
+    <obj num="31" fichier="cheminneige10.png" nivpass="2"/>
+    <obj num="32" fichier="cheminneige11.png" nivpass="2"/>
+
 </tuiles>
