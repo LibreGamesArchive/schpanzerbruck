@@ -2,10 +2,17 @@
 
 <tuiles>
 
-<obj num="1" fichier="plaine1.png" nivpass="2"/>
-<obj num="2" fichier="cheminplaine1.png" nivpass="2"/>
-<obj num="3" fichier="cheminplaine2.png" nivpass="2"/>
-<obj num="4" fichier="cheminplaine3.png" nivpass="2"/>
-<obj num="5" fichier="cheminplaine4.png" nivpass="2"/>
+    <obj num="1" fichier="plaine01.png" nivpass="2"/>
+    <obj num="2" fichier="cheminplaine01.png" nivpass="2"/>
+    <obj num="3" fichier="cheminplaine02.png" nivpass="2"/>
+    <obj num="4" fichier="cheminplaine03.png" nivpass="2"/>
+    <obj num="5" fichier="cheminplaine04.png" nivpass="2"/>
+    <obj num="6" fichier="cheminplaine05.png" nivpass="2"/>
+    <obj num="7" fichier="cheminplaine06.png" nivpass="2"/>
+    <obj num="8" fichier="cheminplaine07.png" nivpass="2"/>
+    <obj num="9" fichier="cheminplaine08.png" nivpass="2"/>
+    <obj num="10" fichier="cheminplaine09.png" nivpass="2"/>
+    <obj num="11" fichier="cheminplaine10.png" nivpass="2"/>
+    <obj num="12" fichier="cheminplaine11.png" nivpass="2"/>
 
 </tuiles>
