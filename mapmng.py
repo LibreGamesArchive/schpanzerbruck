@@ -173,7 +173,7 @@ class Map(dict):
                 self.pathfinding(coord+self.largeur,mvt-terrain,"h",coordsPossibles,chemin,route,mvtRestant)
                 route.pop()
         
-        return coordsPossibles, chemin, mvtRestant
+        return (coordsPossibles, chemin, mvtRestant)
 
     
     def dessinerSur(self, renderWindow):
