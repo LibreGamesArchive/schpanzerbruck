@@ -47,7 +47,7 @@ class ParserTraduit(OptionParser):
 
 # Ajouter des options ci-dessous. Utiliser u"" pour contourner le bug d'encodage.
 optionList=[make_option(u"-c", u"--carte", action=u"store", type=u"string", dest=u"carte", help=u"charge la carte à partir de FICHIER", metavar=u"FICHIER", default=defaut.CARTE),
-            make_option(u"-f", u"--fenetre", action=u"store_false", dest=u"plein_ecran", default=defaut.PLEIN_ECRAN, help=u"lance le jeu en mode fenêtré"),
+            make_option(u"-p", u"--plein-ecran", action=u"store_true", dest=u"plein_ecran", default=defaut.PLEIN_ECRAN, help=u"lance le jeu en mode plein écran"),
            ]
 
 # Instanciation du parser
