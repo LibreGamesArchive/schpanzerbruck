@@ -39,7 +39,7 @@ class Personnage:
         
         self.nom = ""
         
-        self.stats = { "FCP": "0", "FCM": 0, "DFP": 0, "DFM": 0, "AGI": 0, "INI": 0, "MVT": 0 }
+        self.stats = { "FCP": 0, "FCM": 0, "DFP": 0, "DFM": 0, "AGI": 0, "INI": 0, "MVT": 0 }
         
         self.VAL = 0 # VALEUR
         self.VIE = 100.0
@@ -69,9 +69,9 @@ class Personnage:
         listeMaitrises_str = root.getElementsByTagName("maitrises")[0].firstChild.data.strip().split(",")
         # FAUT FAIRE LE CHARGEMENT DES MAITRISES EN FONCTION DE LEUR NOM
         
-        dictEquipement_num = {}
+        dictEquipement_noms = {}
         for typeEq, objEq in root.getElementsByTagName("equipement")[0].attributes.items():
-            dictEquipement_num[typeEq] = objEq.value
+            dictEquipement_noms[typeEq] = objEq.value
         # PAREIL POUR L'EQUIPEMENT
     
     
@@ -82,13 +82,12 @@ class Personnage:
         root.setAttribute("nom", self.nom)
         
         stats = doc.createElement("stats")
-        for st in self.stats:
-            stats.setAttribute(st, self.stats[str(st)])
+        for st, val in self.stats.items():
+            stats.setAttribute(st, str(val))
         root.appendChild(stats)
         
         maitrises = doc.createElement("maitrises")
-        maitrises_text = doc.createTextNode()
-        maitrises_text.data = ""
+        maitrises_text = doc.createTextNode("")
         for m in self.maitrises:
             maitrises_text.data += m.nom + ","
         if maitrises_text.data != "":
@@ -98,7 +97,10 @@ class Personnage:
         
         equipement = doc.createElement("equipement")
         for typeEq, objEq in self.equipement.items():
-            equipement.setAttribute(typeEq, objEq.num)
+            if objEq != None:
+                equipement.setAttribute(typeEq, objEq.nom)  # objEq.num si les ObjetsEquip définissent un attribut nom (non définitif, of course)
+            else:
+                equipement.setAttribute(typeEq, "aucun")
         root.appendChild(equipement)
         
         doc.appendChild(root)
