@@ -105,12 +105,13 @@ class Map(dict):
                     if typeObj == "tuiles":
                         sprite.SetPosition(tuileX, tuileY)
                     else:
+                        spriteWidth, spriteHeight = sprite.GetSize()
                         if typeObj == "gdsElements":
-                            elemX = tuileX + self.DECALAGE_GDS_ELEMENTS_X + (tailles.LARGEUR_TUILES * etalement)/2 - sprite.GetWidth()/2
-                            elemY = tuileY + self.DECALAGE_GDS_ELEMENTS_Y - sprite.GetHeight()
+                            elemX = tuileX + self.DECALAGE_GDS_ELEMENTS_X + (tailles.LARGEUR_TUILES * etalement)/2 - spriteWidth/2
+                            elemY = tuileY + self.DECALAGE_GDS_ELEMENTS_Y - spriteHeight
                         else:
-                            elemX = tuileX + self.DECALAGE_PTS_ELEMENTS_X + (tailles.LARGEUR_TUILES * etalement)/2 - sprite.GetWidth()/2
-                            elemY = tuileY + self.DECALAGE_PTS_ELEMENTS_Y - sprite.GetHeight()
+                            elemX = tuileX + self.DECALAGE_PTS_ELEMENTS_X + (tailles.LARGEUR_TUILES * etalement)/2 - spriteWidth/2
+                            elemY = tuileY + self.DECALAGE_PTS_ELEMENTS_Y - spriteHeight
                         sprite.SetPosition(elemX, elemY)
                     
                     if etalement >= 2:
