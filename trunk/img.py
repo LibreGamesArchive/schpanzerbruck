@@ -84,7 +84,7 @@ class GestionnaireImages(dict):
             for num in tabsNums[typeObj]:
                 if num == 0x00: # Les numéros des images sont en HEXADECIMAL
                     continue    # Zéro (0x00) signifie qu'il n'y a pas d'image de ce type pour cette case
-                if not self[typeObj].has_key(num): # Si l'image n'a pas déjà été chargée
+                if num not in self[typeObj].keys(): # Si l'image n'a pas déjà été chargée
                     try:
                         infosImg = objsDispos[num]
                     except:
