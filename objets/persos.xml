@@ -2,6 +2,6 @@
 
 <persos>
 
-<obj nom="perso1" fichier="perso1.png" race="humain"/>
+<obj nom="perso1" fichier="perso1.png"/>
 
 </persos>

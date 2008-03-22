@@ -34,7 +34,7 @@ class Map(dict):
         tabsNums = self.__parserMap(map)
         
         gestImages.chargerImagesMap(perspective, **tabsNums) # On "dépaquète" le dictionnaire pour le changer en une liste d'arguments
-        # C'est comme si on faisait gestImages.chargerImagesMap(tuiles=listeNumsTuiles, gdsElements=listeNumsGdsElements, ptsElements=listeNumsPtsElements)
+        # C'est comme si on faisait gestImages.chargerImagesMap(perspective, tuiles=listeNumsTuiles, gdsElements=listeNumsGdsElements, ptsElements=listeNumsPtsElements)
         
         self.__creerSpritesEtInfosSurMap(tabsNums, gestImages) # On remplit le dico self
     
