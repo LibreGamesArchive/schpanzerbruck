@@ -105,8 +105,3 @@ class GestionnaireImages(dict):
     def chargerPersos(self, persos):
         # A FAIRE
         pass
-    
-    
-    def chargerInterface(self, imagesInterface):
-        # A FAIRE
-        pass

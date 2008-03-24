@@ -24,4 +24,4 @@ defaut = utils.ConstsContainer()
 
 defaut.PERSPECTIVE = 30   # Positif: Perspective droite, Négatif: Perspective gauche
 defaut.CARTE = u"maptest2-cold.xml"
-defaut.PLEIN_ECRAN = False
+defaut.PLEIN_ECRAN = True

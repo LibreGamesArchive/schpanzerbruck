@@ -2,17 +2,34 @@
 
 from PySFML import sf
 from xml.dom import minidom
-from constantes import tailles, defaut
+from constantes import tailles
 from utils import ConstsContainer
 import copy
 
 
-class Map(dict):
+statut = ConstsContainer()
+statut.PAS_DE_SELECTION = 0
+statut.INFOS_SEULEMENT = 1
+statut.DEPLACEMENT = 2
+statut.CIBLAGE = 3
+statut.NOIRCIR = 4
+
+
+class ResultatClicMap:
+    """Contient des infos sur le résultat d'un clic sur la Map"""
     
-    def __init__(self, map, gestImages, perspective = defaut.PERSPECTIVE):
+    def __init__(self):
+        pass
+
+
+class Map(sf.Drawable):
+    
+    def __init__(self, map, gestImages, perspective):
         """Parse un fichier XML de carte pour initialiser l'objet Map"""
         
-        dict.__init__(self, { "tuiles":[], "gdsElements":[], "ptsElements":[], "persos":[], "infos":[] })
+        sf.Drawable.__init__(self)
+        
+        self.__donnees = { "tuiles":[], "gdsElements":[], "ptsElements":[], "persos":[], "infos":[] }
         # Chaque case des listes du dico contient un sf.Sprite
         # sauf la case "infos" qui contient une liste dont chaque case contient un conteneur de Constantes qui possède les attributs "tuile", "gdElement" et "ptElement"
         
@@ -29,14 +46,18 @@ class Map(dict):
             self.DECALAGE_GDS_ELEMENTS_X = -perspective/2
             self.DECALAGE_PERSOS_X = -int(perspective*(5.0/8))
         
-        self.gestImages = gestImages    # SECURITE : Tant qu'une référence vers le gestionnaire existe quelque part, les images restent en mémoire
-        
         tabsNums = self.__parserMap(map)
         
         gestImages.chargerImagesMap(perspective, **tabsNums) # On "dépaquète" le dictionnaire pour le changer en une liste d'arguments
         # C'est comme si on faisait gestImages.chargerImagesMap(perspective, tuiles=listeNumsTuiles, gdsElements=listeNumsGdsElements, ptsElements=listeNumsPtsElements)
         
         self.__creerSpritesEtInfosSurMap(tabsNums, gestImages) # On remplit le dico self
+        
+        self.__statut = statut.INFOS_SEULEMENT    # Si True, les cases de la map ne sont pas sélectionnables, et le fait de les survoler ne change rien à l'affichage
+    
+    
+    def __getitem__(self, item):    # OPERATEUR []
+        return self.__donnees[item]
     
     
     def __parserMap(self, map):
@@ -175,14 +196,29 @@ class Map(dict):
                 route.pop()
         
         return (coordsPossibles, chemin, mvtRestant)
-
     
-    def dessinerSur(self, renderWindow):
-        """On dessine la Map en (0,0) sur la fenêtre"""
-        
+    
+    def bloquer(self, autoriserInfos = True):
+        if autoriserInfos:
+            self.__statut = statut.INFOS_SEULEMENT
+        else:
+            self.__statut = statut.PAS_DE_SELECTION
+    
+    def noircir(self):
+        self.__statut = statut.NOIRCIR
+    
+    def phaseDeplacement(self):
+        self.__statut = statut.DEPLACEMENT
+    
+    def phaseCiblage(self):
+        self.__statut = statut.CIBLAGE
+    
+    
+    def Render(self, renderWindow):
         for tuile in self["tuiles"]:
             if tuile != None:
                 renderWindow.Draw(tuile)
+                pass
         
         for i in range(0, self.hauteur):
             for x in [0, 1]: # DESSIN DES ELEMENTS DES CASES PAIRES, PUIS IMPAIRES
@@ -191,4 +227,12 @@ class Map(dict):
                         elemCourant = self[typeObj][i*self.largeur + x]
                         if elemCourant != None:
                             renderWindow.Draw(elemCourant)
+                            pass
                     x += 2
+    
+    
+    def gererClic(self, evt, vue):
+        # A FAIRE
+        
+        res = ResultatClicMap()
+        return res
