@@ -29,7 +29,7 @@ class InterfaceCombat(sf.Drawable):
         pass
     
     
-    def gererClic(self, evt, vue):
+    def gererClic(self, evt, rect):
         # A FAIRE
         
         return None # On renvoie None si l'interface n'a pas été cliquée
