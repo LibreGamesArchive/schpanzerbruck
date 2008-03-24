@@ -22,8 +22,7 @@
 
 from PySFML import sf
 import os.path
-from img import GestionnaireImages
-from mapmng import Map
+import contexte
 from constantes import chemins, defaut
 import parser
 
@@ -41,26 +40,13 @@ app = sf.RenderWindow(videoMode, "SCHPANZERBRUCK", style)
 app.UseVerticalSync(True)
 app.SetFramerateLimit(60)
 
-gest = GestionnaireImages()
-
 if os.path.exists(os.path.join(chemins.MAPS, options.carte)):
-    carte=os.path.join(chemins.MAPS, options.carte)
+    carte = os.path.join(chemins.MAPS, options.carte)
 else:
-    carte=os.path.join(chemins.MAPS, defaut.CARTE)
+    carte = os.path.join(chemins.MAPS, defaut.CARTE)
+# Fin
 
-map = Map(carte, gest)
 
+CTX = contexte.ContexteCombat(app, carte)
 
-# BOUCLE PRINCIPALE :
-run = True
-evt = sf.Event()
-while run:
-    while app.GetEvent(evt):
-        if evt.Type == sf.Event.Closed:
-            run = False
-        elif evt.Type == sf.Event.KeyPressed:
-            if evt.Key.Code == sf.Key.Escape:
-                run = False
-    
-    map.dessinerSur(app)
-    app.Display()
+CTX.lancerBoucle()
