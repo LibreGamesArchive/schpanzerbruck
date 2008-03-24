@@ -9,7 +9,7 @@ class Maitrise:
     """Décrit une maîtrise"""
 
     def __init__(self, nom="", nomComplet=""):
-        
+
         self.grades =  { "A": Container(), "B": Container(), "C": Container(), "D": Container(), "E": Container() }
         
         for k in self.grades.keys():
@@ -34,29 +34,39 @@ class ObjetEquip:
 class Personnage:
     """LA classe décrivant un personnage"""
     
-    def __init__(self):
+    def __init__(self,maitrise_premiere): # maitrise_premiere est une string
         """Définit les attributs (stats, etc.) du personnage"""
-        
+
         self.nom = ""
-        
+
         self.stats = { "FCP": 0, "FCM": 0, "DFP": 0, "DFM": 0, "AGI": 0, "INI": 0, "MVT": 0 }
-        
+
         self.VAL = 0 # VALEUR
         self.VIE = 100.0
         self.FTG = 0.0
         # VAL, VIE et FTG ne sont pas mises dans les stats car :
         # - VAL est recalculée (afin d'éviter au maximum la triche)
         # - VIE et FTG démarrent toujours à des valeurs dépendant des maîtrises (le plus souvent 100 et 0)
-        
-        self.maitrises = [] # Liste des maitrises (objets de type Maitrise) possédées par le perso
-        
+
+        self.maitrises = {} # Dictionnaire des maitrises (objets de type Maitrise) possédées par le perso, on initialise avec la maitrise trouv�e par le questionnaire
+		self.maitrise[maitrise_premiere]="E" 
+
         self.equipement = { "bras_droit": None, "bras_gauche": None, "tete": None, "torse": None, "pieds": None, "acc1": None, "acc2": None, "special": None }
         # acc1 et acc2 sont les accessoires (colliers, bracelets pour booster), et special est un objet spécial (cheval, catapulte) dépendant généralement d'une maîtrise particulière
         # Tous les items équipés sont des instances de la classe ObjetEquip
-        
+
         self.sprite = None
     
     
+    def addMaitrise(self, maitrise):
+        """ Ajoute une maitrise(de type string) � la liste de maitrise du personnage"""
+        self.maitrises[maitrise]="E" #Le dictionnaire des maitrises poss�d�es par le personnage est augment�e par une nouvelle maitrise, initialis�e au plus faible grade
+	
+	def changeGrade(self,maitrise,grade)
+		""" Change le grade d'une maitrise donn�e """
+		if
+	
+	
     def importerDepuisXML(self, doc):
         """Charge le perso depuis un minidom.Document"""
         root = doc.documentElement

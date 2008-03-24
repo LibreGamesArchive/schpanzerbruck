@@ -24,7 +24,7 @@ from PySFML import sf
 import os.path
 import contexte
 from constantes import chemins, defaut
-import parser
+import parser 
 
 # Parser de ligne de commande
 options = parser.retourneOptions()
