@@ -22,11 +22,15 @@
 
 from PySFML import sf
 import os.path
+
 import contexte
 from constantes import chemins, defaut
-import parser 
+import parser
 
-# Parser de ligne de commande
+import psyco
+psyco.full()
+
+# Parsage de ligne de commande
 options = parser.retourneOptions()
 
 if options.plein_ecran:
@@ -37,14 +41,15 @@ else:
     style = sf.Style.Close
 
 app = sf.RenderWindow(videoMode, "SCHPANZERBRUCK", style)
+app.SetFramerateLimit(100)
 app.UseVerticalSync(True)
-app.SetFramerateLimit(60)
+app.OptimizeForNonOpenGL(True)
 
 if os.path.exists(os.path.join(chemins.MAPS, options.carte)):
     carte = os.path.join(chemins.MAPS, options.carte)
 else:
     carte = os.path.join(chemins.MAPS, defaut.CARTE)
-# Fin
+# Fin parsage
 
 
 CTX = contexte.ContexteCombat(app, carte)

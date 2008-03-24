@@ -6,7 +6,7 @@ from utils import Container
 
 
 class Maitrise:
-    """Décrit une maîtrise"""
+    """DÃ©crit une maÃ®trise"""
 
     def __init__(self, nom="", nomComplet=""):
 
@@ -17,25 +17,25 @@ class Maitrise:
             self.grades[k].attaque = ""
         
         self.dependances = [] # Liste contenant des tuples (matrise, grade) dans lesquels maitrise et grade sont des strings.
-        # Donne les maitrises et grades nécessaires pour utiliser cette maîtrise
+        # Donne les maitrises et grades nÃ©cessaires pour utiliser cette maÃ®trise
         
         self.nom = nom
         self.nomComplet = nomComplet
 
 
 class ObjetEquip:
-    """Décrit un objet d'équipement"""
+    """DÃ©crit un objet d'Ã©quipement"""
     
     def __init__(self, type, num):
-        """Lit dans le fichier XML correspondant au type d'équipement spécifié l'équipement num"""
+        """Lit dans le fichier XML correspondant au type d'Ã©quipement spÃ©cifiÃ© l'Ã©quipement num"""
         pass
 
 
 class Personnage:
-    """LA classe décrivant un personnage"""
+    """LA classe dÃ©crivant un personnage"""
     
     def __init__(self,maitrise_premiere): # maitrise_premiere est une string
-        """Définit les attributs (stats, etc.) du personnage"""
+        """DÃ©finit les attributs (stats, etc.) du personnage"""
 
         self.nom = ""
 
@@ -45,25 +45,25 @@ class Personnage:
         self.VIE = 100.0
         self.FTG = 0.0
         # VAL, VIE et FTG ne sont pas mises dans les stats car :
-        # - VAL est recalculée (afin d'éviter au maximum la triche)
-        # - VIE et FTG démarrent toujours à des valeurs dépendant des maîtrises (le plus souvent 100 et 0)
+        # - VAL est recalculÃ©e (afin d'Ã©viter au maximum la triche)
+        # - VIE et FTG dÃ©marrent toujours Ã  des valeurs dÃ©pendant des maÃ®trises (le plus souvent 100 et 0)
 
-        self.maitrises = {} # Dictionnaire des maitrises (objets de type Maitrise) possédées par le perso, on initialise avec la maitrise trouv�e par le questionnaire
+        self.maitrises = {} # Dictionnaire des maitrises (objets de type Maitrise) possÃ©dÃ©es par le perso, on initialise avec la maitrise trouvée par le questionnaire
 		self.maitrise[maitrise_premiere]="E" 
 
         self.equipement = { "bras_droit": None, "bras_gauche": None, "tete": None, "torse": None, "pieds": None, "acc1": None, "acc2": None, "special": None }
-        # acc1 et acc2 sont les accessoires (colliers, bracelets pour booster), et special est un objet spécial (cheval, catapulte) dépendant généralement d'une maîtrise particulière
-        # Tous les items équipés sont des instances de la classe ObjetEquip
+        # acc1 et acc2 sont les accessoires (colliers, bracelets pour booster), et special est un objet spÃ©cial (cheval, catapulte) dÃ©pendant gÃ©nÃ©ralement d'une maÃ®trise particuliÃ¨re
+        # Tous les items Ã©quipÃ©s sont des instances de la classe ObjetEquip
 
         self.sprite = None
     
     
     def addMaitrise(self, maitrise):
-        """ Ajoute une maitrise(de type string) � la liste de maitrise du personnage"""
-        self.maitrises[maitrise]="E" #Le dictionnaire des maitrises poss�d�es par le personnage est augment�e par une nouvelle maitrise, initialis�e au plus faible grade
+        """ Ajoute une maitrise(de type string) à la liste de maitrise du personnage"""
+        self.maitrises[maitrise]="E" #Le dictionnaire des maitrises possédées par le personnage est augmentée par une nouvelle maitrise, initialisée au plus faible grade
 	
 	def changeGrade(self,maitrise,grade)
-		""" Change le grade d'une maitrise donn�e """
+		""" Change le grade d'une maitrise donnée """
 		if
 	
 	
@@ -101,14 +101,14 @@ class Personnage:
         for m in self.maitrises:
             maitrises_text.data += m.nom + ","
         if maitrises_text.data != "":
-            maitrises_text.data = maitrises_text.data[0:-1] # On vire la dernière ","
+            maitrises_text.data = maitrises_text.data[0:-1] # On vire la derniÃ¨re ","
         maitrises.appendChild(maitrises_text)
         root.appendChild(maitrises)
         
         equipement = doc.createElement("equipement")
         for typeEq, objEq in self.equipement.items():
             if objEq != None:
-                equipement.setAttribute(typeEq, objEq.nom)  # objEq.num si les ObjetsEquip définissent un attribut nom (non définitif, of course)
+                equipement.setAttribute(typeEq, objEq.nom)  # objEq.num si les ObjetsEquip dÃ©finissent un attribut nom (non dÃ©finitif, of course)
             else:
                 equipement.setAttribute(typeEq, "aucun")
         root.appendChild(equipement)

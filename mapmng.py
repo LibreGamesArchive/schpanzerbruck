@@ -65,8 +65,14 @@ class Map(sf.Drawable):
         
         map_node = minidom.parse(map).documentElement
         self.nom = map_node.attributes["nom"].value
+        
         self.largeur = int(map_node.attributes["largeur"].value)
         self.hauteur = int(map_node.attributes["hauteur"].value)
+        
+        largeurPix = self.hauteur * abs(self.PERSPECTIVE) + self.largeur * tailles.LARGEUR_TUILES
+        hauteurPix = (self.hauteur+1) * tailles.HAUTEUR_TUILES
+        self.rect = sf.FloatRect(0, 0, largeurPix, hauteurPix)
+        
         map_strs = {"tuiles":"", "gdsElements":"", "ptsElements":""}
         tabsNums = {"tuiles":[], "gdsElements":[], "ptsElements":[]}
         
@@ -231,7 +237,7 @@ class Map(sf.Drawable):
                     x += 2
     
     
-    def gererClic(self, evt, vue):
+    def gererClic(self, evt, rect):
         # A FAIRE
         
         res = ResultatClicMap()

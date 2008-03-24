@@ -17,6 +17,9 @@ class ContexteCombat:
         
         self.persosAyantJoue = []
         self.persosRestants = []    # persosRestants[0] est toujours le personnage dont c'est actuellement le tour
+        
+        self.vitesseDefil = 700    # Vitesse de défilement de la map (en pixels/seconde)
+        self.bordureDefil = 40    # Taille de la bordure pour le défilement (en pixels)
     
     
     def persoActuel(self):
@@ -36,8 +39,8 @@ class ContexteCombat:
         """Lancer la boucle principale du combat"""
         
         w, h = self.app.GetWidth(), self.app.GetHeight()
-        vueMap = sf.View(sf.FloatRect(0, 0, w, h))
-        vueInterface = sf.View(sf.FloatRect(0, 0, w, h))
+        rectMap = sf.FloatRect(0, 0, w, h)
+        rectInterface = sf.FloatRect(0, 0, w, h)
         
         run = True
         evt = sf.Event()
@@ -53,21 +56,51 @@ class ContexteCombat:
                         # Interface : Afficher le menuEchap
                         run = False
                 elif evt.Type == sf.Event.MouseButtonPressed:
-                    res = self.interface.gererClic(evt, vueInterface)  # L'interface est bien entendu prioritaire sur la Map dans la gestion des clics
+                    res = self.interface.gererClic(evt, rectInterface)  # L'interface est bien entendu prioritaire sur la Map dans la gestion des clics
                     if res == None:
-                        res = self.map.gererClic(evt, vueMap)
+                        res = self.map.gererClic(evt, rectMap)
                     else:
                         run = not res.quitter
             
-            # Gestion de la souris en temps réel pour le scrolling de la Map :
+            # Gestion de la souris en temps réel :
             input = self.app.GetInput()
             curseurX, curseurY = input.GetMouseX(), input.GetMouseY()
-            # A TERMINER
+            
+            # SCROLLING de la Map :
+            defil = self.vitesseDefil * self.app.GetFrameTime()
+            W, H = self.app.GetWidth(), self.app.GetHeight()
+            
+            if curseurX <= self.bordureDefil and rectMap.Left > self.map.rect.Left:   # DEFILEMENT VERS LA GAUCHE
+                rectMap.Left -= defil
+                rectMap.Right -= defil
+                if rectMap.Left < self.map.rect.Left:
+                    rectMap.Left = self.map.rect.Left
+                    rectMap.Right = self.map.rect.Left + W
+            elif curseurX >= self.app.GetWidth() - self.bordureDefil and rectMap.Right < self.map.rect.Right:   # DEFILEMENT VERS LA DROITE
+                rectMap.Left += defil
+                rectMap.Right += defil
+                if rectMap.Right > self.map.rect.Right:
+                    rectMap.Left = self.map.rect.Right - W
+                    rectMap.Right = self.map.rect.Right
+            if curseurY <= self.bordureDefil and rectMap.Top > self.map.rect.Top:   # DEFILEMENT VERS LE HAUT
+                rectMap.Top -= defil
+                rectMap.Bottom -= defil
+                if rectMap.Top < self.map.rect.Top:
+                    rectMap.Top = self.map.rect.Top
+                    rectMap.Bottom = self.map.rect.Top + H
+            elif curseurY >= self.app.GetHeight() - self.bordureDefil and rectMap.Bottom < self.map.rect.Bottom:   # DEFILEMENT VERS LE BAS
+                rectMap.Top += defil
+                rectMap.Bottom += defil
+                if rectMap.Bottom > self.map.rect.Bottom:
+                    rectMap.Top = self.map.rect.Bottom - H
+                    rectMap.Bottom = self.map.rect.Bottom
+            
+            t = self.app.GetFrameTime()
+            print 1/(t if t>0 else 1)
             
             # DESSIN :
-            # A REGLER : Les vues qui provoquent des Core Dumped
-            #self.app.SetView(vueMap)
+            self.app.SetView(sf.View(rectMap))
             self.app.Draw(self.map)
-            #self.app.SetView(vueInterface)
-            #self.app.Draw(self.interface)
+            self.app.SetView(sf.View(rectInterface))
+            self.app.Draw(self.interface)
             self.app.Display()
