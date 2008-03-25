@@ -237,7 +237,7 @@ class Map(sf.Drawable):
                     x += 2
     
     
-    def gererClic(self, evt, rect):
+    def gererClic(self, evt, vue):
         # A FAIRE
         
         res = ResultatClicMap()

@@ -39,8 +39,8 @@ class ContexteCombat:
         """Lancer la boucle principale du combat"""
         
         w, h = self.app.GetWidth(), self.app.GetHeight()
-        rectMap = sf.FloatRect(0, 0, w, h)
-        rectInterface = sf.FloatRect(0, 0, w, h)
+        vueMap = sf.View(sf.FloatRect(0, 0, w, h))
+        vueInterface = sf.View(sf.FloatRect(0, 0, w, h))
         
         run = True
         evt = sf.Event()
@@ -56,9 +56,9 @@ class ContexteCombat:
                         # Interface : Afficher le menuEchap
                         run = False
                 elif evt.Type == sf.Event.MouseButtonPressed:
-                    res = self.interface.gererClic(evt, rectInterface)  # L'interface est bien entendu prioritaire sur la Map dans la gestion des clics
+                    res = self.interface.gererClic(evt, vueInterface)  # L'interface est bien entendu prioritaire sur la Map dans la gestion des clics
                     if res == None:
-                        res = self.map.gererClic(evt, rectMap)
+                        res = self.map.gererClic(evt, vueMap)
                     else:
                         run = not res.quitter
             
@@ -70,37 +70,37 @@ class ContexteCombat:
             defil = self.vitesseDefil * self.app.GetFrameTime()
             W, H = self.app.GetWidth(), self.app.GetHeight()
             
-            if curseurX <= self.bordureDefil and rectMap.Left > self.map.rect.Left:   # DEFILEMENT VERS LA GAUCHE
-                rectMap.Left -= defil
-                rectMap.Right -= defil
-                if rectMap.Left < self.map.rect.Left:
-                    rectMap.Left = self.map.rect.Left
-                    rectMap.Right = self.map.rect.Left + W
-            elif curseurX >= self.app.GetWidth() - self.bordureDefil and rectMap.Right < self.map.rect.Right:   # DEFILEMENT VERS LA DROITE
-                rectMap.Left += defil
-                rectMap.Right += defil
-                if rectMap.Right > self.map.rect.Right:
-                    rectMap.Left = self.map.rect.Right - W
-                    rectMap.Right = self.map.rect.Right
-            if curseurY <= self.bordureDefil and rectMap.Top > self.map.rect.Top:   # DEFILEMENT VERS LE HAUT
-                rectMap.Top -= defil
-                rectMap.Bottom -= defil
-                if rectMap.Top < self.map.rect.Top:
-                    rectMap.Top = self.map.rect.Top
-                    rectMap.Bottom = self.map.rect.Top + H
-            elif curseurY >= self.app.GetHeight() - self.bordureDefil and rectMap.Bottom < self.map.rect.Bottom:   # DEFILEMENT VERS LE BAS
-                rectMap.Top += defil
-                rectMap.Bottom += defil
-                if rectMap.Bottom > self.map.rect.Bottom:
-                    rectMap.Top = self.map.rect.Bottom - H
-                    rectMap.Bottom = self.map.rect.Bottom
+            if curseurX <= self.bordureDefil and vueMap.Rect.Left > self.map.rect.Left:   # DEFILEMENT VERS LA GAUCHE
+                vueMap.Rect.Left -= defil
+                vueMap.Rect.Right -= defil
+                if vueMap.Rect.Left < self.map.rect.Left:
+                    vueMap.Rect.Left = self.map.rect.Left
+                    vueMap.Rect.Right = self.map.rect.Left + W
+            elif curseurX >= self.app.GetWidth() - self.bordureDefil and vueMap.Rect.Right < self.map.rect.Right:   # DEFILEMENT VERS LA DROITE
+                vueMap.Rect.Left += defil
+                vueMap.Rect.Right += defil
+                if vueMap.Rect.Right > self.map.rect.Right:
+                    vueMap.Rect.Left = self.map.rect.Right - W
+                    vueMap.Rect.Right = self.map.rect.Right
+            if curseurY <= self.bordureDefil and vueMap.Rect.Top > self.map.rect.Top:   # DEFILEMENT VERS LE HAUT
+                vueMap.Rect.Top -= defil
+                vueMap.Rect.Bottom -= defil
+                if vueMap.Rect.Top < self.map.rect.Top:
+                    vueMap.Rect.Top = self.map.rect.Top
+                    vueMap.Rect.Bottom = self.map.rect.Top + H
+            elif curseurY >= self.app.GetHeight() - self.bordureDefil and vueMap.Rect.Bottom < self.map.rect.Bottom:   # DEFILEMENT VERS LE BAS
+                vueMap.Rect.Top += defil
+                vueMap.Rect.Bottom += defil
+                if vueMap.Rect.Bottom > self.map.rect.Bottom:
+                    vueMap.Rect.Top = self.map.rect.Bottom - H
+                    vueMap.Rect.Bottom = self.map.rect.Bottom
             
             t = self.app.GetFrameTime()
-            print 1/(t if t>0 else 1)
+            print "FPS: %.2f" % (1/(t if t>0 else 1))
             
             # DESSIN :
-            self.app.SetView(sf.View(rectMap))
+            self.app.SetView(vueMap)
             self.app.Draw(self.map)
-            self.app.SetView(sf.View(rectInterface))
+            self.app.SetView(vueInterface)
             self.app.Draw(self.interface)
             self.app.Display()

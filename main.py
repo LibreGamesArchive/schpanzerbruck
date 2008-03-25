@@ -36,14 +36,16 @@ options = parser.retourneOptions()
 try:
     if options.psyco:
         import psyco    # A quoi ça sert ?
-        psyco.full()    # A accélerer la compilation "on the fly" du code Python, mais ça mange plus de RAM
+        psyco.full()    # A accélerer la compilation "on the fly" du code Python, mais mange plus de RAM
+        print "Psyco: ON"
 except ImportError:
     options.psyco = False
 
-if not options.fenetre:		# On lance le jeu en plein écran
+if not options.fenetre:     # On lance le jeu en plein écran
     videoMode = sf.VideoMode.GetDesktopMode()
     style = sf.Style.Close | sf.Style.Fullscreen
-else:
+    print "Plein écran: ON"
+else:   # Ou pas (mais faut éviter)
     videoMode = sf.VideoMode(1024, 768, 32)
     style = sf.Style.Close
 
