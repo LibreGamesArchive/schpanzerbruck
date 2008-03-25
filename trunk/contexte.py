@@ -7,16 +7,11 @@ import mapmng, gui, img, utils, constantes
 class ContexteCombat:
     """La classe suprême supervisant un combat"""
     
-    def __init__(self, app, fichierMap, perspective = constantes.defaut.PERSPECTIVE, afficheFPS=constantes.defaut.AFFICHE_FPS):
+    def __init__(self, app, fichierMap, perspective = constantes.defaut.PERSPECTIVE):
         self.app = app
         self.gestImages = img.GestionnaireImages()
         self.map = mapmng.Map(fichierMap, self.gestImages, perspective)
         self.interface = gui.InterfaceCombat()
-        self.afficheFPS=afficheFPS
-        self.FPS=sf.String()
-        self.FPS.SetX(0)
-        self.FPS.SetY(0)
-        self.FPS.SetColor(sf.Color(255,0,0,127))
         
         self.joueurs = {}
         
@@ -101,13 +96,11 @@ class ContexteCombat:
                     rectMap.Bottom = self.map.rect.Bottom
             
             t = self.app.GetFrameTime()
-            if self.afficheFPS:
-                self.FPS.SetText("%.2f FPS" %(1/(t if t>0 else 1)))
+            print 1/(t if t>0 else 1)
             
             # DESSIN :
             self.app.SetView(sf.View(rectMap))
             self.app.Draw(self.map)
             self.app.SetView(sf.View(rectInterface))
             self.app.Draw(self.interface)
-            self.app.Draw(self.FPS)
             self.app.Display()
