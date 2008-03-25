@@ -19,19 +19,30 @@
 ### along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
 
+import sys
 
-from PySFML import sf
+try:
+    from PySFML import sf
+except ImportError:
+    print >> sys.stderr, "Schpanzerbrück a besoin de PySFML pour fonctionner correctement.\n Vous pouvez l'installer à partir de http://www.sfml-dev.org"
+    sys.exit()
+
 import os.path
 
 import contexte
 from constantes import chemins, defaut
 import parser
 
-import psyco
-psyco.full()
-
 # Parsage de ligne de commande
 options = parser.retourneOptions()
+
+try:
+    if options.psyco:
+        import psyco
+        psyco.full()
+
+except ImportError:
+    options.psyco=False
 
 if options.plein_ecran:
     videoMode = sf.VideoMode.GetDesktopMode()
