@@ -26,3 +26,4 @@ defaut.PERSPECTIVE = 30   # Positif: Perspective droite, Négatif: Perspective g
 defaut.CARTE = u"maptest2-cold.xml"
 defaut.PLEIN_ECRAN = True
 defaut.PSYCO=True
+defaut.AFFICHE_FPS=True
