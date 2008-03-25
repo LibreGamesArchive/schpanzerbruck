@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<gdsElements>
+
+    <obj num="1" fichier="bosquet1.png" nivpass="2"/>
+    <obj num="2" fichier="maison1.png" nivpass="2"/>
+    <obj num="3" fichier="bosquet2.png" nivpass="2"/>
+    <obj num="4" fichier="maison2.png" nivpass="2"/>
+
+</gdsElements>
