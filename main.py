@@ -19,7 +19,10 @@
 ### along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
 
-import sys
+import os.path, sys
+import contexte
+from constantes import chemins, defaut
+import parser
 
 try:
     from PySFML import sf
@@ -27,24 +30,17 @@ except ImportError:
     print >> sys.stderr, "Schpanzerbrück a besoin de PySFML pour fonctionner correctement.\n Vous pouvez l'installer à partir de http://www.sfml-dev.org"
     sys.exit()
 
-import os.path
-
-import contexte
-from constantes import chemins, defaut
-import parser
-
 # Parsage de ligne de commande
 options = parser.retourneOptions()
 
 try:
     if options.psyco:
-        import psyco
-        psyco.full()
-
+        import psyco    # A quoi ça sert ?
+        psyco.full()    # A accélerer la compilation "on the fly" du code Python, mais ça mange plus de RAM
 except ImportError:
-    options.psyco=False
+    options.psyco = False
 
-if options.plein_ecran:
+if not options.fenetre:		# On lance le jeu en plein écran
     videoMode = sf.VideoMode.GetDesktopMode()
     style = sf.Style.Close | sf.Style.Fullscreen
 else:
@@ -53,7 +49,6 @@ else:
 
 app = sf.RenderWindow(videoMode, "SCHPANZERBRUCK", style)
 app.SetFramerateLimit(100)
-app.UseVerticalSync(True)
 app.OptimizeForNonOpenGL(True)
 
 if os.path.exists(os.path.join(chemins.MAPS, options.carte)):

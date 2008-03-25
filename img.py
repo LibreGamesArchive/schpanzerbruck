@@ -76,7 +76,7 @@ class GestionnaireImages(dict):
         for typeObj in ["tuiles", "gdsElements", "ptsElements"]:
             objsDispos = {}
             # objsDispos est un dictionnaires d'objet InfosImage
-            objs_nodes = minidom.parse(os.path.join(chemins.OBJETS, "%s.xml" % typeObj)).documentElement.getElementsByTagName("obj")
+            objs_nodes = minidom.parse(os.path.join(chemins.OBJETS_MAP, "%s.xml" % typeObj)).documentElement.getElementsByTagName("obj")
             for obj in objs_nodes:
                 attrs = obj.attributes
                 objsDispos[int(attrs["num"].value, 16)] = InfosImage(attrs)
