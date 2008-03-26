@@ -13,7 +13,7 @@ class ContexteCombat:
         self.map = mapmng.Map(fichierMap, self.gestImages, perspective)
         self.interface = gui.InterfaceCombat()
         
-        self.joueurs = {}
+        self.joueursLocaux = []  # A changer quand la classe JoueurClient sera finie
         
         self.persosAyantJoue = []
         self.persosRestants = []    # persosRestants[0] est toujours le personnage dont c'est actuellement le tour
@@ -70,11 +70,11 @@ class ContexteCombat:
             
             # ZOOM de la Map :
             if input.IsKeyDown(self.touches.ZOOM_AVANT) and vueMap.Zoom < 1:
-                vueMap.Zoom += 0.01
+                vueMap.Zoom += self.app.GetFrameTime()
                 if vueMap.Zoom > 1:
                     vueMap.Zoom = 1
             elif input.IsKeyDown(self.touches.ZOOM_ARRIERE) and vueMap.Zoom > 0.3:
-                vueMap.Zoom -= 0.01
+                vueMap.Zoom -= self.app.GetFrameTime()
                 if vueMap.Zoom < 0.3:
                     vueMap.Zoom = 0.3
             
