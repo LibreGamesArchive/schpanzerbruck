@@ -1,6 +1,8 @@
 # encoding=UTF-8
 
 import utils, os.path
+from PySFML import sf
+
 
 cheminDossierRacine = os.path.split(os.path.realpath(__file__))[0]
 
@@ -30,3 +32,11 @@ defaut.PERSPECTIVE = 30   # Positif: Perspective droite, Négatif: Perspective g
 defaut.CARTE = u"maptest2-cold.xml"
 defaut.PLEIN_ECRAN = True
 defaut.PSYCO = True
+
+defaut.touches = utils.ConstsContainer()
+defaut.touches.ZOOM_AVANT = sf.Key.PageUp
+defaut.touches.ZOOM_ARRIERE = sf.Key.PageDown
+defaut.touches.DEFIL_GAUCHE = sf.Key.Left
+defaut.touches.DEFIL_DROIT = sf.Key.Right
+defaut.touches.DEFIL_HAUT = sf.Key.Up
+defaut.touches.DEFIL_BAS = sf.Key.Down
