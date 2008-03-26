@@ -7,7 +7,7 @@ import mapmng, gui, img, utils, constantes
 class ContexteCombat:
     """La classe suprême supervisant un combat"""
     
-    def __init__(self, app, fichierMap, perspective = constantes.defaut.PERSPECTIVE):
+    def __init__(self, app, fichierMap, perspective = constantes.defaut.PERSPECTIVE, touches = constantes.defaut.touches):
         self.app = app
         self.gestImages = img.GestionnaireImages()
         self.map = mapmng.Map(fichierMap, self.gestImages, perspective)
@@ -20,6 +20,8 @@ class ContexteCombat:
         
         self.vitesseDefil = 700    # Vitesse de défilement de la map (en pixels/seconde)
         self.bordureDefil = 40    # Taille de la bordure pour le défilement (en pixels)
+        
+        self.touches = touches
     
     
     def persoActuel(self):
@@ -65,6 +67,16 @@ class ContexteCombat:
             # Gestion de la souris en temps réel :
             input = self.app.GetInput()
             curseurX, curseurY = input.GetMouseX(), input.GetMouseY()
+            
+            # ZOOM de la Map :
+            if input.IsKeyDown(self.touches.ZOOM_AVANT) and vueMap.Zoom < 1:
+                vueMap.Zoom += 0.01
+                if vueMap.Zoom > 1:
+                    vueMap.Zoom = 1
+            elif input.IsKeyDown(self.touches.ZOOM_ARRIERE) and vueMap.Zoom > 0.3:
+                vueMap.Zoom -= 0.01
+                if vueMap.Zoom < 0.3:
+                    vueMap.Zoom = 0.3
             
             # SCROLLING de la Map :
             defil = self.vitesseDefil * self.app.GetFrameTime()
