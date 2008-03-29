@@ -20,7 +20,7 @@
 ##########################################################################
 
 import os.path, sys
-import contexte
+import ctxclient
 from constantes import chemins, defaut
 import parser
 
@@ -38,16 +38,20 @@ try:
         import psyco    # A quoi ça sert ?
         psyco.full()    # A accélerer la compilation "on the fly" du code Python, mais mange plus de RAM
         print "Psyco: ON"
+    else:
+        print "Psyco: OFF"
 except ImportError:
+    print "Psyco: ** Not found **"
     options.psyco = False
 
 if not options.fenetre:     # On lance le jeu en plein écran
     videoMode = sf.VideoMode.GetDesktopMode()
     style = sf.Style.Close | sf.Style.Fullscreen
-    print "Plein écran: ON"
+    print "Fullscreen: ON"
 else:   # Ou pas (mais faut éviter)
     videoMode = sf.VideoMode(1024, 768, 32)
     style = sf.Style.Close
+    print "Fullscreen: OFF"
 
 app = sf.RenderWindow(videoMode, "SCHPANZERBRUCK", style)
 app.SetFramerateLimit(100)
@@ -60,6 +64,5 @@ else:
 # Fin parsage
 
 
-CTX = contexte.ContexteCombat(app, carte)
-
+CTX = ctxclient.ContexteClient(app, None, carte)
 CTX.lancerBoucle()

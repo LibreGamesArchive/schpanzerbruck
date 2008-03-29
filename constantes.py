@@ -40,3 +40,7 @@ defaut.touches.DEFIL_GAUCHE = sf.Key.Left
 defaut.touches.DEFIL_DROIT = sf.Key.Right
 defaut.touches.DEFIL_HAUT = sf.Key.Up
 defaut.touches.DEFIL_BAS = sf.Key.Down
+
+
+reseau = utils.ConstsContainer()
+reseau.IP_PORT_SERVEUR = ("", 3088)
