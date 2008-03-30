@@ -64,5 +64,5 @@ else:
 # Fin parsage
 
 
-CTX = ctxclient.ContexteClient(app, None, carte)
+CTX = ctxclient.ContexteClient(app, carte)
 CTX.lancerBoucle()

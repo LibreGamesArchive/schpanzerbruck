@@ -44,3 +44,4 @@ defaut.touches.DEFIL_BAS = sf.Key.Down
 
 reseau = utils.ConstsContainer()
 reseau.IP_PORT_SERVEUR = ("", 3088)
+reseau.PORT_BROADCAST = 3066

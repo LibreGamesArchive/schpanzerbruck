@@ -156,8 +156,18 @@ class ComBroadcasts(BaseComReseau):
     def __init__(self):
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)     # Socket en UDP (DATAGRAM)
         BaseComReseau.__init__(self, sock, None)
+        self.socket.bind(("", reseau.PORT_BROADCAST))
     
     
     def emission(self, msg):
         """Doit être redéfine car on n'est pas en TCP, ici"""
         pass
+    
+    
+    def run(self):
+        try:
+            while self.enFonctionnement:
+                msg, IP_PortClient = self.socket.recvfrom(1024)
+                self.socket.sendto(str(reseau.IP_PORT_SERVEUR[1]), IP_PortClient)
+        finally:
+            self.socket.close()            
