@@ -1,10 +1,7 @@
 # encoding=UTF-8
 
-from __future__ import with_statement
 import comlan
-from threading import Thread, Lock
-
-lockCtxServeur = Lock()
+from threading import Thread
 
 
 class ContexteServeur(Thread):
