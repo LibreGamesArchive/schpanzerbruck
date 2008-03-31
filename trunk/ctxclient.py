@@ -1,32 +1,7 @@
 # encoding=UTF-8
 
-from __future__ import with_statement
 from PySFML import sf
 import mapmng, gui, img, utils, constantes
-from threading import Lock
-import socket
-
-lockCtxClient = Lock()
-
-
-def chercherServeurs():
-        """Cherche la liste des serveurs sur le réseau par un envoi en broadcast"""
-        
-        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, True)
-        sock.sendto("...", ("255.255.255.255", constantes.reseau.PORT_BROADCAST))
-        sock.settimeout(3)
-        serveursTrouves = []
-        try:
-            while True:
-                msg, (IP_Serveur, PortServeur) = sock.recvfrom(1024)    # Le message reçu est le numéro de port du socket TCP attendant les connexions sur le serveur
-                serveursTrouves.append((IP_Serveur, int(msg)))
-        except socket.timeout:
-            pass
-        finally:
-            sock.close()
-        
-        return serveursTrouves
 
 
 class ContexteClient:

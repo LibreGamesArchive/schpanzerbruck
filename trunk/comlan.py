@@ -6,7 +6,7 @@ from constantes import reseau
 
 
 class Joueur:
-    """Toutes les infos nécessaires sur le joueur"""
+    """Toutes les infos nécessaires sur un joueur"""
     
     def __init__(self, pseudo):
         self.pseudo = pseudo
@@ -30,14 +30,9 @@ class BaseComReseau(BaseCom, Thread):
     
     def __init__(self, socket, contexte):
         BaseCom.__init__(self)
-        Thread.__init__(self)
+        Thread.__init__(self, name=self.__class__.__name__)
         self.socket = socket
         self.contexte = contexte
-    
-    
-    def emission(self, msg):
-        """Le Communicateur envoie une info de l'autre côté"""
-        pass
 
 
 
@@ -63,22 +58,6 @@ class ComClient(BaseComReseau, list):
         while self.connecteAuJeu:   # Est exécuté tant que le ComClient est connecté
             if self.joueurActuel():    # Si le joueur actuel est dans le groupe
                 socket.recv(1024)
-                # En fonction de ce qui est reçu, on peut appeller les méthodes:
-                #self.debutTour()
-                #self.jeu()
-    
-    
-    def debutTour(self):
-        pass
-    
-    
-    def jeu(self):
-        pass
-    
-    
-    def finDuTour(self):
-        """Le joueurActuel finit son tour et le groupe le signale au ContexteServeur"""
-        pass
 
 
 
@@ -92,12 +71,6 @@ class ComServeur(BaseComReseau):
     
     def run(self):   # RECEPTION
         """Recoit les infos des clients, et appelle les méthodes correspondantes"""
-        pass
-    
-    
-    def finDuTour(self):
-        """Ce que fait le ComServeur quand le joueurActuel a fini son tour (i.e. quand un de ses persos a fini son tour)
-        Signale au ContexteServeur que c'est au tour du perso suivant"""
         pass
     
     
@@ -159,15 +132,55 @@ class ComBroadcasts(BaseComReseau):
         self.socket.bind(("", reseau.PORT_BROADCAST))
     
     
-    def emission(self, msg):
-        """Doit être redéfine car on n'est pas en TCP, ici"""
-        pass
-    
-    
     def run(self):
         try:
             while self.enFonctionnement:
                 msg, IP_PortClient = self.socket.recvfrom(1024)
                 self.socket.sendto(str(reseau.IP_PORT_SERVEUR[1]), IP_PortClient)
         finally:
-            self.socket.close()            
+            self.socket.close()
+
+
+class ComRecherche(BaseComReseau):
+    """Côté client, sert à chercher les serveurs sur le réseau"""
+    
+    def __init__(self):
+        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        BaseComReseau.__init__(self, sock, None)
+        self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, True)
+        self.socket.settimeout(3)
+        self.serveursTrouves = []    # Contient les tuples (IP, port) des serveurs détectés
+        self.__doitChercher = False
+    
+    def lancerRecherche(self):
+        self.__doitChercher = True
+    
+    def __chercherServeurs(self):
+        """Cherche la liste des serveurs sur le réseau par un envoi en broadcast"""
+        
+        self.serveursTrouves = []   # On vide la liste des serveurs
+        self.socket.sendto("...", ("255.255.255.255", reseau.PORT_BROADCAST))
+        try:
+            while True:
+                msg, (IP_Serveur, PortServeur) = self.socket.recvfrom(1024)    # Le message reçu est le numéro de port du socket TCP attendant les connexions sur le serveur
+                nouvServeur = (IP_Serveur, int(msg))
+                self.serveursTrouves.append(nouvServeur)
+        except socket.timeout:
+            pass
+        finally:
+            self.__doitChercher = False
+    
+    def run(self):
+        try:
+            while self.enFonctionnement:
+                if self.__doitChercher:
+                    self.__chercherServeurs()
+        except socket.error:
+            # A FAIRE : GERER LES ERREURS RESEAU
+            raise
+        finally:
+            self.__doitChercher = False
+            self.socket.close()
+    
+    def rechercheEnCours(self):
+        return self.__doitChercher
