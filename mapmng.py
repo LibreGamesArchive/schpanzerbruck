@@ -22,45 +22,20 @@ class ResultatClicMap:
         pass
 
 
-class Map(sf.Drawable):
+class BaseMap:
+    """La classe de base pour une Map"""
     
-    def __init__(self, map, gestImages, perspective):
+    def __init__(self, map):
         """Parse un fichier XML de carte pour initialiser l'objet Map"""
         
-        sf.Drawable.__init__(self)
-        
-        self.__donnees = { "tuiles":[], "gdsElements":[], "ptsElements":[], "persos":[], "infos":[] }
-        # Chaque case des listes du dico contient un sf.Sprite
-        # sauf la case "infos" qui contient une liste dont chaque case contient un conteneur de Constantes qui possède les attributs "tuile", "gdElement" et "ptElement"
-        
-        self.PERSPECTIVE = perspective
-        self.DECALAGE_PTS_ELEMENTS_Y = int(tailles.HAUTEUR_TUILES*(3.0/4))
-        self.DECALAGE_GDS_ELEMENTS_Y = tailles.HAUTEUR_TUILES/2
-        self.DECALAGE_PERSOS_Y = int(tailles.HAUTEUR_TUILES*(5.0/8))
-        if perspective >= 0:
-            self.DECALAGE_PTS_ELEMENTS_X = int(perspective*(1.0/4))   # Th. de Thalès
-            self.DECALAGE_GDS_ELEMENTS_X = perspective/2   # Th. de Thalès
-            self.DECALAGE_PERSOS_X = int(perspective*(3.0/8))    # Th. de Thalès
-        else:
-            self.DECALAGE_PTS_ELEMENTS_X = -int(perspective*(3.0/4))
-            self.DECALAGE_GDS_ELEMENTS_X = -perspective/2
-            self.DECALAGE_PERSOS_X = -int(perspective*(5.0/8))
-        
-        tabsNums = self.__parserMap(map)
-        
-        gestImages.chargerImagesMap(perspective, **tabsNums) # On "dépaquète" le dictionnaire pour le changer en une liste d'arguments
-        # C'est comme si on faisait gestImages.chargerImagesMap(perspective, tuiles=listeNumsTuiles, gdsElements=listeNumsGdsElements, ptsElements=listeNumsPtsElements)
-        
-        self.__creerSpritesEtInfosSurMap(tabsNums, gestImages) # On remplit le dico self
-        
-        self.__statut = statut.INFOS_SEULEMENT    # Si True, les cases de la map ne sont pas sélectionnables, et le fait de les survoler ne change rien à l'affichage
+        self.infos = []     # self est la liste des infos
     
     
-    def __getitem__(self, item):    # OPERATEUR []
-        return self.__donnees[item]
+    def __getitem__(self, item):
+        return self.infos[item]
     
     
-    def __parserMap(self, map):
+    def parserMap(self, map):
         """Renvoie un dico contenant les listes de numéros"""
         
         map_node = minidom.parse(map).documentElement
@@ -93,72 +68,13 @@ class Map(sf.Drawable):
                 raise Exception, "Hauteur et/ou largeur ne correspondent pas à la liste de nums pour les %s dans la map %s" % (i, map)
         
         return tabsNums
+
+
+class MapSrv(BaseMap):
+    """La map ne contenant aucun sprite, destinée à être utilisée seulement par le serveur"""
     
-    
-    def __creerSpritesEtInfosSurMap(self, tabsNums, gestImages):
-        """Comme son nom l'indique...
-        Ne s'occupe pas des personnages"""
-        
-        # Dictionnaire temporaire pour récupérer et traiter les infos nécessaires sur chaque image:
-        infosImages = {"tuiles":[], "gdsElements":[], "ptsElements":[]}
-        
-        # Constructions des listes de sprites :
-        for typeObj in ["tuiles", "gdsElements", "ptsElements"]:
-            ligne, colonne = 0, 0
-            recopier, remonterDe = 0, 1    # recopier est un int, qui indique si l'élément de la case précédente doit chevaucher encore d'autres cases et si oui, combien (ex. recopier == 2 si l'élément de la case précédent s'étale encore sur 2 cases)
-            # remonterDe sert pour les infos : si un élément s'étend sur 3 cases, et que la case concernée est la dernière de ces 3 cases, alors remonterDe == 2
-            for ind, num in enumerate(tabsNums[typeObj]):
-                sprite, infos = None, None
-                
-                if recopier >= 1: # L'élément s'étend sur plusieurs cases, on recopie les infos de la case précédente
-                    infos = remonterDe
-                    recopier -= 1
-                    remonterDe += 1
-                
-                elif num >= 0x01 and (typeObj=="tuiles" or (typeObj != "tuiles" and self["tuiles"][ind] != None)):   # Si il n'y a pas de tuile à cet endroit-là (0x00), on ne met pas non plus d'élément(s)
-                    imgETinfos = gestImages[typeObj][num]
-                    sprite = sf.Sprite(imgETinfos.image)
-                    infos = imgETinfos.infos
-                    etalement = infos["etalement"]
-                    
-                    # A FAIRE : VERIFICATION : VOIR SI L'ELEMENT NE DEBORDE PAS DE LA MAP
-                    
-                    # POSITIONNEMENT DE CHAQUE SPRITE : (Par rapport au point en haut à gauche de la map)
-                    if self.PERSPECTIVE >= 0:
-                        tuileX = colonne * tailles.LARGEUR_TUILES + (self.hauteur-1 - ligne) * self.PERSPECTIVE
-                    else:
-                        tuileX = colonne * tailles.LARGEUR_TUILES + ligne * abs(self.PERSPECTIVE)
-                    tuileY = (ligne+1) * tailles.HAUTEUR_TUILES   # "ligne+1" pour décaler la map vers le bas, afin que les éléments sur les premières cases soient quand même visibles en entier
-                    if typeObj == "tuiles":
-                        sprite.SetPosition(tuileX, tuileY)
-                    else:
-                        spriteWidth, spriteHeight = sprite.GetSize()
-                        if typeObj == "gdsElements":
-                            elemX = tuileX + self.DECALAGE_GDS_ELEMENTS_X + (tailles.LARGEUR_TUILES * etalement)/2 - spriteWidth/2
-                            elemY = tuileY + self.DECALAGE_GDS_ELEMENTS_Y - spriteHeight
-                        else:
-                            elemX = tuileX + self.DECALAGE_PTS_ELEMENTS_X + (tailles.LARGEUR_TUILES * etalement)/2 - spriteWidth/2
-                            elemY = tuileY + self.DECALAGE_PTS_ELEMENTS_Y - spriteHeight
-                        sprite.SetPosition(elemX, elemY)
-                    
-                    if etalement >= 2:
-                        remonterDe = 1
-                        recopier = etalement - 1
-                
-                self[typeObj].append(sprite)
-                infosImages[typeObj].append(infos)
-                
-                colonne += 1
-                if colonne == self.largeur:
-                    colonne = 0
-                    ligne += 1
-        
-        for i in range(0, self.hauteur * self.largeur): # Traitement du dictionnaire temporaire infoImages
-            grpInfos = ConstsContainer()
-            grpInfos.tuile = infosImages["tuiles"][i]
-            grpInfos.gdElement = infosImages["gdsElements"][i]
-            grpInfos.ptElement = infosImages["ptsElements"][i]
-            self["infos"].append(grpInfos)
+    def __init__(self, map):
+        BaseMap.__init__(self, map)
     
     
     def zoneDeplacement(self, coord, mvt, origine="0", coordsPossibles=[], chemin=[], route=[], mvtRestant=[]):
@@ -202,6 +118,105 @@ class Map(sf.Drawable):
                 route.pop()
         
         return (coordsPossibles, chemin, mvtRestant)
+
+
+class Map(BaseMap, sf.Drawable):
+    """La Map côté client, dessinable"""
+    
+    def __init__(self, map, gestImages, perspective):
+        BaseMap.__init__(self, map)
+        sf.Drawable.__init__(self)
+        
+        self.sprites = { "tuiles":[], "gdsElements":[], "ptsElements":[], "persos":[] }
+        # Chaque case des listes du dico contient un sf.Sprite
+        # sauf la case "infos" qui contient une liste dont chaque case contient un conteneur de Constantes qui possède les attributs "tuile", "gdElement" et "ptElement"
+        
+        self.PERSPECTIVE = perspective
+        self.DECALAGE_PTS_ELEMENTS_Y = int(tailles.HAUTEUR_TUILES*(3.0/4))
+        self.DECALAGE_GDS_ELEMENTS_Y = tailles.HAUTEUR_TUILES/2
+        self.DECALAGE_PERSOS_Y = int(tailles.HAUTEUR_TUILES*(5.0/8))
+        if perspective >= 0:
+            self.DECALAGE_PTS_ELEMENTS_X = int(perspective*(1.0/4))   # Th. de Thalès
+            self.DECALAGE_GDS_ELEMENTS_X = perspective/2   # Th. de Thalès
+            self.DECALAGE_PERSOS_X = int(perspective*(3.0/8))    # Th. de Thalès
+        else:
+            self.DECALAGE_PTS_ELEMENTS_X = -int(perspective*(3.0/4))
+            self.DECALAGE_GDS_ELEMENTS_X = -perspective/2
+            self.DECALAGE_PERSOS_X = -int(perspective*(5.0/8))
+        
+        tabsNums = self.parserMap(map)
+        
+        gestImages.chargerImagesMap(perspective, tabsNums)
+        
+        self.__creerSpritesEtInfosSurMap(tabsNums, gestImages) # On remplit le dico self
+        
+        self.__statut = statut.INFOS_SEULEMENT    # Si True, les cases de la map ne sont pas sélectionnables, et le fait de les survoler ne change rien à l'affichage
+    
+    
+    def __creerSpritesEtInfosSurMap(self, tabsNums, gestImages):
+        """Comme son nom l'indique...
+        Ne s'occupe pas des personnages"""
+        
+        # Dictionnaire temporaire pour récupérer et traiter les infos nécessaires sur chaque image:
+        infosImages = {"tuiles":[], "gdsElements":[], "ptsElements":[]}
+        
+        # Constructions des listes de sprites :
+        for typeObj in ["tuiles", "gdsElements", "ptsElements"]:
+            ligne, colonne = 0, 0
+            recopier, remonterDe = 0, 1    # recopier est un int, qui indique si l'élément de la case précédente doit chevaucher encore d'autres cases et si oui, combien (ex. recopier == 2 si l'élément de la case précédent s'étale encore sur 2 cases)
+            # remonterDe sert pour les infos : si un élément s'étend sur 3 cases, et que la case concernée est la dernière de ces 3 cases, alors remonterDe == 2
+            for ind, num in enumerate(tabsNums[typeObj]):
+                sprite, infos = None, None
+                
+                if recopier >= 1: # L'élément s'étend sur plusieurs cases, on recopie les infos de la case précédente
+                    infos = remonterDe
+                    recopier -= 1
+                    remonterDe += 1
+                
+                elif num >= 0x01 and (typeObj=="tuiles" or (typeObj != "tuiles" and self.sprites["tuiles"][ind] != None)):   # Si il n'y a pas de tuile à cet endroit-là (0x00), on ne met pas non plus d'élément(s)
+                    imgETinfos = gestImages[typeObj][num]
+                    sprite = sf.Sprite(imgETinfos.image)
+                    infos = imgETinfos.infos
+                    etalement = infos["etalement"]
+                    
+                    # A FAIRE : VERIFICATION : VOIR SI L'ELEMENT NE DEBORDE PAS DE LA MAP
+                    
+                    # POSITIONNEMENT DE CHAQUE SPRITE : (Par rapport au point en haut à gauche de la map)
+                    if self.PERSPECTIVE >= 0:
+                        tuileX = colonne * tailles.LARGEUR_TUILES + (self.hauteur-1 - ligne) * self.PERSPECTIVE
+                    else:
+                        tuileX = colonne * tailles.LARGEUR_TUILES + ligne * abs(self.PERSPECTIVE)
+                    tuileY = (ligne+1) * tailles.HAUTEUR_TUILES   # "ligne+1" pour décaler la map vers le bas, afin que les éléments sur les premières cases soient quand même visibles en entier
+                    if typeObj == "tuiles":
+                        sprite.SetPosition(tuileX, tuileY)
+                    else:
+                        spriteWidth, spriteHeight = sprite.GetSize()
+                        if typeObj == "gdsElements":
+                            elemX = tuileX + self.DECALAGE_GDS_ELEMENTS_X + (tailles.LARGEUR_TUILES * etalement)/2 - spriteWidth/2
+                            elemY = tuileY + self.DECALAGE_GDS_ELEMENTS_Y - spriteHeight
+                        else:
+                            elemX = tuileX + self.DECALAGE_PTS_ELEMENTS_X + (tailles.LARGEUR_TUILES * etalement)/2 - spriteWidth/2
+                            elemY = tuileY + self.DECALAGE_PTS_ELEMENTS_Y - spriteHeight
+                        sprite.SetPosition(elemX, elemY)
+                    
+                    if etalement >= 2:
+                        remonterDe = 1
+                        recopier = etalement - 1
+                
+                self.sprites[typeObj].append(sprite)
+                infosImages[typeObj].append(infos)
+                
+                colonne += 1
+                if colonne == self.largeur:
+                    colonne = 0
+                    ligne += 1
+        
+        for i in range(0, self.hauteur * self.largeur): # Traitement du dictionnaire temporaire infoImages
+            grpInfos = ConstsContainer()
+            grpInfos.tuile = infosImages["tuiles"][i]
+            grpInfos.gdElement = infosImages["gdsElements"][i]
+            grpInfos.ptElement = infosImages["ptsElements"][i]
+            self.infos.append(grpInfos)
     
     
     def bloquer(self, autoriserInfos = True):
@@ -221,7 +236,7 @@ class Map(sf.Drawable):
     
     
     def Render(self, renderWindow):
-        for tuile in self["tuiles"]:
+        for tuile in self.sprites["tuiles"]:
             if tuile != None:
                 renderWindow.Draw(tuile)
                 pass
@@ -230,7 +245,7 @@ class Map(sf.Drawable):
             for x in [0, 1]: # DESSIN DES ELEMENTS DES CASES PAIRES, PUIS IMPAIRES
                 while x < self.largeur:
                     for typeObj in ["gdsElements", "ptsElements"]:
-                        elemCourant = self[typeObj][i*self.largeur + x]
+                        elemCourant = self.sprites[typeObj][i*self.largeur + x]
                         if elemCourant != None:
                             renderWindow.Draw(elemCourant)
                             pass

@@ -10,6 +10,8 @@ class ContexteClient:
     
     def __init__(self, app, fichierMap, perspective = constantes.defaut.PERSPECTIVE, touches = constantes.defaut.touches):
         self.app = app
+        self.W, self.H = self.app.GetWidth(), self.app.GetHeight()
+        self.input = app.GetInput()
         self.gestImages = img.GestionnaireImages()
         self.map = mapmng.Map(fichierMap, self.gestImages, perspective)
         self.interface = gui.InterfaceCombat()
@@ -21,50 +23,50 @@ class ContexteClient:
         self.bordureDefil = 40    # Taille de la bordure pour le défilement (en pixels)
         
         self.touches = touches
+        
+        self.vueMap = sf.View(sf.FloatRect(0, 0, self.W, self.H))
+        self.vueInterface = sf.View(sf.FloatRect(0, 0, self.W, self.H))
+        
+        self.fps_moy = self.nbr_fps = 0
     
     
     def persoActuel(self):
         return self.persos[0]
     
     
-    def __scrolling(self, vueMap, curseurX, curseurY):
+    def __scrolling(self, curseurX, curseurY):
         """Scrolling de la map"""
         
         defil = self.vitesseDefil * self.app.GetFrameTime()
-        W, H = self.app.GetWidth(), self.app.GetHeight()
         
-        if curseurX <= self.bordureDefil and vueMap.Rect.Left > self.map.rect.Left:   # DEFILEMENT VERS LA GAUCHE
-            vueMap.Rect.Left -= defil
-            vueMap.Rect.Right -= defil
-            if vueMap.Rect.Left < self.map.rect.Left:
-                vueMap.Rect.Left = self.map.rect.Left
-                vueMap.Rect.Right = self.map.rect.Left + W
-        elif curseurX >= self.app.GetWidth() - self.bordureDefil and vueMap.Rect.Right < self.map.rect.Right:   # DEFILEMENT VERS LA DROITE
-            vueMap.Rect.Left += defil
-            vueMap.Rect.Right += defil
-            if vueMap.Rect.Right > self.map.rect.Right:
-                vueMap.Rect.Left = self.map.rect.Right - W
-                vueMap.Rect.Right = self.map.rect.Right
-        if curseurY <= self.bordureDefil and vueMap.Rect.Top > self.map.rect.Top:   # DEFILEMENT VERS LE HAUT
-            vueMap.Rect.Top -= defil
-            vueMap.Rect.Bottom -= defil
-            if vueMap.Rect.Top < self.map.rect.Top:
-                vueMap.Rect.Top = self.map.rect.Top
-                vueMap.Rect.Bottom = self.map.rect.Top + H
-        elif curseurY >= self.app.GetHeight() - self.bordureDefil and vueMap.Rect.Bottom < self.map.rect.Bottom:   # DEFILEMENT VERS LE BAS
-            vueMap.Rect.Top += defil
-            vueMap.Rect.Bottom += defil
-            if vueMap.Rect.Bottom > self.map.rect.Bottom:
-                vueMap.Rect.Top = self.map.rect.Bottom - H
-                vueMap.Rect.Bottom = self.map.rect.Bottom
+        if curseurX <= self.bordureDefil and self.vueMap.Rect.Left > self.map.rect.Left:   # DEFILEMENT VERS LA GAUCHE
+            self.vueMap.Rect.Left -= defil
+            self.vueMap.Rect.Right -= defil
+            if self.vueMap.Rect.Left < self.map.rect.Left:
+                self.vueMap.Rect.Left = self.map.rect.Left
+                self.vueMap.Rect.Right = self.map.rect.Left + self.W
+        elif curseurX >= self.app.GetWidth() - self.bordureDefil and self.vueMap.Rect.Right < self.map.rect.Right:   # DEFILEMENT VERS LA DROITE
+            self.vueMap.Rect.Left += defil
+            self.vueMap.Rect.Right += defil
+            if self.vueMap.Rect.Right > self.map.rect.Right:
+                self.vueMap.Rect.Left = self.map.rect.Right - self.W
+                self.vueMap.Rect.Right = self.map.rect.Right
+        if curseurY <= self.bordureDefil and self.vueMap.Rect.Top > self.map.rect.Top:   # DEFILEMENT VERS LE HAUT
+            self.vueMap.Rect.Top -= defil
+            self.vueMap.Rect.Bottom -= defil
+            if self.vueMap.Rect.Top < self.map.rect.Top:
+                self.vueMap.Rect.Top = self.map.rect.Top
+                self.vueMap.Rect.Bottom = self.map.rect.Top + self.H
+        elif curseurY >= self.app.GetHeight() - self.bordureDefil and self.vueMap.Rect.Bottom < self.map.rect.Bottom:   # DEFILEMENT VERS LE BAS
+            self.vueMap.Rect.Top += defil
+            self.vueMap.Rect.Bottom += defil
+            if self.vueMap.Rect.Bottom > self.map.rect.Bottom:
+                self.vueMap.Rect.Top = self.map.rect.Bottom - self.H
+                self.vueMap.Rect.Bottom = self.map.rect.Bottom
     
     
     def lancerBoucle(self):
         """Lancer la boucle principale du combat"""
-        
-        w, h = self.app.GetWidth(), self.app.GetHeight()
-        vueMap = sf.View(sf.FloatRect(0, 0, w, h))
-        vueInterface = sf.View(sf.FloatRect(0, 0, w, h))
         
         running = True
         evt = sf.Event()
@@ -80,34 +82,37 @@ class ContexteClient:
                         # Interface : Afficher le menuEchap
                         running = False
                 elif evt.Type == sf.Event.MouseButtonPressed:
-                    res = self.interface.gererClic(evt, vueInterface)  # L'interface est bien entendu prioritaire sur la Map dans la gestion des clics
+                    res = self.interface.gererClic(evt, self.vueInterface)  # L'interface est bien entendu prioritaire sur la Map dans la gestion des clics
                     if res == None:
-                        res = self.map.gererClic(evt, vueMap)
+                        res = self.map.gererClic(evt, self.vueMap)
                     else:
                         running = not res.quitter
             
             # Gestion de la souris en temps réel :
-            appInput = self.app.GetInput()
-            curseurX, curseurY = appInput.GetMouseX(), appInput.GetMouseY()
+            curseurX, curseurY = self.input.GetMouseX(), self.input.GetMouseY()
             
             # ZOOM de la Map :
-            if appInput.IsKeyDown(self.touches.ZOOM_AVANT) and vueMap.Zoom < 1:
-                vueMap.Zoom += self.app.GetFrameTime()
-                if vueMap.Zoom > 1:
-                    vueMap.Zoom = 1
-            elif appInput.IsKeyDown(self.touches.ZOOM_ARRIERE) and vueMap.Zoom > 0.3:
-                vueMap.Zoom -= self.app.GetFrameTime()
-                if vueMap.Zoom < 0.3:
-                    vueMap.Zoom = 0.3
+            if self.input.IsKeyDown(self.touches.ZOOM_AVANT) and self.vueMap.Zoom < 1:
+                self.vueMap.Zoom += self.app.GetFrameTime()
+                if self.vueMap.Zoom > 1:
+                    self.vueMap.Zoom = 1
+            elif self.input.IsKeyDown(self.touches.ZOOM_ARRIERE) and self.vueMap.Zoom > 0.3:
+                self.vueMap.Zoom -= self.app.GetFrameTime()
+                if self.vueMap.Zoom < 0.3:
+                    self.vueMap.Zoom = 0.3
             
-            self.__scrolling(vueMap, curseurX, curseurY)
+            self.__scrolling(curseurX, curseurY)
             
             t = self.app.GetFrameTime()
-            print "FPS: %.2f" % (1.0/(t if t>0 else 1))
+            if t>0:
+                self.nbr_fps += 1
+                self.fps_moy = ((self.nbr_fps-1)*self.fps_moy + 1/t)/(self.nbr_fps)
             
             # DESSIN :
-            self.app.SetView(vueMap)
+            self.app.SetView(self.vueMap)
             self.app.Draw(self.map)
-            self.app.SetView(vueInterface)
+            self.app.SetView(self.vueInterface)
             self.app.Draw(self.interface)
             self.app.Display()
+        
+        print "FPS moyen: %.2f\nImage passées: %d" % (self.fps_moy, self.nbr_fps)
