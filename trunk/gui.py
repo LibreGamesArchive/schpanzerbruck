@@ -29,7 +29,7 @@ class InterfaceCombat(sf.Drawable):
     
     
     def Render(self, renderWindow):
-        #renderWindow.Draw(self.cadre)
+        renderWindow.Draw(self.cadre)
         pass
     
     

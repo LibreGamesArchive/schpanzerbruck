@@ -55,7 +55,7 @@ else:   # Ou pas (mais faut éviter)
 
 app = sf.RenderWindow(videoMode, "SCHPANZERBRUCK", style)
 app.SetFramerateLimit(100)
-app.OptimizeForNonOpenGL(True)
+app.UseVerticalSync(True)
 
 if os.path.exists(os.path.join(chemins.MAPS, options.carte)):
     carte = os.path.join(chemins.MAPS, options.carte)

@@ -65,10 +65,8 @@ class GestionnaireImages(dict):
         dict.__init__(self, { "tuiles":{}, "gdsElements":{}, "ptsElements":{}, "persos":{}, "interface":{} })
     
     
-    def chargerImagesMap(self, perspective, **tabsNums):
-        """Charge les tuiles, gdsElements et ptsElements:
-        
-        gestionnaire.chargerImagesMap(tuiles=listeNumsTuiles, gdsElements=listeNumsGdsElements, ptsElements=listeNumsPtsElements)"""
+    def chargerImagesMap(self, perspective, tabsNums):
+        """Charge les tuiles, gdsElements et ptsElements"""
         
         chargementOK = True
         
