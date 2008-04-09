@@ -16,16 +16,15 @@ class InterfaceCombat(sf.Drawable):
     
     def __init__(self):
         sf.Drawable.__init__(self)
-        self.fenetreInfos = None
+        self.cadreInfos = None
         self.barreInfos = None
         self.infosPersoActuel = None
         self.menuEchap = None
         self.menuTriangle = None
-        self.fenetreMaitrises = None
+        self.cadreMaitrises = None
         self.cadreTempsRestant = None
         
-        self.cadre = Cadre(1280, 800)
-        self.cadre.SetColor(sf.Color(255, 0, 0))
+        self.cadre = Cadre()
     
     
     def Render(self, renderWindow):
@@ -43,16 +42,18 @@ class InterfaceCombat(sf.Drawable):
 
 
 class Cadre(sf.Drawable):
+    """Classe de base pour les cadres (fenêtres internes)"""
     
-    def __init__(self, appW, appH):
+    def __init__(self, texture=None):
         sf.Drawable.__init__(self)
-        self.appW, self.appH = appW, appH
+        self.texture = texture
     
     def Render(self, renderWindow):
         glBegin(GL_QUADS)
-        #glColor3ub(255, 255, 255)
         glVertex2f(0, 0)
         glVertex2f(0, 50)
         glVertex2f(50, 50)
         glVertex2f(50, 0)
         glEnd()
+
+

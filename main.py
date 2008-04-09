@@ -21,8 +21,7 @@
 
 import os.path, sys
 import ctxclient
-from constantes import chemins, defaut
-import parser
+from vars import chemins, cfg
 
 try:
     from PySFML import sf
@@ -30,37 +29,36 @@ except ImportError:
     print >> sys.stderr, "Schpanzerbrück a besoin de PySFML pour fonctionner correctement.\n Vous pouvez l'installer à partir de http://www.sfml-dev.org"
     sys.exit()
 
-# Parsage de ligne de commande
-options = parser.retourneOptions()
 
 try:
-    if options.psyco:
+    import OpenGL   # On ne s'en sert pas dans le main, c'est juste pour vérifier qu'il est bien installé
+except ImportError:
+    print >> sys.stderr, "Schpanzerbrück a besoin de PyOpenGL pour fonctionner."
+    sys.exit()
+
+
+try:
+    if cfg.PSYCO:
         import psyco    # A quoi ça sert ?
-        psyco.full()    # A accélerer la compilation "on the fly" du code Python, mais mange plus de RAM
+        psyco.full()    # A accélerer la compilation "on the fly" du code Python, mais en mangeant plus de RAM
         print "Psyco: ON"
     else:
         print "Psyco: OFF"
 except ImportError:
     print "Psyco: ** Not found **"
-    options.psyco = False
 
-if not options.fenetre:     # On lance le jeu en plein écran
-    videoMode = sf.VideoMode.GetDesktopMode()
+if cfg.PLEIN_ECRAN:     # On lance le jeu en plein écran
     style = sf.Style.Close | sf.Style.Fullscreen
     print "Fullscreen: ON"
 else:   # Ou pas (mais faut éviter)
-    videoMode = sf.VideoMode(1024, 768, 32)
     style = sf.Style.Close
     print "Fullscreen: OFF"
 
-app = sf.RenderWindow(videoMode, "SCHPANZERBRUCK", style)
-app.SetFramerateLimit(100)
-app.UseVerticalSync(True)
+app = sf.RenderWindow(cfg.mode, "SCHPANZERBRUCK", style)
+app.SetFramerateLimit(cfg.FPS_MAX)
+app.UseVerticalSync(cfg.SYNCHRO_VERTICALE)
 
-if os.path.exists(os.path.join(chemins.MAPS, options.carte)):
-    carte = os.path.join(chemins.MAPS, options.carte)
-else:
-    carte = os.path.join(chemins.MAPS, defaut.CARTE)
+carte = os.path.join(chemins.MAPS, "maptest2-cold.xml")
 # Fin parsage
 
 

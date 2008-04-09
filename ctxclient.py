@@ -1,19 +1,19 @@
 # encoding=UTF-8
 
 from PySFML import sf
-import mapmng, gui, img, utils, constantes
+import mapmng, gui, img, utils, vars
 
 
 class ContexteClient:
     """La classe supervisant un combat (côté client), c'est le GroupeClient qui opère dessus.
     Il s'occupe des phases de rendu à l'écran et de gestion des événements souris/clavier"""
     
-    def __init__(self, app, fichierMap, perspective = constantes.defaut.PERSPECTIVE, touches = constantes.defaut.touches):
+    def __init__(self, app, fichierMap):
         self.app = app
         self.W, self.H = self.app.GetWidth(), self.app.GetHeight()
         self.input = app.GetInput()
         self.gestImages = img.GestionnaireImages()
-        self.map = mapmng.Map(fichierMap, self.gestImages, perspective)
+        self.map = mapmng.Map(fichierMap, self.gestImages, vars.cfg.PERSPECTIVE)
         self.interface = gui.InterfaceCombat()
         
         self.persos = []    # persos[0] est toujours le personnage dont c'est actuellement le tour
@@ -22,7 +22,7 @@ class ContexteClient:
         self.vitesseDefil = 700    # Vitesse de défilement de la map (en pixels/seconde)
         self.bordureDefil = 40    # Taille de la bordure pour le défilement (en pixels)
         
-        self.touches = touches
+        self.touches = vars.cfg.touches
         
         self.vueMap = sf.View(sf.FloatRect(0, 0, self.W, self.H))
         self.vueInterface = sf.View(sf.FloatRect(0, 0, self.W, self.H))
