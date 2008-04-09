@@ -2,6 +2,7 @@
 
 from PySFML import sf
 from OpenGL.GL import *
+from vars import tailles
 
 
 class ResultatClicInterface:
@@ -55,5 +56,3 @@ class Cadre(sf.Drawable):
         glVertex2f(50, 50)
         glVertex2f(50, 0)
         glEnd()
-
-
