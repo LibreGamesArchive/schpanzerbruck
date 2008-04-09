@@ -20,26 +20,18 @@ chemins.MAPS = os.path.join(cheminDossierRacine, "maps")
 chemins.SAUV_JOUEUR = os.path.join(cheminDossierRacine, "sauv")
 
 
+cfg = utils.Config()
+# Contient tout d'abord les valeurs des options par défaut (qui seront conservées si le fichier de config n'est pas trouvé)
+
+
 tailles = utils.ConstsContainer()
 
+if cfg.PLEIN_ECRAN:
+    pass
+else:
+    pass
 tailles.LARGEUR_TUILES = 128
 tailles.HAUTEUR_TUILES = 80
-
-
-defaut = utils.ConstsContainer()
-
-defaut.PERSPECTIVE = 30   # Positif: Perspective droite, Négatif: Perspective gauche
-defaut.CARTE = u"maptest2-cold.xml"
-defaut.PLEIN_ECRAN = True
-defaut.PSYCO = True
-
-defaut.touches = utils.ConstsContainer()
-defaut.touches.ZOOM_AVANT = sf.Key.PageUp
-defaut.touches.ZOOM_ARRIERE = sf.Key.PageDown
-defaut.touches.DEFIL_GAUCHE = sf.Key.Left
-defaut.touches.DEFIL_DROIT = sf.Key.Right
-defaut.touches.DEFIL_HAUT = sf.Key.Up
-defaut.touches.DEFIL_BAS = sf.Key.Down
 
 
 reseau = utils.ConstsContainer()
