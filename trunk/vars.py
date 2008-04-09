@@ -17,19 +17,17 @@ chemins.IMGS_PTSELEMENTS = os.path.join(cheminDossierRacine, "rsc", "visuels", "
 chemins.IMGS_PERSOS = os.path.join(cheminDossierRacine, "rsc", "visuels", "persos")
 chemins.SONS = os.path.join(cheminDossierRacine, "rsc", "sons")
 chemins.MAPS = os.path.join(cheminDossierRacine, "maps")
-chemins.SAUV_JOUEUR = os.path.join(cheminDossierRacine, "sauv")
+chemins.SAUVEGARDES = os.path.join(cheminDossierRacine, "sauv")
 
 
-cfg = utils.Config()
+cfg = utils.Config(os.path.join(chemins.SAUVEGARDES, "schpbr.cfg"))
 # Contient tout d'abord les valeurs des options par défaut (qui seront conservées si le fichier de config n'est pas trouvé)
 
 
 tailles = utils.ConstsContainer()
 
-if cfg.PLEIN_ECRAN:
-    pass
-else:
-    pass
+tailles.W = cfg.mode.Width
+tailles.H = cfg.mode.Height
 tailles.LARGEUR_TUILES = 128
 tailles.HAUTEUR_TUILES = 80
 

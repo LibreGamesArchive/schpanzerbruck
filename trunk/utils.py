@@ -38,7 +38,7 @@ class ConstsContainer:
 class Config:
 	"""Contient/Charge/Sauvegarde les options du jeu"""
 	
-	def __init__(self, fichier = "schpbr.cfg"):
+	def __init__(self, fichier):
 		self.fichier = fichier
 		
 		cfgParDefaut = False

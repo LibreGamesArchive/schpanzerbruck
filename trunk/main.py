@@ -29,13 +29,11 @@ except ImportError:
     print >> sys.stderr, "Schpanzerbrück a besoin de PySFML pour fonctionner correctement.\n Vous pouvez l'installer à partir de http://www.sfml-dev.org"
     sys.exit()
 
-
 try:
     import OpenGL   # On ne s'en sert pas dans le main, c'est juste pour vérifier qu'il est bien installé
 except ImportError:
     print >> sys.stderr, "Schpanzerbrück a besoin de PyOpenGL pour fonctionner."
     sys.exit()
-
 
 try:
     if cfg.PSYCO:
@@ -46,6 +44,7 @@ try:
         print "Psyco: OFF"
 except ImportError:
     print "Psyco: ** Not found **"
+
 
 if cfg.PLEIN_ECRAN:     # On lance le jeu en plein écran
     style = sf.Style.Close | sf.Style.Fullscreen
@@ -58,8 +57,8 @@ app = sf.RenderWindow(cfg.mode, "SCHPANZERBRUCK", style)
 app.SetFramerateLimit(cfg.FPS_MAX)
 app.UseVerticalSync(cfg.SYNCHRO_VERTICALE)
 
+
 carte = os.path.join(chemins.MAPS, "maptest2-cold.xml")
-# Fin parsage
 
 
 CTX = ctxclient.ContexteClient(app, carte)
