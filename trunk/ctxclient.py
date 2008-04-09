@@ -2,6 +2,7 @@
 
 from PySFML import sf
 import mapmng, gui, img, utils, vars
+from vars import tailles
 
 
 class ContexteClient:
@@ -10,7 +11,6 @@ class ContexteClient:
     
     def __init__(self, app, fichierMap):
         self.app = app
-        self.W, self.H = self.app.GetWidth(), self.app.GetHeight()
         self.input = app.GetInput()
         self.gestImages = img.GestionnaireImages()
         self.map = mapmng.Map(fichierMap, self.gestImages, vars.cfg.PERSPECTIVE)
@@ -24,8 +24,8 @@ class ContexteClient:
         
         self.touches = vars.cfg.touches
         
-        self.vueMap = sf.View(sf.FloatRect(0, 0, self.W, self.H))
-        self.vueInterface = sf.View(sf.FloatRect(0, 0, self.W, self.H))
+        self.vueMap = sf.View(sf.FloatRect(0, 0, tailles.W, tailles.H))
+        self.vueInterface = sf.View(sf.FloatRect(0, 0, tailles.W, tailles.H))
         
         self.fps_moy = self.nbr_fps = 0
     
@@ -44,24 +44,24 @@ class ContexteClient:
             self.vueMap.Rect.Right -= defil
             if self.vueMap.Rect.Left < self.map.rect.Left:
                 self.vueMap.Rect.Left = self.map.rect.Left
-                self.vueMap.Rect.Right = self.map.rect.Left + self.W
+                self.vueMap.Rect.Right = self.map.rect.Left + tailles.W
         elif curseurX >= self.app.GetWidth() - self.bordureDefil and self.vueMap.Rect.Right < self.map.rect.Right:   # DEFILEMENT VERS LA DROITE
             self.vueMap.Rect.Left += defil
             self.vueMap.Rect.Right += defil
             if self.vueMap.Rect.Right > self.map.rect.Right:
-                self.vueMap.Rect.Left = self.map.rect.Right - self.W
+                self.vueMap.Rect.Left = self.map.rect.Right - tailles.W
                 self.vueMap.Rect.Right = self.map.rect.Right
         if curseurY <= self.bordureDefil and self.vueMap.Rect.Top > self.map.rect.Top:   # DEFILEMENT VERS LE HAUT
             self.vueMap.Rect.Top -= defil
             self.vueMap.Rect.Bottom -= defil
             if self.vueMap.Rect.Top < self.map.rect.Top:
                 self.vueMap.Rect.Top = self.map.rect.Top
-                self.vueMap.Rect.Bottom = self.map.rect.Top + self.H
+                self.vueMap.Rect.Bottom = self.map.rect.Top + tailles.H
         elif curseurY >= self.app.GetHeight() - self.bordureDefil and self.vueMap.Rect.Bottom < self.map.rect.Bottom:   # DEFILEMENT VERS LE BAS
             self.vueMap.Rect.Top += defil
             self.vueMap.Rect.Bottom += defil
             if self.vueMap.Rect.Bottom > self.map.rect.Bottom:
-                self.vueMap.Rect.Top = self.map.rect.Bottom - self.H
+                self.vueMap.Rect.Top = self.map.rect.Bottom - tailles.H
                 self.vueMap.Rect.Bottom = self.map.rect.Bottom
     
     
