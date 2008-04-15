@@ -2,7 +2,7 @@
 
 from PySFML import sf
 from xml.dom import minidom
-from vars import tailles
+from constantes import tailles
 from utils import ConstsContainer
 import copy
 

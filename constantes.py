@@ -20,16 +20,31 @@ chemins.MAPS = os.path.join(cheminDossierRacine, "maps")
 chemins.SAUVEGARDES = os.path.join(cheminDossierRacine, "sauv")
 
 
-cfg = utils.Config(os.path.join(chemins.SAUVEGARDES, "schpbr.cfg"))
-# Contient tout d'abord les valeurs des options par défaut (qui seront conservées si le fichier de config n'est pas trouvé)
-
-
 tailles = utils.ConstsContainer()
 
-tailles.W = cfg.mode.Width
-tailles.H = cfg.mode.Height
 tailles.LARGEUR_TUILES = 128
 tailles.HAUTEUR_TUILES = 80
+
+
+defaut = utils.chargerConfig(os.path.join(chemins.SAUVEGARDES, "schpbr.cfg"))
+
+#defaut.PSYCO = True
+#defaut.PERSPECTIVE = 30
+#defaut.PLEIN_ECRAN = True
+#defaut.SYNCHRO_VERTICALE = True
+#defaut.FPS_MAX = 240
+#defaut.MODE = (800, 600, 32)
+#defaut.MODE_AUTO = True
+
+#defaut.touches = Container()
+#defaut.touches.ZOOM_AVANT = Key.PageUp
+#defaut.touches.ZOOM_ARRIERE = Key.PageDown
+#defaut.touches.DEFIL_GAUCHE = Key.Left
+#defaut.touches.DEFIL_DROITE = Key.Right
+#defaut.touches.DEFIL_HAUT = Key.Up
+#defaut.touches.DEFIL_BAS = Key.Down
+
+defaut.CARTE = u"maptest2-cold.xml"
 
 
 reseau = utils.ConstsContainer()

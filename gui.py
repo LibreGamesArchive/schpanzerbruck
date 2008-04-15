@@ -2,7 +2,11 @@
 
 from PySFML import sf
 from OpenGL.GL import *
-from vars import tailles
+from utils import ConstsContainer
+
+
+dimapp = ConstsContainer()
+
 
 
 class ResultatClicInterface:
@@ -15,17 +19,20 @@ class ResultatClicInterface:
 class InterfaceCombat(sf.Drawable):
     """Définit l'IHM, i.e. l'ensemble des cadres/fenêtres affichés par dessus la Map"""
     
-    def __init__(self):
+    def __init__(self, L_app, H_app):
         sf.Drawable.__init__(self)
-        self.cadreInfos = None
+        dimapp.L = L_app
+        dimapp.H = H_app
+        self.fenetreInfos = None
         self.barreInfos = None
         self.infosPersoActuel = None
         self.menuEchap = None
         self.menuTriangle = None
-        self.cadreMaitrises = None
+        self.fenetreMaitrises = None
         self.cadreTempsRestant = None
         
         self.cadre = Cadre()
+        self.cadre.SetColor(sf.Color(255, 0, 0))
     
     
     def Render(self, renderWindow):
@@ -43,11 +50,10 @@ class InterfaceCombat(sf.Drawable):
 
 
 class Cadre(sf.Drawable):
-    """Classe de base pour les cadres (fenêtres internes)"""
     
-    def __init__(self, texture=None):
+    def __init__(self):
         sf.Drawable.__init__(self)
-        self.texture = texture
+        
     
     def Render(self, renderWindow):
         glBegin(GL_QUADS)
