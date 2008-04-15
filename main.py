@@ -60,7 +60,7 @@ else:   # Ou pas (mais faut éviter)
 app = sf.RenderWindow(videoMode, "SCHPANZERBRUCK", style)
 app.SetFramerateLimit(defaut.FPS_MAX)
 app.UseVerticalSync(defaut.SYNCHRO_VERTICALE)
-#app.PreserveOpenGLStates(True)    # A remettre une fois la mise à jour du binding PySFML faite (>606)
+app.PreserveOpenGLStates(True)
 
 if os.path.exists(os.path.join(chemins.MAPS, options.carte)):
     carte = os.path.join(chemins.MAPS, options.carte)

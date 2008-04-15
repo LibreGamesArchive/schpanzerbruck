@@ -37,30 +37,14 @@ class ContexteClient:
         
         defil = self.vitesseDefil * self.app.GetFrameTime()
         
-        if curseurX <= self.bordureDefil and self.vueMap.Rect.Left > self.map.rect.Left:   # DEFILEMENT VERS LA GAUCHE
-            self.vueMap.Rect.Left -= defil
-            self.vueMap.Rect.Right -= defil
-            if self.vueMap.Rect.Left < self.map.rect.Left:
-                self.vueMap.Rect.Left = self.map.rect.Left
-                self.vueMap.Rect.Right = self.map.rect.Left + self.L
-        elif curseurX >= self.app.GetWidth() - self.bordureDefil and self.vueMap.Rect.Right < self.map.rect.Right:   # DEFILEMENT VERS LA DROITE
-            self.vueMap.Rect.Left += defil
-            self.vueMap.Rect.Right += defil
-            if self.vueMap.Rect.Right > self.map.rect.Right:
-                self.vueMap.Rect.Left = self.map.rect.Right - self.L
-                self.vueMap.Rect.Right = self.map.rect.Right
-        if curseurY <= self.bordureDefil and self.vueMap.Rect.Top > self.map.rect.Top:   # DEFILEMENT VERS LE HAUT
-            self.vueMap.Rect.Top -= defil
-            self.vueMap.Rect.Bottom -= defil
-            if self.vueMap.Rect.Top < self.map.rect.Top:
-                self.vueMap.Rect.Top = self.map.rect.Top
-                self.vueMap.Rect.Bottom = self.map.rect.Top + self.H
-        elif curseurY >= self.app.GetHeight() - self.bordureDefil and self.vueMap.Rect.Bottom < self.map.rect.Bottom:   # DEFILEMENT VERS LE BAS
-            self.vueMap.Rect.Top += defil
-            self.vueMap.Rect.Bottom += defil
-            if self.vueMap.Rect.Bottom > self.map.rect.Bottom:
-                self.vueMap.Rect.Top = self.map.rect.Bottom - self.H
-                self.vueMap.Rect.Bottom = self.map.rect.Bottom
+        if curseurX <= self.bordureDefil and self.vueMap.GetRect().Left > self.map.rect.Left:   # DEFILEMENT VERS LA GAUCHE
+            self.vueMap.Move(-defil, 0)
+        elif curseurX >= self.app.GetWidth() - self.bordureDefil and self.vueMap.GetRect().Right < self.map.rect.Right:   # DEFILEMENT VERS LA DROITE
+            self.vueMap.Move(defil, 0)
+        if curseurY <= self.bordureDefil and self.vueMap.GetRect().Top > self.map.rect.Top:   # DEFILEMENT VERS LE HAUT
+            self.vueMap.Move(0, -defil)
+        elif curseurY >= self.app.GetHeight() - self.bordureDefil and self.vueMap.GetRect().Bottom < self.map.rect.Bottom:   # DEFILEMENT VERS LE BAS
+            self.vueMap.Move(0, defil)
     
     
     def lancerBoucle(self):
