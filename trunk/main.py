@@ -21,7 +21,8 @@
 
 import os.path, sys
 import ctxclient
-from vars import chemins, cfg
+from constantes import chemins, defaut
+import parser
 
 try:
     from PySFML import sf
@@ -29,36 +30,43 @@ except ImportError:
     print >> sys.stderr, "Schpanzerbrück a besoin de PySFML pour fonctionner correctement.\n Vous pouvez l'installer à partir de http://www.sfml-dev.org"
     sys.exit()
 
-try:
-    import OpenGL   # On ne s'en sert pas dans le main, c'est juste pour vérifier qu'il est bien installé
-except ImportError:
-    print >> sys.stderr, "Schpanzerbrück a besoin de PyOpenGL pour fonctionner."
-    sys.exit()
+# Parsage de ligne de commande
+options = parser.retourneOptions()
 
 try:
-    if cfg.PSYCO:
+    if options.psyco:
         import psyco    # A quoi ça sert ?
-        psyco.full()    # A accélerer la compilation "on the fly" du code Python, mais en mangeant plus de RAM
+        psyco.full()    # A accélerer la compilation "on the fly" du code Python, mais mange plus de RAM
         print "Psyco: ON"
     else:
         print "Psyco: OFF"
 except ImportError:
     print "Psyco: ** Not found **"
+    options.psyco = False
 
-
-if cfg.PLEIN_ECRAN:     # On lance le jeu en plein écran
+if not options.fenetre:     # On lance le jeu en plein écran
+    if defaut.MODE_AUTO:
+        videoMode = sf.VideoMode.GetDesktopMode()
+    else:
+        videoMode = sf.VideoMode(*defaut.MODE)
     style = sf.Style.Close | sf.Style.Fullscreen
     print "Fullscreen: ON"
 else:   # Ou pas (mais faut éviter)
+    videoMode = sf.VideoMode(*defaut.MODE)
     style = sf.Style.Close
     print "Fullscreen: OFF"
+    
 
-app = sf.RenderWindow(cfg.mode, "SCHPANZERBRUCK", style)
-app.SetFramerateLimit(cfg.FPS_MAX)
-app.UseVerticalSync(cfg.SYNCHRO_VERTICALE)
+app = sf.RenderWindow(videoMode, "SCHPANZERBRUCK", style)
+app.SetFramerateLimit(defaut.FPS_MAX)
+app.UseVerticalSync(defaut.SYNCHRO_VERTICALE)
+#app.PreserveOpenGLStates(True)    # A remettre une fois la mise à jour du binding PySFML faite (>606)
 
-
-carte = os.path.join(chemins.MAPS, "maptest2-cold.xml")
+if os.path.exists(os.path.join(chemins.MAPS, options.carte)):
+    carte = os.path.join(chemins.MAPS, options.carte)
+else:
+    carte = os.path.join(chemins.MAPS, defaut.CARTE)
+# Fin parsage
 
 
 CTX = ctxclient.ContexteClient(app, carte)

@@ -2,7 +2,7 @@
 
 from threading import Thread
 import socket, sys
-from vars import reseau
+from constantes import reseau
 
 
 class Joueur:

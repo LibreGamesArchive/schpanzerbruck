@@ -2,7 +2,7 @@
 
 import os.path
 from xml.dom import minidom
-from PySFML.sf import Key, VideoMode
+from PySFML.sf import Key
 
 
 class Container:
@@ -34,115 +34,119 @@ class ConstsContainer:
 	def __iter__(self):
 		return iter(self.__dict__.values())
 
+       
+def sauverConfig(defaut, fichier):
+	doc = minidom.Document()
+	
+	root = doc.createElement("config")
+	
+	psyco = doc.createElement("psyco")
+	psyco.setAttribute("UTILISER", str(defaut.PSYCO))
+	root.appendChild(psyco)
+	
+	perspective = doc.createElement("perspective")
+	perspective.setAttribute("VAL", str(defaut.PERSPECTIVE))
+	root.appendChild(perspective)
+	
+	ecran = doc.createElement("ecran")
+	for i in ["PLEIN_ECRAN", "SYNCHRO_VERTICALE"]:
+		ecran.setAttribute(i, str(defaut.__dict__[i]))
+	ecran.setAttribute("FPS_MAX", str(defaut.FPS_MAX))
+	mode = doc.createElement("mode")
+	mode.setAttribute("AUTO", str(defaut.MODE_AUTO))
+	mode.setAttribute("W", str(defaut.MODE[0]))
+	mode.setAttribute("H", str(defaut.MODE[1]))
+	mode.setAttribute("BPP", str(defaut.MODE[2]))
+	ecran.appendChild(mode)
+	root.appendChild(ecran)
+	
+	touches = doc.createElement("touches")
+	for i in ["ZOOM_AVANT", "ZOOM_ARRIERE", "DEFIL_GAUCHE", "DEFIL_DROITE", "DEFIL_HAUT", "DEFIL_BAS"]:
+		touches.setAttribute(i, str(defaut.touches.__dict__[i]))
+	root.appendChild(touches)
+	
+	doc.appendChild(root)
+	
+	f = open(fichier, "w")
+	f.write(doc.toprettyxml(indent="    "))
+	f.close()
 
-class Config:
-	"""Contient/Charge/Sauvegarde les options du jeu"""
+
+def chargerConfig(fichier):
+	"""Renvoie un ConstsContainer en lui attribuant les options contenues dans le fichier de config"""
 	
-	def __init__(self, fichier):
-		self.fichier = fichier
-		
-		cfgParDefaut = False
-		
-		if os.path.exists(self.fichier):
-			try:
-				doc = minidom.parse(self.fichier)
-			except:
-				cfgParDefaut = True
-				print "Le fichier de configuration n'est pas valide,\nil sera recréé avec la config par défaut"
-			else:
-				cfgParDefaut = not self.__chargerConfigXML(doc.documentElement)
-		else:
-			cfgParDefaut = True
-		
-		if cfgParDefaut:
-			self.PSYCO = True
-			self.PERSPECTIVE = 30   # Positif: Perspective droite, Négatif: Perspective gauche
-			self.PLEIN_ECRAN = True
-			self.SYNCHRO_VERTICALE = True
-			self.FPS_MAX = 240
-			self.mode = VideoMode.GetDesktopMode()
-			self.MODE_AUTO = True
-			self.touches = Container()
-			self.touches.ZOOM_AVANT = Key.PageUp
-			self.touches.ZOOM_ARRIERE = Key.PageDown
-			self.touches.DEFIL_GAUCHE = Key.Left
-			self.touches.DEFIL_DROITE = Key.Right
-			self.touches.DEFIL_HAUT = Key.Up
-			self.touches.DEFIL_BAS = Key.Down
-			
-			self.sauvegarder()
+	defaut = ConstsContainer()
 	
-	
-	def __chargerConfigXML(self, root):
+	def chargerDepuisXML(doc):
 		"""Revoie True si le chargement s'est correctement effectué"""
+		
+		root = doc.documentElement
 		
 		try:
 			if root.getElementsByTagName("psyco")[0].attributes["UTILISER"].value == "True":
-				self.PSYCO = True
-			else:	self.PSYCO = False
+				defaut.PSYCO = True
+			else:   defaut.PSYCO = False
 			
-			self.PERSPECTIVE = int(root.getElementsByTagName("perspective")[0].attributes["VAL"].value)
+			defaut.PERSPECTIVE = int(root.getElementsByTagName("perspective")[0].attributes["VAL"].value)
 			
 			paramsEcran = root.getElementsByTagName("ecran")[0]
 			for i in ["PLEIN_ECRAN", "SYNCHRO_VERTICALE"]:
 				if paramsEcran.attributes[i].value == "True":
-					self.__dict__[i] = True
-				else:	self.__dict__[i] = False
-			self.FPS_MAX = int(paramsEcran.attributes["FPS_MAX"].value)
+					defaut.__dict__[i] = True
+				else:   defaut.__dict__[i] = False
+			defaut.FPS_MAX = int(paramsEcran.attributes["FPS_MAX"].value)
 			
 			paramsMode = paramsEcran.getElementsByTagName("mode")[0]
 			if paramsMode.attributes["AUTO"].value == "True":
-				self.mode = VideoMode.GetDesktopMode()
-				self.MODE_AUTO = True
+				defaut.MODE_AUTO = True
 			else:
-				W = int(paramsMode.attributes["W"].value)
-				H = int(paramsMode.attributes["H"].value)
-				BPP = int(paramsMode.attributes["BPP"].value)
-				self.mode = VideoMode(W, H, BPP)
-				self.MODE_AUTO = False
+				defaut.MODE_AUTO = False
 			
-			self.touches = Container()
+			W = int(paramsMode.attributes["W"].value)
+			H = int(paramsMode.attributes["H"].value)
+			BPP = int(paramsMode.attributes["BPP"].value)
+			defaut.MODE = (W, H, BPP)
+			
+			defaut.touches = Container()
 			codesTouches = root.getElementsByTagName("touches")[0].attributes
 			for i in ["ZOOM_AVANT", "ZOOM_ARRIERE", "DEFIL_GAUCHE", "DEFIL_DROITE", "DEFIL_HAUT", "DEFIL_BAS"]:
-				self.touches.__dict__[i] = int(codesTouches[i].value)
+				defaut.touches.__dict__[i] = int(codesTouches[i].value)
 		except:
 			print "Certaines options du fichier de config sont manquantes,\nla config par défaut sera donc chargée"
 			return False
 		return True
 	
+
+	cfgParDefaut = False
 	
-	def sauvegarder(self):
-		doc = minidom.Document()
+	if os.path.exists(fichier):
+		try:
+			doc = minidom.parse(fichier)
+		except:
+			cfgParDefaut = True
+			print "Le fichier de configuration n'est pas valide,\nil sera recréé avec la config par défaut"
+		else:
+			cfgParDefaut = not chargerDepuisXML(doc)
+	else:
+		cfgParDefaut = True
+	
+	if cfgParDefaut:
+		defaut = ConstsContainer()	# Recréation de defaut (pour le vider)
+		defaut.PSYCO = True
+		defaut.PERSPECTIVE = 30   # Positif: Perspective droite, Négatif: Perspective gauche
+		defaut.PLEIN_ECRAN = True
+		defaut.SYNCHRO_VERTICALE = True
+		defaut.FPS_MAX = 240
+		defaut.MODE = (800, 600, 32)
+		defaut.MODE_AUTO = True
 		
-		root = doc.createElement("config")
-		
-		psyco = doc.createElement("psyco")
-		psyco.setAttribute("UTILISER", str(self.PSYCO))
-		root.appendChild(psyco)
-		
-		perspective = doc.createElement("perspective")
-		perspective.setAttribute("VAL", str(self.PERSPECTIVE))
-		root.appendChild(perspective)
-		
-		ecran = doc.createElement("ecran")
-		for i in ["PLEIN_ECRAN", "SYNCHRO_VERTICALE"]:
-			ecran.setAttribute(i, str(self.__dict__[i]))
-		ecran.setAttribute("FPS_MAX", str(self.FPS_MAX))
-		mode = doc.createElement("mode")
-		mode.setAttribute("AUTO", str(self.MODE_AUTO))
-		mode.setAttribute("W", str(self.mode.Width))
-		mode.setAttribute("H", str(self.mode.Height))
-		mode.setAttribute("BPP", str(self.mode.BitsPerPixel))
-		ecran.appendChild(mode)
-		root.appendChild(ecran)
-		
-		touches = doc.createElement("touches")
-		for i in ["ZOOM_AVANT", "ZOOM_ARRIERE", "DEFIL_GAUCHE", "DEFIL_DROITE", "DEFIL_HAUT", "DEFIL_BAS"]:
-			touches.setAttribute(i, str(self.touches.__dict__[i]))
-		root.appendChild(touches)
-		
-		doc.appendChild(root)
-		
-		f = open(self.fichier, "w")
-		f.write(doc.toprettyxml(indent="    "))
-		f.close()
+		defaut.touches = Container()
+		defaut.touches.ZOOM_AVANT = Key.PageUp
+		defaut.touches.ZOOM_ARRIERE = Key.PageDown
+		defaut.touches.DEFIL_GAUCHE = Key.Left
+		defaut.touches.DEFIL_DROITE = Key.Right
+		defaut.touches.DEFIL_HAUT = Key.Up
+		defaut.touches.DEFIL_BAS = Key.Down
+		sauverConfig(defaut, fichier)
+	
+	return defaut

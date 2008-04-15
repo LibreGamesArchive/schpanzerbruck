@@ -3,7 +3,7 @@
 from PySFML import sf
 import os.path
 from xml.dom import minidom
-from vars import chemins
+from constantes import chemins
 from utils import ConstsContainer
 
 
