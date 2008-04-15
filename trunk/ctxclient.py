@@ -25,6 +25,7 @@ class ContexteClient:
         self.touches = touches
         
         self.vueMap = sf.View(sf.FloatRect(0, 0, self.L, self.H))
+        self.zoomMapActuel = 1
         self.vueInterface = sf.View(sf.FloatRect(0, 0, self.L, self.H))
     
     
@@ -74,14 +75,10 @@ class ContexteClient:
             curseurX, curseurY = self.input.GetMouseX(), self.input.GetMouseY()
             
             # ZOOM de la Map :
-            if self.input.IsKeyDown(self.touches.ZOOM_AVANT) and self.vueMap.Zoom < 1:
-                self.vueMap.Zoom += self.app.GetFrameTime()
-                if self.vueMap.Zoom > 1:
-                    self.vueMap.Zoom = 1
-            elif self.input.IsKeyDown(self.touches.ZOOM_ARRIERE) and self.vueMap.Zoom > 0.3:
-                self.vueMap.Zoom -= self.app.GetFrameTime()
-                if self.vueMap.Zoom < 0.3:
-                    self.vueMap.Zoom = 0.3
+            if self.input.IsKeyDown(self.touches.ZOOM_AVANT) and self.vueMap.GetRect().GetWidth() > self.app.GetWidth():
+                self.vueMap.Zoom(1 + self.app.GetFrameTime())
+            elif self.input.IsKeyDown(self.touches.ZOOM_ARRIERE) and self.vueMap.GetRect().GetWidth() < self.app.GetWidth()*3:
+                self.vueMap.Zoom(1 - self.app.GetFrameTime())
             
             self.__scrolling(curseurX, curseurY)
             
