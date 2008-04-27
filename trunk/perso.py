@@ -1,40 +1,18 @@
 # encoding=UTF-8
 
+# Dernière version par charlie du 25/04/08
+
 from PySFML import sf
 from xml.dom import minidom
 from utils import Container
+from maitrises import *
 
-
-class Maitrise:
-    """DÃ©crit une maÃ®trise"""
-
-    def __init__(self, nom="", nomComplet=""):
-
-        self.grades =  { "A": Container(), "B": Container(), "C": Container(), "D": Container(), "E": Container() }
-        
-        for k in self.grades.keys():
-            self.grades[k].nom = ""
-            self.grades[k].attaque = ""
-        
-        self.dependances = [] # Liste contenant des tuples (matrise, grade) dans lesquels maitrise et grade sont des strings.
-        # Donne les maitrises et grades nÃ©cessaires pour utiliser cette maÃ®trise
-        
-        self.nom = nom
-        self.nomComplet = nomComplet
-
-
-class ObjetEquip:
-    """DÃ©crit un objet d'Ã©quipement"""
-    
-    def __init__(self, type, num):
-        """Lit dans le fichier XML correspondant au type d'Ã©quipement spÃ©cifiÃ© l'Ã©quipement num"""
-        pass
 
 
 class Personnage:
     """LA classe dÃ©crivant un personnage"""
     
-    def __init__(self,maitrise_premiere): # maitrise_premiere est une string
+    def __init__(self): 
         """DÃ©finit les attributs (stats, etc.) du personnage"""
 
         self.nom = ""
@@ -48,8 +26,8 @@ class Personnage:
         # - VAL est recalculÃ©e (afin d'Ã©viter au maximum la triche)
         # - VIE et FTG dÃ©marrent toujours Ã  des valeurs dÃ©pendant des maÃ®trises (le plus souvent 100 et 0)
 
-        self.maitrises = {} # Dictionnaire des maitrises (objets de type Maitrise) possÃ©dÃ©es par le perso, on initialise avec la maitrise trouvée par le questionnaire
-		self.maitrise[maitrise_premiere]="E" 
+        self.maitrises = [] # Liste des maitrises (objets de type Maitrise) possÃ©dÃ©es par le perso, on initialise avec la maitrise trouvée par le questionnaire
+		 
 
         self.equipement = { "bras_droit": None, "bras_gauche": None, "tete": None, "torse": None, "pieds": None, "acc1": None, "acc2": None, "special": None }
         # acc1 et acc2 sont les accessoires (colliers, bracelets pour booster), et special est un objet spÃ©cial (cheval, catapulte) dÃ©pendant gÃ©nÃ©ralement d'une maÃ®trise particuliÃ¨re
@@ -58,14 +36,21 @@ class Personnage:
         self.sprite = None
     
     
-    def addMaitrise(self, maitrise):
-        """ Ajoute une maitrise(de type string) à la liste de maitrise du personnage"""
-        self.maitrises[maitrise]="E" #Le dictionnaire des maitrises possédées par le personnage est augmentée par une nouvelle maitrise, initialisée au plus faible grade
+    def ajMaitrise(self, maitrise,grade):
+        """ Ajoute une maitrise à la liste de maitrise du personnage"""
+        self.maitrises.append([maitrise, grade]) #maitrise de type maitrises
 	
-	def changeGrade(self,maitrise,grade)
+	def detMaitrise(self,indiceMaitrise):
+		""" Détruis une maitrise existante"""
+		if (indiceMaitrise >= 0) and (indiceMaitrise < len(self.maitrise))
+			self.maitrise.remove(indiceMaitrise)
+	
+	def changeGrade(self,indiceMaitrise,grade)
 		""" Change le grade d'une maitrise donnée """
-		if
+		self.maitrises[indiceMaitrise][1] = grade
 	
+	def changeNom(self,nom)
+		self.nom = nom
 	
     def importerDepuisXML(self, doc):
         """Charge le perso depuis un minidom.Document"""
@@ -101,7 +86,7 @@ class Personnage:
         for m in self.maitrises:
             maitrises_text.data += m.nom + ","
         if maitrises_text.data != "":
-            maitrises_text.data = maitrises_text.data[0:-1] # On vire la derniÃ¨re ","
+            maitrises_text.data = maitrises_text.data[0:-1] # On vire la dernière ","
         maitrises.appendChild(maitrises_text)
         root.appendChild(maitrises)
         
