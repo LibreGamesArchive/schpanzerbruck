@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<objs>
+    <obj nom="Chemise de cuir">
+        <stats DFP="2"/>
+        <requis maitrise="armures" grade="E"/>
+        <desc>Une chemise renforcée</desc>
+    </obj>
+</objs>
