@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<objs>
+    <obj nom="Epée en bois">
+        <stats FRC="1"/>
+        <requis maitrise="epees" grade="E"/>
+        <desc>Une épée d'entraînement</desc>
+    </obj>
+    <obj nom="Arc en frène">
+        <stats portee="4" FRC="2" AGI="4"/>
+        <requis maitrise="arcs" grades="E"/>
+        <desc>Un bon arc</desc>
+    </obj>
+</objs>

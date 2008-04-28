@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<objs>
+    <obj nom="Casque Lebohaum">
+        <stats DFP="8" DFM="3"/>
+        <requis maitrise="armures" grade="B"/>
+        <desc>Une sandale offerte !</desc>
+    </obj>
+</objs>
