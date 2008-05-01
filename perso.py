@@ -1,6 +1,7 @@
 # encoding=UTF-8
 
 # Dernière version par charlie du 25/04/08
+# Correction mineure encodage UTF-8 par florian 01/05/08
 
 from PySFML import sf
 from xml.dom import minidom
@@ -10,10 +11,10 @@ from maitrises import *
 
 
 class Personnage:
-    """LA classe dÃ©crivant un personnage"""
+    """LA classe décrivant un personnage"""
     
     def __init__(self): 
-        """DÃ©finit les attributs (stats, etc.) du personnage"""
+        """Définit les attributs (stats, etc.) du personnage"""
 
         self.nom = ""
 
@@ -23,15 +24,15 @@ class Personnage:
         self.VIE = 100.0
         self.FTG = 0.0
         # VAL, VIE et FTG ne sont pas mises dans les stats car :
-        # - VAL est recalculÃ©e (afin d'Ã©viter au maximum la triche)
-        # - VIE et FTG dÃ©marrent toujours Ã  des valeurs dÃ©pendant des maÃ®trises (le plus souvent 100 et 0)
+        # - VAL est recalculée (afin d'éviter au maximum la triche)
+        # - VIE et FTG démarrent toujours à des valeurs dépendant des maîtrises (le plus souvent 100 et 0)
 
-        self.maitrises = [] # Liste des maitrises (objets de type Maitrise) possÃ©dÃ©es par le perso, on initialise avec la maitrise trouvée par le questionnaire
+        self.maitrises = [] # Liste des maitrises (objets de type Maitrise) possédées par le perso, on initialise avec la maitrise trouvée par le questionnaire
 		 
 
         self.equipement = { "bras_droit": None, "bras_gauche": None, "tete": None, "torse": None, "pieds": None, "acc1": None, "acc2": None, "special": None }
-        # acc1 et acc2 sont les accessoires (colliers, bracelets pour booster), et special est un objet spÃ©cial (cheval, catapulte) dÃ©pendant gÃ©nÃ©ralement d'une maÃ®trise particuliÃ¨re
-        # Tous les items Ã©quipÃ©s sont des instances de la classe ObjetEquip
+        # acc1 et acc2 sont les accessoires (colliers, bracelets pour booster), et special est un objet spécial (cheval, catapulte) dépendant généralement d'une maîtrise particulière
+        # Tous les items équipés sont des instances de la classe ObjetEquip
 
         self.sprite = None
     
@@ -93,7 +94,7 @@ class Personnage:
         equipement = doc.createElement("equipement")
         for typeEq, objEq in self.equipement.items():
             if objEq != None:
-                equipement.setAttribute(typeEq, objEq.nom)  # objEq.num si les ObjetsEquip dÃ©finissent un attribut nom (non dÃ©finitif, of course)
+                equipement.setAttribute(typeEq, objEq.nom)  # objEq.num si les ObjetsEquip définissent un attribut nom (non définitif, of course)
             else:
                 equipement.setAttribute(typeEq, "aucun")
         root.appendChild(equipement)

@@ -31,6 +31,9 @@ class ContexteClient:
         self.camera.pos = [self.map.hauteur/2 + 3, self.map.largeur/2, 4.5]
         self.camera.cible = [self.map.hauteur/2 - 2, self.map.largeur/2, 0]
         
+        # Mets le curseur souris au centre de l'écran (fixe le bug de scrolling)
+        self.app.SetCursorPosition(self.app.GetHeight()/2, self.app.GetWidth()/2)
+        
         #self.vueInterface = sf.View(sf.FloatRect(0, 0, self.L, self.H))
     
     
@@ -40,7 +43,6 @@ class ContexteClient:
     
     def __scrolling(self, curseurX, curseurY):
         """Scrolling de la map"""
-        
         defil = self.vitesseDefil * self.app.GetFrameTime()
         
         if curseurX <= self.bordureDefil:   # DEFILEMENT VERS LA GAUCHE
