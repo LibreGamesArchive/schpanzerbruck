@@ -1,8 +1,9 @@
 # encoding=UTF-8
 
+from PySFML import sf
 from OpenGL.GL import *
 from xml.dom import minidom
-from constantes import tailles
+from constantes import tailles, defaut
 from utils import ConstsContainer
 import copy
 
@@ -86,7 +87,10 @@ class BaseMap:
         
         self.largeur = int(map_node.attributes["largeur"].value)
         self.hauteur = int(map_node.attributes["hauteur"].value)
-        
+        if map_node.hasAttribute("bordure"):
+            self.bordure = int(map_node.attributes["bordure"].value, 16)
+        else:
+            self.bordure=0x00
         map_strs = {"tuiles":"", "elements":""}
         tabsNums = {"tuiles":[], "elements":[]}
         
@@ -101,7 +105,7 @@ class BaseMap:
         for i in ["tuiles", "elements"]:
             if map_strs[i][-1] == "|":
                 map_strs[i] = map_strs[i][0:-1]
-            
+            int(map_node.attributes["hauteur"].value)
             tabsNums[i] = [int(x.strip(), 16) for x in map_strs[i].split("|")]
             if len(tabsNums[i]) != self.hauteur * self.largeur:
                 raise Exception, "Hauteur et/ou largeur ne correspondent pas à la liste de nums pour les %s dans la map %s" % (i, map)
@@ -171,6 +175,12 @@ class Map(BaseMap):
         tabsNums = self.parserMap(map)
         
         gestImages.chargerImagesMap(tabsNums)
+        gestImages.chargerImage("tuiles", self.bordure)
+
+        if self.bordure==0x00:
+            self.imageBordure=sf.Image(tailles.LARGEUR_TUILES, tailles.HAUTEUR_TUILES, defaut.COULEUR_BORDURE)
+        else:
+            self.imageBordure=gestImages["tuiles"][self.bordure].image
         
         self.coordsCases = [] # Coordonnées du point en haut à gauche de chaque case dans le plan (0xy)
         for x in range(0, self.hauteur):
@@ -256,21 +266,40 @@ class Map(BaseMap):
             
             glPopMatrix()
         
-        glDisable(GL_TEXTURE_2D)
+        
         
         # Dessin du plateau:
+        self.imageBordure.Bind()
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT)
         glBegin(GL_QUADS)
-        glColor3ub(160, 160, 160)
-        glVertex3f(0, 0, 0); glVertex3f(0, 0, -0.4); glVertex3f(self.hauteur, 0, -0.4); glVertex3f(self.hauteur, 0, 0)
-        glColor3ub(190, 190, 190)
-        glVertex3f(0, 0, 0); glVertex3f(0, 0, -0.4); glVertex3f(0, self.largeur, -0.4); glVertex3f(0, self.largeur, 0)
-        glColor3ub(130, 130, 130)
-        glVertex3f(self.hauteur, self.largeur, 0); glVertex3f(self.hauteur, self.largeur, -0.4); glVertex3f(0, self.largeur, -0.4); glVertex3f(0, self.largeur, 0)
-        glColor3ub(100, 100, 100)
-        glVertex3f(self.hauteur, 0, 0); glVertex3f(self.hauteur, 0, -0.4); glVertex3f(self.hauteur, self.largeur, -0.4); glVertex3f(self.hauteur, self.largeur, 0)
+        glTexCoord2d(0, 0); glVertex3f(0, 0, 0)
+        glTexCoord2d(0, defaut.HAUTEUR_BORDURE); glVertex3f(0, 0, -defaut.HAUTEUR_BORDURE)
+        glTexCoord2d(self.hauteur, defaut.HAUTEUR_BORDURE); glVertex3f(self.hauteur, 0, -defaut.HAUTEUR_BORDURE)
+        glTexCoord2d(self.hauteur, 0); glVertex3f(self.hauteur, 0, 0)
+        
+        glTexCoord2d(0, 0); glVertex3f(0, 0, 0)
+        glTexCoord2d(0, defaut.HAUTEUR_BORDURE); glVertex3f(0, 0, -defaut.HAUTEUR_BORDURE)
+        glTexCoord2d(self.largeur, defaut.HAUTEUR_BORDURE); glVertex3f(0, self.largeur, -defaut.HAUTEUR_BORDURE)
+        glTexCoord2d(self.largeur, 0); glVertex3f(0, self.largeur, 0)
+        
+        glTexCoord2d(0, 0); glVertex3f(self.hauteur, self.largeur, 0)
+        glTexCoord2d(0, defaut.HAUTEUR_BORDURE); glVertex3f(self.hauteur, self.largeur, -defaut.HAUTEUR_BORDURE)
+        glTexCoord2d(self.hauteur, defaut.HAUTEUR_BORDURE); glVertex3f(0, self.largeur, -defaut.HAUTEUR_BORDURE)
+        glTexCoord2d(self.hauteur, 0); glVertex3f(0, self.largeur, 0)
+        
+        glTexCoord2d(0, 0); glVertex3f(self.hauteur, 0, 0)
+        glTexCoord2d(0, defaut.HAUTEUR_BORDURE); glVertex3f(self.hauteur, 0, -defaut.HAUTEUR_BORDURE)
+        glTexCoord2d(self.largeur, defaut.HAUTEUR_BORDURE); glVertex3f(self.hauteur, self.largeur, -defaut.HAUTEUR_BORDURE)
+        glTexCoord2d(self.largeur, 0); glVertex3f(self.hauteur, self.largeur, 0)
+        
         glColor3ub(70, 70, 70)
-        glVertex3f(self.hauteur, 0, -0.4); glVertex3f(0, 0, -0.4); glVertex3f(0, self.largeur, -0.4); glVertex3f(self.hauteur, self.largeur, -0.4)
+        glVertex3f(self.hauteur, 0, -defaut.HAUTEUR_BORDURE); glVertex3f(0, 0, -defaut.HAUTEUR_BORDURE); glVertex3f(0, self.largeur, -defaut.HAUTEUR_BORDURE); glVertex3f(self.hauteur, self.largeur, -defaut.HAUTEUR_BORDURE)
+        
+        
         glEnd()
+        
+        glDisable(GL_TEXTURE_2D)
     
     
     def gererClic(self, evt):
