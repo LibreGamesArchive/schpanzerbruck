@@ -28,8 +28,8 @@ class ContexteClient:
         self.touches = touches
         
         self.camera = utils.Container()
-        self.camera.pos = [self.map.hauteur/2 + 3, self.map.largeur/2, 4.5]
-        self.camera.cible = [self.map.hauteur/2 - 2, self.map.largeur/2, 0]
+        self.camera.pos = [self.map.hauteur/2 + 4, self.map.largeur/2, 4]
+        self.camera.cible = [self.map.hauteur/2, self.map.largeur/2, 0]
         
         #self.vueInterface = sf.View(sf.FloatRect(0, 0, self.L, self.H))
     
@@ -69,7 +69,7 @@ class ContexteClient:
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
         glAlphaFunc(GL_GREATER, 0)
         
-        # Mets le curseur souris au centre de l'écran (fixe le bug de scrolling)
+        # Met le curseur au centre de l'écran (fixe le bug de scrolling)
         self.app.SetCursorPosition(self.app.GetWidth()/2, self.app.GetHeight()/2)
         
         running = True
@@ -98,7 +98,7 @@ class ContexteClient:
             # ZOOM de la Map :
             if self.input.IsKeyDown(self.touches.ZOOM_AVANT) and self.camera.pos[2] > 3:
                 self.camera.pos[2] -= 10*self.app.GetFrameTime()
-            elif self.input.IsKeyDown(self.touches.ZOOM_ARRIERE) and self.camera.pos[2] < 20:
+            elif self.input.IsKeyDown(self.touches.ZOOM_ARRIERE) and self.camera.pos[2] < 12:
                 self.camera.pos[2] += 10*self.app.GetFrameTime()
             
             self.__scrolling(curseurX, curseurY)

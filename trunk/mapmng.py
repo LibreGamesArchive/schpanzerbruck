@@ -63,10 +63,10 @@ class Element(ObjetMap):
     def GL_Dessin(self):
         self.textures[0].Bind()
         glBegin(GL_QUADS)
-        glTexCoord2f(0, 0); glVertex3f(0.5, 0, 1.3)
+        glTexCoord2f(0, 0); glVertex3f(0.5, 0, 1.15)
         glTexCoord2f(0, 1); glVertex3f(0.5, 0, 0)
         glTexCoord2f(1, 1); glVertex3f(0.5, 1, 0)
-        glTexCoord2f(1, 0); glVertex3f(0.5, 1, 1.3)
+        glTexCoord2f(1, 0); glVertex3f(0.5, 1, 1.15)
         glEnd()
 
 
