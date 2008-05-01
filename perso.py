@@ -28,7 +28,6 @@ class Personnage:
         # - VIE et FTG démarrent toujours à des valeurs dépendant des maîtrises (le plus souvent 100 et 0)
 
         self.maitrises = [] # Liste des maitrises (objets de type Maitrise) possédées par le perso, on initialise avec la maitrise trouvée par le questionnaire
-		 
 
         self.equipement = { "bras_droit": None, "bras_gauche": None, "tete": None, "torse": None, "pieds": None, "acc1": None, "acc2": None, "special": None }
         # acc1 et acc2 sont les accessoires (colliers, bracelets pour booster), et special est un objet spécial (cheval, catapulte) dépendant généralement d'une maîtrise particulière
@@ -42,15 +41,15 @@ class Personnage:
         self.maitrises.append([maitrise, grade]) #maitrise de type maitrises
 	
 	def detMaitrise(self,indiceMaitrise):
-		""" Détruis une maitrise existante"""
-		if (indiceMaitrise >= 0) and (indiceMaitrise < len(self.maitrise))
-			self.maitrise.remove(indiceMaitrise)
+                """ Détruis une maitrise existante"""
+                if (indiceMaitrise >= 0) and (indiceMaitrise < len(self.maitrise)):
+                        self.maitrise.remove(indiceMaitrise)
 	
-	def changeGrade(self,indiceMaitrise,grade)
+	def changeGrade(self,indiceMaitrise,grade):
 		""" Change le grade d'une maitrise donnée """
 		self.maitrises[indiceMaitrise][1] = grade
 	
-	def changeNom(self,nom)
+	def changeNom(self,nom):
 		self.nom = nom
 	
     def importerDepuisXML(self, doc):
