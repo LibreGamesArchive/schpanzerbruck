@@ -28,5 +28,8 @@
     <obj num="1A" fichier="cheminneige09.png" nivpass="2"/>
     <obj num="1B" fichier="cheminneige10.png" nivpass="2"/>
     <obj num="1C" fichier="cheminneige11.png" nivpass="2"/>
+    
+    <!-- Tuile de terre -->
+    <obj num="21" fichier="terre01.png" nivpass="2"/>
 
 </tuiles>

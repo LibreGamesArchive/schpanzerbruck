@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<map nom="MapTest2 - Cold Edition" largeur="14" hauteur="10">
+<map nom="MapTest2 - Cold Edition" largeur="14" hauteur="10" bordure="21">
     <tuiles>
         11|11|11|11|11|11|11|11|11|11|11|11|11|11|
         11|11|11|11|11|11|11|11|11|11|11|11|11|11|

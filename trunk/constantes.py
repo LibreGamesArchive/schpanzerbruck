@@ -28,6 +28,8 @@ tailles.HAUTEUR_TUILES = 80
 defaut = utils.chargerConfig(os.path.join(chemins.SAUVEGARDES, "schpbr.cfg"))
 
 defaut.CARTE = u"maptest2-cold.xml"
+defaut.COULEUR_BORDURE=sf.Color(0, 0, 0)
+defaut.HAUTEUR_BORDURE=0.4
 
 
 reseau = utils.ConstsContainer()
