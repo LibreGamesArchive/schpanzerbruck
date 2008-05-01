@@ -12,8 +12,7 @@ chemins.OBJETS_MAP = os.path.join(cheminDossierRacine, "struct", "objets_map")
 chemins.OBJETS_EQUIP = os.path.join(cheminDossierRacine, "struct", "objets_equip")
 chemins.MAITRISES = os.path.join(cheminDossierRacine, "struct", "maitrises")
 chemins.IMGS_TUILES = os.path.join(cheminDossierRacine, "rsc", "visuels", "tuiles")
-chemins.IMGS_GDSELEMENTS = os.path.join(cheminDossierRacine, "rsc", "visuels", "gdsElements")
-chemins.IMGS_PTSELEMENTS = os.path.join(cheminDossierRacine, "rsc", "visuels", "ptsElements")
+chemins.IMGS_ELEMENTS = os.path.join(cheminDossierRacine, "rsc", "visuels", "elements")
 chemins.IMGS_PERSOS = os.path.join(cheminDossierRacine, "rsc", "visuels", "persos")
 chemins.SONS = os.path.join(cheminDossierRacine, "rsc", "sons")
 chemins.MAPS = os.path.join(cheminDossierRacine, "maps")
@@ -29,7 +28,6 @@ tailles.HAUTEUR_TUILES = 80
 defaut = utils.chargerConfig(os.path.join(chemins.SAUVEGARDES, "schpbr.cfg"))
 
 #defaut.PSYCO = True
-#defaut.PERSPECTIVE = 30
 #defaut.PLEIN_ECRAN = True
 #defaut.SYNCHRO_VERTICALE = True
 #defaut.FPS_MAX = 240
