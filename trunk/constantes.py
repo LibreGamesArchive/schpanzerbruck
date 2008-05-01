@@ -27,21 +27,6 @@ tailles.HAUTEUR_TUILES = 80
 
 defaut = utils.chargerConfig(os.path.join(chemins.SAUVEGARDES, "schpbr.cfg"))
 
-#defaut.PSYCO = True
-#defaut.PLEIN_ECRAN = True
-#defaut.SYNCHRO_VERTICALE = True
-#defaut.FPS_MAX = 240
-#defaut.MODE = (800, 600, 32)
-#defaut.MODE_AUTO = True
-
-#defaut.touches = Container()
-#defaut.touches.ZOOM_AVANT = Key.PageUp
-#defaut.touches.ZOOM_ARRIERE = Key.PageDown
-#defaut.touches.DEFIL_GAUCHE = Key.Left
-#defaut.touches.DEFIL_DROITE = Key.Right
-#defaut.touches.DEFIL_HAUT = Key.Up
-#defaut.touches.DEFIL_BAS = Key.Down
-
 defaut.CARTE = u"maptest2-cold.xml"
 
 

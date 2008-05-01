@@ -240,7 +240,10 @@ class Map(BaseMap):
         glMatrixMode(GL_MODELVIEW)
         glEnable(GL_TEXTURE_2D)
         
-        glColor3ub(255, 255, 255)
+        if self.__statut == statut.NOIRCIR:
+            glColor3ub(50, 50, 50)
+        else:
+            glColor3ub(255, 255, 255)
         
         for numCase, coordsCase in enumerate(self.coordsCases):
             glPushMatrix()

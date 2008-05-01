@@ -31,9 +31,6 @@ class ContexteClient:
         self.camera.pos = [self.map.hauteur/2 + 3, self.map.largeur/2, 4.5]
         self.camera.cible = [self.map.hauteur/2 - 2, self.map.largeur/2, 0]
         
-        # Mets le curseur souris au centre de l'écran (fixe le bug de scrolling)
-        self.app.SetCursorPosition(self.app.GetHeight()/2, self.app.GetWidth()/2)
-        
         #self.vueInterface = sf.View(sf.FloatRect(0, 0, self.L, self.H))
     
     
@@ -43,18 +40,19 @@ class ContexteClient:
     
     def __scrolling(self, curseurX, curseurY):
         """Scrolling de la map"""
+        
         defil = self.vitesseDefil * self.app.GetFrameTime()
         
-        if curseurX <= self.bordureDefil:   # DEFILEMENT VERS LA GAUCHE
+        if curseurX <= self.bordureDefil and self.camera.cible[1] > -2:   # DEFILEMENT VERS LA GAUCHE
             self.camera.pos[1] -= defil
             self.camera.cible[1] -= defil
-        elif curseurX >= self.app.GetWidth() - self.bordureDefil:   # DEFILEMENT VERS LA DROITE
+        elif curseurX >= self.app.GetWidth() - self.bordureDefil and self.camera.cible[1] < self.map.largeur+2:   # DEFILEMENT VERS LA DROITE
             self.camera.pos[1] += defil
             self.camera.cible[1] += defil
-        if curseurY <= self.bordureDefil:   # DEFILEMENT VERS LE HAUT
+        if curseurY <= self.bordureDefil and self.camera.cible[0] > 0:   # DEFILEMENT VERS LE HAUT
             self.camera.pos[0] -= defil
             self.camera.cible[0] -= defil
-        elif curseurY >= self.app.GetHeight() - self.bordureDefil:   # DEFILEMENT VERS LE BAS
+        elif curseurY >= self.app.GetHeight() - self.bordureDefil and self.camera.cible[0] < self.map.hauteur:   # DEFILEMENT VERS LE BAS
             self.camera.pos[0] += defil
             self.camera.cible[0] += defil
     
@@ -70,6 +68,9 @@ class ContexteClient:
         glEnable(GL_ALPHA_TEST)
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
         glAlphaFunc(GL_GREATER, 0)
+        
+        # Mets le curseur souris au centre de l'écran (fixe le bug de scrolling)
+        self.app.SetCursorPosition(self.app.GetWidth()/2, self.app.GetHeight()/2)
         
         running = True
         evt = sf.Event()
