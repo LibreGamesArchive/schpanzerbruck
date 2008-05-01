@@ -3,6 +3,7 @@
 from PySFML import sf
 from OpenGL.GL import *
 from OpenGL.GLU import gluPerspective, gluLookAt
+import os
 import mapmng, img, utils, constantes
 #import gui
 
@@ -30,6 +31,8 @@ class ContexteClient:
         self.camera = utils.Container()
         self.camera.pos = [self.map.hauteur/2 + 4, self.map.largeur/2, 4]
         self.camera.cible = [self.map.hauteur/2, self.map.largeur/2, 0]
+        
+        self.capture=False
         
         #self.vueInterface = sf.View(sf.FloatRect(0, 0, self.L, self.H))
     
@@ -85,6 +88,10 @@ class ContexteClient:
                         # A FAIRE :
                         # Interface : Afficher le menuEchap
                         running = False
+                    elif evt.Key.Code == self.touches.CAPTURE:
+                        # Activer capture d'écran
+                        self.capture=True
+
                 elif evt.Type == sf.Event.MouseButtonPressed:
                     res = None # self.interface.gererClic(evt, self.vueInterface)  # L'interface est bien entendu prioritaire sur la Map dans la gestion des clics
                     if res == None:
@@ -111,5 +118,26 @@ class ContexteClient:
             gluLookAt(self.camera.pos[0], self.camera.pos[1], self.camera.pos[2], self.camera.cible[0], self.camera.cible[1], self.camera.cible[2], 0, 0, 1)
             
             self.map.GL_Dessin()
+            
+            # Capture d'écran
+            if self.capture:
+                ls=os.listdir(constantes.chemins.CAPTURES)
+                ls.sort()
+                ls.reverse()
+                number=1
+                for fichier in ls:
+                    if fichier[0:3]=="cap":
+                        try:
+                            number=int(fichier[3:8])+1
+                            break
+                        except:
+                            pass
+                if number>99999:
+                    number=1
+                nom=os.path.join(constantes.chemins.CAPTURES, "cap%05d.png" %number)
+                image=self.app.Capture()
+                if image.SaveToFile(nom):
+                    print "Capture sauvegardée avec succès dans %s" %nom
+                self.capture=False
             
             self.app.Display()
