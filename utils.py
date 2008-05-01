@@ -44,10 +44,6 @@ def sauverConfig(defaut, fichier):
 	psyco.setAttribute("UTILISER", str(defaut.PSYCO))
 	root.appendChild(psyco)
 	
-	perspective = doc.createElement("perspective")
-	perspective.setAttribute("VAL", str(defaut.PERSPECTIVE))
-	root.appendChild(perspective)
-	
 	ecran = doc.createElement("ecran")
 	for i in ["PLEIN_ECRAN", "SYNCHRO_VERTICALE"]:
 		ecran.setAttribute(i, str(defaut.__dict__[i]))
@@ -86,8 +82,6 @@ def chargerConfig(fichier):
 			if root.getElementsByTagName("psyco")[0].attributes["UTILISER"].value == "True":
 				defaut.PSYCO = True
 			else:   defaut.PSYCO = False
-			
-			defaut.PERSPECTIVE = int(root.getElementsByTagName("perspective")[0].attributes["VAL"].value)
 			
 			paramsEcran = root.getElementsByTagName("ecran")[0]
 			for i in ["PLEIN_ECRAN", "SYNCHRO_VERTICALE"]:
@@ -133,7 +127,6 @@ def chargerConfig(fichier):
 	if cfgParDefaut:
 		defaut = ConstsContainer()	# Recréation de defaut (pour le vider)
 		defaut.PSYCO = True
-		defaut.PERSPECTIVE = 30   # Positif: Perspective droite, Négatif: Perspective gauche
 		defaut.PLEIN_ECRAN = True
 		defaut.SYNCHRO_VERTICALE = True
 		defaut.FPS_MAX = 240

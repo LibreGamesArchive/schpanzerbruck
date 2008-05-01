@@ -1,6 +1,6 @@
 # encoding=UTF-8
 
-from PySFML import sf
+from OpenGL.GL import *
 from xml.dom import minidom
 from constantes import tailles
 from utils import ConstsContainer
@@ -22,17 +22,60 @@ class ResultatClicMap:
         pass
 
 
+class ObjetMap(object):
+    """Classe de base pour les objets de la map"""
+    
+    def __init__(self, infos):
+        object.__init__(self)
+        self.__infos = infos    # La référence vers les infos de base de l'ObjetMap. READ ONLY !
+    
+    def __getattr__(self, attr):
+        if attr in self.__dict__.keys():
+            return self.__dict__[attr]
+        return self.__infos[attr]
+
+class Tuile(ObjetMap):
+    """Représente une tuile"""
+    
+    def __init__(self, infos, texture=None):
+        ObjetMap.__init__(self, infos)
+        self.texture = texture      # Référence vers la sfImage faisant office de texture
+        # Est égal à None dans un contexte non graphique (côté serveur)
+    
+    def GL_Dessin(self):
+        self.texture.Bind()
+        glBegin(GL_QUADS)
+        glTexCoord2f(0, 0); glVertex3f(0, 0, 0)
+        glTexCoord2f(0, 1); glVertex3f(1, 0, 0)
+        glTexCoord2f(1, 1); glVertex3f(1, 1, 0)
+        glTexCoord2f(1, 0); glVertex3f(0, 1, 0)
+        glEnd()
+
+class Element(ObjetMap):
+    """Représente un élément (Arbre, maison, etc.)"""
+    
+    def __init__(self, infos, textures=[]):
+        ObjetMap.__init__(self, infos)
+        self.textures = textures    # Liste des références vers les textures nécessaires
+        # Vide dans le cas d'un contexte non graphique (côté serveur)
+        self.vie = infos["vie"]     # La vie d'un élément est modifiable, elle doit donc être extraite
+    
+    def GL_Dessin(self):
+        self.textures[0].Bind()
+        glBegin(GL_QUADS)
+        glTexCoord2f(0, 0); glVertex3f(0.5, 0, 1.3)
+        glTexCoord2f(0, 1); glVertex3f(0.5, 0, 0)
+        glTexCoord2f(1, 1); glVertex3f(0.5, 1, 0)
+        glTexCoord2f(1, 0); glVertex3f(0.5, 1, 1.3)
+        glEnd()
+
+
 class BaseMap:
     """La classe de base pour une Map"""
     
     def __init__(self, map):
-        """Parse un fichier XML de carte pour initialiser l'objet Map"""
-        
-        self.infos = []     # self est la liste des infos
-    
-    
-    def __getitem__(self, item):
-        return self.infos[item]
+        self.objets = { "tuiles":[], "elements":[] }
+        # Chaque case des listes du dico contient un ObjetMap
     
     
     def parserMap(self, map):
@@ -44,22 +87,18 @@ class BaseMap:
         self.largeur = int(map_node.attributes["largeur"].value)
         self.hauteur = int(map_node.attributes["hauteur"].value)
         
-        largeurPix = self.hauteur * abs(self.PERSPECTIVE) + self.largeur * tailles.LARGEUR_TUILES
-        hauteurPix = (self.hauteur+1) * tailles.HAUTEUR_TUILES
-        self.rect = sf.FloatRect(0, 0, largeurPix, hauteurPix)
-        
-        map_strs = {"tuiles":"", "gdsElements":"", "ptsElements":""}
-        tabsNums = {"tuiles":[], "gdsElements":[], "ptsElements":[]}
+        map_strs = {"tuiles":"", "elements":""}
+        tabsNums = {"tuiles":[], "elements":[]}
         
         for node in map_node.childNodes:
             if isinstance(node, minidom.Element): # On saute les Text Nodes dus au sauts de lignes
-                for i in ["tuiles", "gdsElements", "ptsElements"]:
+                for i in ["tuiles", "elements"]:
                     if node.tagName == i:
                         map_strs[i] = node.firstChild.data.strip()
                         break
         
         # Supprime le dernier "|" des chaines:
-        for i in ["tuiles", "gdsElements", "ptsElements"]:
+        for i in ["tuiles", "elements"]:
             if map_strs[i][-1] == "|":
                 map_strs[i] = map_strs[i][0:-1]
             
@@ -71,7 +110,7 @@ class BaseMap:
 
 
 class MapSrv(BaseMap):
-    """La map ne contenant aucun sprite, destinée à être utilisée seulement par le serveur"""
+    """La map ne contenant aucune texture, destinée à être utilisée seulement par le serveur"""
     
     def __init__(self, map):
         BaseMap.__init__(self, map)
@@ -120,103 +159,64 @@ class MapSrv(BaseMap):
         return (coordsPossibles, chemin, mvtRestant)
 
 
-class Map(BaseMap, sf.Drawable):
+class Map(BaseMap):
     """La Map côté client, dessinable"""
     
-    def __init__(self, map, gestImages, perspective):
+    def __init__(self, map, gestImages):
         BaseMap.__init__(self, map)
-        sf.Drawable.__init__(self)
         
-        self.sprites = { "tuiles":[], "gdsElements":[], "ptsElements":[], "persos":[] }
-        # Chaque case des listes du dico contient un sf.Sprite
-        # sauf la case "infos" qui contient une liste dont chaque case contient un conteneur de Constantes qui possède les attributs "tuile", "gdElement" et "ptElement"
-        
-        self.PERSPECTIVE = perspective
-        self.DECALAGE_PTS_ELEMENTS_Y = int(tailles.HAUTEUR_TUILES*(3.0/4))
-        self.DECALAGE_GDS_ELEMENTS_Y = tailles.HAUTEUR_TUILES/2
-        self.DECALAGE_PERSOS_Y = int(tailles.HAUTEUR_TUILES*(5.0/8))
-        if perspective >= 0:
-            self.DECALAGE_PTS_ELEMENTS_X = int(perspective*(1.0/4))   # Th. de Thalès
-            self.DECALAGE_GDS_ELEMENTS_X = perspective/2   # Th. de Thalès
-            self.DECALAGE_PERSOS_X = int(perspective*(3.0/8))    # Th. de Thalès
-        else:
-            self.DECALAGE_PTS_ELEMENTS_X = -int(perspective*(3.0/4))
-            self.DECALAGE_GDS_ELEMENTS_X = -perspective/2
-            self.DECALAGE_PERSOS_X = -int(perspective*(5.0/8))
+        self.LIMITE_ELEMENTS = int(tailles.HAUTEUR_TUILES*(4.0/5))  # Sur une case, l'avant de l'élément ne peut pas dépasser cette limite
+        self.POSITION_PERSOS = int(tailles.HAUTEUR_TUILES*(9.0/10))   # Position des persos statiques sur leur case
         
         tabsNums = self.parserMap(map)
         
-        gestImages.chargerImagesMap(perspective, tabsNums)
+        gestImages.chargerImagesMap(tabsNums)
         
-        self.__creerSpritesEtInfosSurMap(tabsNums, gestImages) # On remplit le dico self
+        self.coordsCases = [] # Coordonnées du point en haut à gauche de chaque case dans le plan (0xy)
+        for x in range(0, self.hauteur):
+            for y in range(0, self.largeur):
+                self.coordsCases.append((x, y, 0))
+        
+        self.__recupTexturesEtInfosSurMap(tabsNums, gestImages) # On remplit le dico self
         
         self.__statut = statut.INFOS_SEULEMENT    # Si True, les cases de la map ne sont pas sélectionnables, et le fait de les survoler ne change rien à l'affichage
     
     
-    def __creerSpritesEtInfosSurMap(self, tabsNums, gestImages):
+    def __recupTexturesEtInfosSurMap(self, tabsNums, gestImages):
         """Comme son nom l'indique...
         Ne s'occupe pas des personnages"""
         
-        # Dictionnaire temporaire pour récupérer et traiter les infos nécessaires sur chaque image:
-        infosImages = {"tuiles":[], "gdsElements":[], "ptsElements":[]}
-        
-        # Constructions des listes de sprites :
-        for typeObj in ["tuiles", "gdsElements", "ptsElements"]:
-            ligne, colonne = 0, 0
+        # Constructions des listes de textures :
+        for typeObj in ["tuiles", "elements"]:
             recopier, remonterDe = 0, 1    # recopier est un int, qui indique si l'élément de la case précédente doit chevaucher encore d'autres cases et si oui, combien (ex. recopier == 2 si l'élément de la case précédent s'étale encore sur 2 cases)
             # remonterDe sert pour les infos : si un élément s'étend sur 3 cases, et que la case concernée est la dernière de ces 3 cases, alors remonterDe == 2
             for ind, num in enumerate(tabsNums[typeObj]):
-                sprite, infos = None, None
+                texture, infos = None, None
+                nouvelObj = None
                 
                 if recopier >= 1: # L'élément s'étend sur plusieurs cases, on recopie les infos de la case précédente
-                    infos = remonterDe
+                    nouvelObj = remonterDe
                     recopier -= 1
                     remonterDe += 1
                 
-                elif num >= 0x01 and (typeObj=="tuiles" or (typeObj != "tuiles" and self.sprites["tuiles"][ind] != None)):   # Si il n'y a pas de tuile à cet endroit-là (0x00), on ne met pas non plus d'élément(s)
+                elif num >= 0x01 and (typeObj=="tuiles" or (typeObj != "tuiles" and self.objets["tuiles"][ind] != None)):   # Si il n'y a pas de tuile à cet endroit-là (0x00), on ne met pas non plus d'élément(s)
                     imgETinfos = gestImages[typeObj][num]
-                    sprite = sf.Sprite(imgETinfos.image)
+                    texture = imgETinfos.image
                     infos = imgETinfos.infos
                     etalement = infos["etalement"]
                     
                     # A FAIRE : VERIFICATION : VOIR SI L'ELEMENT NE DEBORDE PAS DE LA MAP
                     
-                    # POSITIONNEMENT DE CHAQUE SPRITE : (Par rapport au point en haut à gauche de la map)
-                    if self.PERSPECTIVE >= 0:
-                        tuileX = colonne * tailles.LARGEUR_TUILES + (self.hauteur-1 - ligne) * self.PERSPECTIVE
-                    else:
-                        tuileX = colonne * tailles.LARGEUR_TUILES + ligne * abs(self.PERSPECTIVE)
-                    tuileY = (ligne+1) * tailles.HAUTEUR_TUILES   # "ligne+1" pour décaler la map vers le bas, afin que les éléments sur les premières cases soient quand même visibles en entier
-                    if typeObj == "tuiles":
-                        sprite.SetPosition(tuileX, tuileY)
-                    else:
-                        spriteWidth, spriteHeight = sprite.GetSize()
-                        if typeObj == "gdsElements":
-                            elemX = tuileX + self.DECALAGE_GDS_ELEMENTS_X + (tailles.LARGEUR_TUILES * etalement)/2 - spriteWidth/2
-                            elemY = tuileY + self.DECALAGE_GDS_ELEMENTS_Y - spriteHeight
-                        else:
-                            elemX = tuileX + self.DECALAGE_PTS_ELEMENTS_X + (tailles.LARGEUR_TUILES * etalement)/2 - spriteWidth/2
-                            elemY = tuileY + self.DECALAGE_PTS_ELEMENTS_Y - spriteHeight
-                        sprite.SetPosition(elemX, elemY)
-                    
                     if etalement >= 2:
                         remonterDe = 1
                         recopier = etalement - 1
+                    
+                    if typeObj == "tuiles":
+                        nouvelObj = Tuile(infos, texture)
+                    else:
+                        nouvelObj = Element(infos, [texture])
                 
-                self.sprites[typeObj].append(sprite)
-                infosImages[typeObj].append(infos)
-                
-                colonne += 1
-                if colonne == self.largeur:
-                    colonne = 0
-                    ligne += 1
-        
-        for i in range(0, self.hauteur * self.largeur): # Traitement du dictionnaire temporaire infoImages
-            grpInfos = ConstsContainer()
-            grpInfos.tuile = infosImages["tuiles"][i]
-            grpInfos.gdElement = infosImages["gdsElements"][i]
-            grpInfos.ptElement = infosImages["ptsElements"][i]
-            self.infos.append(grpInfos)
+                self.objets[typeObj].append(nouvelObj)
     
     
     def bloquer(self, autoriserInfos = True):
@@ -235,24 +235,42 @@ class Map(BaseMap, sf.Drawable):
         self.__statut = statut.CIBLAGE
     
     
-    def Render(self, renderWindow):
-        for tuile in self.sprites["tuiles"]:
-            if tuile != None:
-                renderWindow.Draw(tuile)
-                pass
+    def GL_Dessin(self):
+        """Dessine la Map dans le plan (0xy)"""
+        glMatrixMode(GL_MODELVIEW)
+        glEnable(GL_TEXTURE_2D)
         
-        for i in range(0, self.hauteur):
-            for x in [0, 1]: # DESSIN DES ELEMENTS DES CASES PAIRES, PUIS IMPAIRES
-                while x < self.largeur:
-                    for typeObj in ["gdsElements", "ptsElements"]:
-                        elemCourant = self.sprites[typeObj][i*self.largeur + x]
-                        if elemCourant != None:
-                            renderWindow.Draw(elemCourant)
-                            pass
-                    x += 2
+        glColor3ub(255, 255, 255)
+        
+        for numCase, coordsCase in enumerate(self.coordsCases):
+            glPushMatrix()
+            glTranslatef(*coordsCase)
+            
+            # DESSIN DE LA TUILE ET DE L'ELEMENT:
+            for typeObj in ["tuiles", "elements"]:
+                if isinstance(self.objets[typeObj][numCase], ObjetMap):     # Si il y a bien un ObjetMap à cette case
+                    self.objets[typeObj][numCase].GL_Dessin()
+            
+            glPopMatrix()
+        
+        glDisable(GL_TEXTURE_2D)
+        
+        # Dessin du plateau:
+        glBegin(GL_QUADS)
+        glColor3ub(160, 160, 160)
+        glVertex3f(0, 0, 0); glVertex3f(0, 0, -0.4); glVertex3f(self.hauteur, 0, -0.4); glVertex3f(self.hauteur, 0, 0)
+        glColor3ub(190, 190, 190)
+        glVertex3f(0, 0, 0); glVertex3f(0, 0, -0.4); glVertex3f(0, self.largeur, -0.4); glVertex3f(0, self.largeur, 0)
+        glColor3ub(130, 130, 130)
+        glVertex3f(self.hauteur, self.largeur, 0); glVertex3f(self.hauteur, self.largeur, -0.4); glVertex3f(0, self.largeur, -0.4); glVertex3f(0, self.largeur, 0)
+        glColor3ub(100, 100, 100)
+        glVertex3f(self.hauteur, 0, 0); glVertex3f(self.hauteur, 0, -0.4); glVertex3f(self.hauteur, self.largeur, -0.4); glVertex3f(self.hauteur, self.largeur, 0)
+        glColor3ub(70, 70, 70)
+        glVertex3f(self.hauteur, 0, -0.4); glVertex3f(0, 0, -0.4); glVertex3f(0, self.largeur, -0.4); glVertex3f(self.hauteur, self.largeur, -0.4)
+        glEnd()
     
     
-    def gererClic(self, evt, vue):
+    def gererClic(self, evt):
         # A FAIRE
         
         res = ResultatClicMap()

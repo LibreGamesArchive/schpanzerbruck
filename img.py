@@ -7,32 +7,6 @@ from constantes import chemins
 from utils import ConstsContainer
 
 
-def tord(image, decalage, antialiasing=False, background=sf.Color(0,0,0,0)):
-    """Tord une image pour lui donner un effet de perspective."""
-    nHauteur=image.GetHeight()
-    nLargeur=image.GetWidth()+abs(decalage)
-    nImage=sf.Image(Width=nLargeur, Height=nHauteur, Color=background)
-    nImage.SetSmooth(False)
-    for y in range(image.GetHeight()):
-        
-        if decalage >= 0:   # On voit si la perspective est Droite ou Gauche
-            decalageLigne = decalage-(y*decalage)/nHauteur
-        else:
-            decalageLigne = -(y*decalage)/nHauteur
-        
-        for x in range(image.GetWidth()):
-            pix=image.GetPixel(x, y)
-            if antialiasing:
-                if x==0 or x==image.GetWidth():
-                    pix=sf.Color(pix.r, pix.g, pix.b, 200)
-                elif x==1 or x==image.GetWidth()-1:
-                    pix=sf.Color(pix.r, pix.g, pix.b, 100)
-            nx=x+decalageLigne
-            if nx>=0:
-                nImage.SetPixel(nx, y, pix)
-    return nImage
-
-
 class InfosImage(dict):
     """Contient tous les renseignement nécessaires sur une image
     (chemin du fichier, niveau de passabilité, etc.)"""
@@ -58,20 +32,20 @@ class GestionnaireImages(dict):
     par exemple de dupliquer une même image en mémoire"""
     
     def __init__(self):
-        # Chaque case de ces dictionnaires (tuiles, gdsElements, etc.) est un ConstsContainer de 2 choses:
+        # Chaque case de ces dictionnaires (tuiles, elements, etc.) est un ConstsContainer de 2 choses:
         #   - infos : un objet de type InfosImage
         #   - image : l'objet sf.Image lui-même
-        # Ces dictionnaires sont remplis par lecture des fichiers XML du dossier "objets"
-        dict.__init__(self, { "tuiles":{}, "gdsElements":{}, "ptsElements":{}, "persos":{}, "interface":{} })
+        # Ces dictionnaires sont remplis par lecture des fichiers XML du dossier "struct"
+        dict.__init__(self, { "tuiles":{}, "elements":{}, "persos":{}, "interface":{} })
     
     
-    def chargerImagesMap(self, perspective, tabsNums):
-        """Charge les tuiles, gdsElements et ptsElements"""
+    def chargerImagesMap(self, tabsNums):
+        """Charge les tuiles et les éléments"""
         
         chargementOK = True
         
-        # Parsage des documents tuiles.xml, gdsElements.xml et ptsElements.xml, et chargement des images correspondantes :
-        for typeObj in ["tuiles", "gdsElements", "ptsElements"]:
+        # Parsage des documents tuiles.xml et elements.xml et, et chargement des images correspondantes :
+        for typeObj in ["tuiles", "elements"]:
             objsDispos = {}
             # objsDispos est un dictionnaires d'objet InfosImage
             objs_nodes = minidom.parse(os.path.join(chemins.OBJETS_MAP, "%s.xml" % typeObj)).documentElement.getElementsByTagName("obj")
@@ -90,8 +64,6 @@ class GestionnaireImages(dict):
                     img = sf.Image()
                     if not img.LoadFromFile(os.path.join(eval("chemins.IMGS_%s" % typeObj.upper()), infosImg["fichier"])):
                         chargementOK = False
-                    if typeObj == "tuiles":
-                        img = tord(img, perspective)
                     self[typeObj][num] = ConstsContainer()
                     self[typeObj][num].infos = infosImg
                     self[typeObj][num].image = img
