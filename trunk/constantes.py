@@ -17,6 +17,7 @@ chemins.IMGS_PERSOS = os.path.join(cheminDossierRacine, "rsc", "visuels", "perso
 chemins.SONS = os.path.join(cheminDossierRacine, "rsc", "sons")
 chemins.MAPS = os.path.join(cheminDossierRacine, "maps")
 chemins.SAUVEGARDES = os.path.join(cheminDossierRacine, "sauv")
+chemins.CAPTURES = os.path.join(cheminDossierRacine, "captures")
 
 
 tailles = utils.ConstsContainer()
