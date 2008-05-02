@@ -2,9 +2,10 @@
 
 from PySFML import sf
 from OpenGL.GL import *
+from OpenGL.GLU import gluPerspective, gluPickMatrix, gluLookAt
 from xml.dom import minidom
 import fx
-from constantes import tailles, defaut
+from constantes import defaut
 from utils import ConstsContainer
 import copy
 
@@ -52,6 +53,14 @@ class Tuile(ObjetMap):
         glTexCoord2f(1, 1); glVertex3f(1, 1, 0)
         glTexCoord2f(1, 0); glVertex3f(0, 1, 0)
         glEnd()
+    
+    def GL_DessinSansTexture(self):
+        glBegin(GL_QUADS)
+        glVertex3f(0, 0, 0)
+        glVertex3f(1, 0, 0)
+        glVertex3f(1, 1, 0)
+        glVertex3f(0, 1, 0)
+        glEnd()
 
 class Element(ObjetMap):
     """Représente un élément (Arbre, maison, etc.)"""
@@ -71,6 +80,16 @@ class Element(ObjetMap):
         glTexCoord2f(0, 1); glVertex3f(0, 0, 0)
         glTexCoord2f(1, 1); glVertex3f(0, 1, 0)
         glTexCoord2f(1, 0); glVertex3f(0, 1, 1.15)
+        glEnd()
+    
+    def GL_DessinSansTexture(self, inclinaison):
+        glTranslatef(0.5, 0, 0)
+        glRotatef(inclinaison-90, 0, 1, 0)
+        glBegin(GL_QUADS)
+        glVertex3f(0, 0, 1.15)
+        glVertex3f(0, 0, 0)
+        glVertex3f(0, 1, 0)
+        glVertex3f(0, 1, 1.15)
         glEnd()
 
 
@@ -288,10 +307,63 @@ class Map(BaseMap):
         glVertex3f(coordsHG[0]+vectLarg[0]+vectHaut[0], coordsHG[1]+vectLarg[1]+vectHaut[1], coordsHG[2]+vectLarg[2]+vectHaut[2])
     
     
-    def GL_Dessin(self, frameTime):
-        """Dessine la Map dans le plan (0xy)"""
+    def __GL_Selection(self, frameTime, appL, appH, camera, curseurX, curseurY):
+        """GL_Dessin pour le picking"""
+        glSelectBuffer(256)
+        
+        glRenderMode(GL_SELECT)
+        glInitNames()
+        
+        glMatrixMode(GL_PROJECTION)
+        glLoadIdentity()
+        gluPickMatrix(curseurX, appH - curseurY, 5, 5, glGetIntegerv(GL_VIEWPORT))
+        gluPerspective(70, float(appL)/appH, 1, 50)
+        
         glMatrixMode(GL_MODELVIEW)
+        glLoadIdentity()
+        gluLookAt(camera.pos[0], camera.pos[1], camera.pos[2], camera.cible[0], camera.cible[1], camera.cible[2], 0, 0, 1)
+        
+        glDisable(GL_TEXTURE_2D)
+        glDisable(GL_DEPTH_TEST)
+        glDisable(GL_BLEND)
+        glDisable(GL_ALPHA_TEST)
+        
+        for numCase, coordsCase in enumerate(self.coordsCases):
+            glPushMatrix()
+            glTranslatef(*coordsCase)
+            
+            # DESSIN DE LA TUILE ET DE L'ELEMENT:
+            glPushName(numCase)
+            if isinstance(self.objets["tuiles"][numCase], ObjetMap):     # Si il y a bien un ObjetMap à cette case
+                glLoadName(0)
+                self.objets["tuiles"][numCase].GL_DessinSansTexture()
+            
+            if isinstance(self.objets["elements"][numCase], ObjetMap):
+                glLoadName(1)
+                self.objets["elements"][numCase].GL_DessinSansTexture(self.inclinaisonElements)
+            glPopName()
+            
+            glPopMatrix()
+        
+        nameStack = glRenderMode(GL_RENDER)
+        #print nameStack
+    
+    
+    def GL_Dessin(self, frameTime, appL, appH, camera, curseurX, curseurY):
+        """Dessine la Map dans le plan (0xy)"""
+        
+        glMatrixMode(GL_PROJECTION)
+        glLoadIdentity()
+        gluPerspective(70, float(appL)/appH, 1, 50)
+        
+        glMatrixMode(GL_MODELVIEW)
+        glLoadIdentity()
+        gluLookAt(camera.pos[0], camera.pos[1], camera.pos[2], camera.cible[0], camera.cible[1], camera.cible[2], 0, 0, 1)
+        
         glEnable(GL_TEXTURE_2D)
+        glEnable(GL_DEPTH_TEST)
+        glEnable(GL_BLEND)
+        glEnable(GL_ALPHA_TEST)
         
         if self.__statut == statut.NOIRCIR:
             factAssomb = 5
@@ -348,7 +420,8 @@ class Map(BaseMap):
         
         glEnd()
         
-        glDisable(GL_TEXTURE_2D)
+        #if self.__statut != statut.NOIRCIR and self.__statut != statut.PAS_DE_SELECTION:
+        #   self.__GL_Selection(frameTime, appL, appH, camera, curseurX, curseurY)
     
     
     def gererClic(self, evt):

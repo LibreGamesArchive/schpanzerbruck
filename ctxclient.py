@@ -2,7 +2,6 @@
 
 from PySFML import sf
 from OpenGL.GL import *
-from OpenGL.GLU import gluPerspective, gluLookAt
 import os
 import mapmng, img, infos, utils, constantes
 #import gui
@@ -16,6 +15,7 @@ class ContexteClient:
         self.app = app
         self.L, self.H = self.app.GetWidth(), self.app.GetHeight()
         self.input = app.GetInput()
+        
         self.gestImages = img.GestionnaireImages(infos.GestionnaireInfos())
         self.map = mapmng.Map(fichierMap, self.gestImages)
         #self.interface = gui.InterfaceCombat(self.L, self.H)
@@ -63,12 +63,6 @@ class ContexteClient:
     def lancerBoucle(self):
         """Lancer la boucle principale du combat"""
         
-        glMatrixMode(GL_PROJECTION)
-        glLoadIdentity()
-        gluPerspective(70, float(self.app.GetWidth())/self.app.GetHeight(), 1, 50)
-        glEnable(GL_DEPTH_TEST)
-        glEnable(GL_BLEND)
-        glEnable(GL_ALPHA_TEST)
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
         glAlphaFunc(GL_GREATER, 0)
         
@@ -82,6 +76,7 @@ class ContexteClient:
             while running and self.app.GetEvent(evt):
                 if evt.Type == sf.Event.Closed:
                     running = False
+                
                 elif evt.Type == sf.Event.KeyPressed:
                     if evt.Key.Code == sf.Key.Escape:
                         self.map.noircir()
@@ -91,7 +86,7 @@ class ContexteClient:
                     elif evt.Key.Code == self.touches.CAPTURE:
                         # Activer capture d'écran
                         self.capture=True
-
+                
                 elif evt.Type == sf.Event.MouseButtonPressed:
                     res = None # self.interface.gererClic(evt, self.vueInterface)  # L'interface est bien entendu prioritaire sur la Map dans la gestion des clics
                     if res == None:
@@ -111,13 +106,9 @@ class ContexteClient:
             self.__scrolling(curseurX, curseurY)
             
             # DESSIN :
-            
-            glMatrixMode(GL_MODELVIEW)
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
-            glLoadIdentity()
-            gluLookAt(self.camera.pos[0], self.camera.pos[1], self.camera.pos[2], self.camera.cible[0], self.camera.cible[1], self.camera.cible[2], 0, 0, 1)
             
-            self.map.GL_Dessin(self.app.GetFrameTime())
+            self.map.GL_Dessin(self.app.GetFrameTime(), self.app.GetWidth(), self.app.GetHeight(), self.camera, curseurX, curseurY)
             
             # Capture d'écran
             if self.capture:
@@ -141,3 +132,5 @@ class ContexteClient:
                 self.capture=False
             
             self.app.Display()
+            
+            print 1/self.app.GetFrameTime()
