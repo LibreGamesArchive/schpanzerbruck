@@ -4,10 +4,10 @@
 # Retournent True si l'effet est fini, False sinon
 class DeploiementElements:
     def __call__(self, map, frameTime):
-        if map.inclinaisonElements < 75:
+        if map.inclinaisonElements < 70:
             map.inclinaisonElements += 130*frameTime
-            if map.inclinaisonElements > 75:
-                map.inclinaisonElements = 75
+            if map.inclinaisonElements > 70:
+                map.inclinaisonElements = 70
                 return True
         return False
 # FIN EFFETS SPECIAUX

@@ -198,16 +198,13 @@ class Map(BaseMap):
     def __init__(self, map, gestImages):
         BaseMap.__init__(self, map)
         
-        self.LIMITE_ELEMENTS = int(tailles.HAUTEUR_TUILES*(4.0/5))  # Sur une case, l'avant de l'élément ne peut pas dépasser cette limite
-        self.POSITION_PERSOS = int(tailles.HAUTEUR_TUILES*(9.0/10))   # Position des persos statiques sur leur case
-        
         tabsNums = self.parserMap(map)
         
         gestImages.chargerImagesMap(tabsNums)
         gestImages.chargerImage("tuiles", self.bordure)
 
         if self.bordure==0x00:
-            self.imageBordure=sf.Image(tailles.LARGEUR_TUILES, tailles.HAUTEUR_TUILES, defaut.COULEUR_BORDURE)
+            self.imageBordure=defaut.TEXTURE_BORDURE
         else:
             self.imageBordure=gestImages["tuiles"][self.bordure].image
         
@@ -225,6 +222,7 @@ class Map(BaseMap):
         self.__FXActives = []      # Liste des effets spéciaux utilisables sur la Map
         
         self.lancerFX(fx.DeploiementElements())
+    
     
     def __recupTexturesEtInfosSurMap(self, tabsNums, gestImages):
         """Comme son nom l'indique...
@@ -284,7 +282,7 @@ class Map(BaseMap):
         self.__FXActives.append(nouvFX)
     
     
-    def GL_RectUni(self, coordsHG, vectLarg, vectHaut=(0, 0, -0.4)):
+    def GL_RectUni(self, coordsHG, vectLarg, vectHaut=(0, 0, -defaut.HAUTEUR_BORDURE)):
         glVertex3f(coordsHG[0]+vectLarg[0], coordsHG[1]+vectLarg[1], coordsHG[2]+vectLarg[2])
         glVertex3f(*coordsHG)
         glVertex3f(coordsHG[0]+vectHaut[0], coordsHG[1]+vectHaut[1], coordsHG[2]+vectHaut[2])
@@ -319,34 +317,35 @@ class Map(BaseMap):
             
             glPopMatrix()
         
-
+        
         # Dessin du plateau:
         self.imageBordure.Bind()
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT)
         glBegin(GL_QUADS)
+        glColor3ub(*((195/factAssomb,)*3))
         glTexCoord2d(0, 0); glVertex3f(0, 0, 0)
         glTexCoord2d(0, defaut.HAUTEUR_BORDURE); glVertex3f(0, 0, -defaut.HAUTEUR_BORDURE)
         glTexCoord2d(self.hauteur, defaut.HAUTEUR_BORDURE); glVertex3f(self.hauteur, 0, -defaut.HAUTEUR_BORDURE)
         glTexCoord2d(self.hauteur, 0); glVertex3f(self.hauteur, 0, 0)
         
+        glColor3ub(*((85/factAssomb,)*3))
         glTexCoord2d(0, 0); glVertex3f(0, 0, 0)
         glTexCoord2d(0, defaut.HAUTEUR_BORDURE); glVertex3f(0, 0, -defaut.HAUTEUR_BORDURE)
         glTexCoord2d(self.largeur, defaut.HAUTEUR_BORDURE); glVertex3f(0, self.largeur, -defaut.HAUTEUR_BORDURE)
         glTexCoord2d(self.largeur, 0); glVertex3f(0, self.largeur, 0)
         
+        glColor3ub(*((135/factAssomb,)*3))
         glTexCoord2d(0, 0); glVertex3f(self.hauteur, self.largeur, 0)
         glTexCoord2d(0, defaut.HAUTEUR_BORDURE); glVertex3f(self.hauteur, self.largeur, -defaut.HAUTEUR_BORDURE)
         glTexCoord2d(self.hauteur, defaut.HAUTEUR_BORDURE); glVertex3f(0, self.largeur, -defaut.HAUTEUR_BORDURE)
         glTexCoord2d(self.hauteur, 0); glVertex3f(0, self.largeur, 0)
         
+        glColor3ub(*((255/factAssomb,)*3))
         glTexCoord2d(0, 0); glVertex3f(self.hauteur, 0, 0)
         glTexCoord2d(0, defaut.HAUTEUR_BORDURE); glVertex3f(self.hauteur, 0, -defaut.HAUTEUR_BORDURE)
         glTexCoord2d(self.largeur, defaut.HAUTEUR_BORDURE); glVertex3f(self.hauteur, self.largeur, -defaut.HAUTEUR_BORDURE)
         glTexCoord2d(self.largeur, 0); glVertex3f(self.hauteur, self.largeur, 0)
-        
-        glColor3ub(70, 70, 70)
-        glVertex3f(self.hauteur, 0, -defaut.HAUTEUR_BORDURE); glVertex3f(0, 0, -defaut.HAUTEUR_BORDURE); glVertex3f(0, self.largeur, -defaut.HAUTEUR_BORDURE); glVertex3f(self.hauteur, self.largeur, -defaut.HAUTEUR_BORDURE)
         
         glEnd()
         
