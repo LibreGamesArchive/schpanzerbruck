@@ -3,6 +3,7 @@
 from PySFML import sf
 from OpenGL.GL import *
 from xml.dom import minidom
+import fx
 from constantes import tailles, defaut
 from utils import ConstsContainer
 import copy
@@ -61,13 +62,15 @@ class Element(ObjetMap):
         # Vide dans le cas d'un contexte non graphique (côté serveur)
         self.vie = infos["vie"]     # La vie d'un élément est modifiable, elle doit donc être extraite
     
-    def GL_Dessin(self):
+    def GL_Dessin(self, inclinaison):
+        glTranslatef(0.5, 0, 0)
+        glRotatef(inclinaison-90, 0, 1, 0)
         self.textures[0].Bind()
         glBegin(GL_QUADS)
-        glTexCoord2f(0, 0); glVertex3f(0.5, 0, 1.15)
-        glTexCoord2f(0, 1); glVertex3f(0.5, 0, 0)
-        glTexCoord2f(1, 1); glVertex3f(0.5, 1, 0)
-        glTexCoord2f(1, 0); glVertex3f(0.5, 1, 1.15)
+        glTexCoord2f(0, 0); glVertex3f(0, 0, 1.15)
+        glTexCoord2f(0, 1); glVertex3f(0, 0, 0)
+        glTexCoord2f(1, 1); glVertex3f(0, 1, 0)
+        glTexCoord2f(1, 0); glVertex3f(0, 1, 1.15)
         glEnd()
 
 
@@ -111,6 +114,32 @@ class BaseMap:
                 raise Exception, "Hauteur et/ou largeur ne correspondent pas à la liste de nums pour les %s dans la map %s" % (i, map)
         
         return tabsNums
+    
+    
+    def estValide(self, numCase):
+        if numCase >= 0 and numCase < self.largeur*self.hauteur:
+            return True
+        return False
+    
+    def estSurBordHaut(self, numCase):
+        if numCase >= 0 and numCase < self.largeur:
+            return True
+        return False
+    
+    def estSurBordGauche(self, numCase):
+        if estValide(numCase) and numCase % self.largeur == 0:
+            return True
+        return False
+    
+    def estSurBordBas(self, numCase):
+        if numCase >= self.largeur*(self.hauteur-1) and numCase < self.largeur*self.hauteur:
+            return True
+        return False
+    
+    def estSurBordDroit(self, numCase):
+        if estValide(numCase) and (numCase+1) % self.largeur == 0:
+            return True
+        return False
 
 
 class MapSrv(BaseMap):
@@ -190,7 +219,12 @@ class Map(BaseMap):
         self.__recupTexturesEtInfosSurMap(tabsNums, gestImages) # On remplit le dico self
         
         self.__statut = statut.INFOS_SEULEMENT    # Si True, les cases de la map ne sont pas sélectionnables, et le fait de les survoler ne change rien à l'affichage
-    
+        
+        self.inclinaisonElements = 1
+        
+        self.__FXActives = []      # Liste des effets spéciaux utilisables sur la Map
+        
+        self.lancerFX(fx.DeploiementElements())
     
     def __recupTexturesEtInfosSurMap(self, tabsNums, gestImages):
         """Comme son nom l'indique...
@@ -245,29 +279,47 @@ class Map(BaseMap):
         self.__statut = statut.CIBLAGE
     
     
-    def GL_Dessin(self):
+    def lancerFX(self, nouvFX):
+        """nouvFX doit être callable, et prendre en arguments map et frameTime"""
+        self.__FXActives.append(nouvFX)
+    
+    
+    def GL_RectUni(self, coordsHG, vectLarg, vectHaut=(0, 0, -0.4)):
+        glVertex3f(coordsHG[0]+vectLarg[0], coordsHG[1]+vectLarg[1], coordsHG[2]+vectLarg[2])
+        glVertex3f(*coordsHG)
+        glVertex3f(coordsHG[0]+vectHaut[0], coordsHG[1]+vectHaut[1], coordsHG[2]+vectHaut[2])
+        glVertex3f(coordsHG[0]+vectLarg[0]+vectHaut[0], coordsHG[1]+vectLarg[1]+vectHaut[1], coordsHG[2]+vectLarg[2]+vectHaut[2])
+    
+    
+    def GL_Dessin(self, frameTime):
         """Dessine la Map dans le plan (0xy)"""
         glMatrixMode(GL_MODELVIEW)
         glEnable(GL_TEXTURE_2D)
         
         if self.__statut == statut.NOIRCIR:
-            glColor3ub(50, 50, 50)
+            factAssomb = 5
         else:
-            glColor3ub(255, 255, 255)
+            factAssomb = 1
+            for ind, FX in enumerate(self.__FXActives):
+                if FX(self, frameTime):   # Si le FX revoie True, il est terminé
+                    self.__FXActives.pop(ind)
+        
+        glColor3ub(*((255/factAssomb,)*3))
         
         for numCase, coordsCase in enumerate(self.coordsCases):
             glPushMatrix()
             glTranslatef(*coordsCase)
             
             # DESSIN DE LA TUILE ET DE L'ELEMENT:
-            for typeObj in ["tuiles", "elements"]:
-                if isinstance(self.objets[typeObj][numCase], ObjetMap):     # Si il y a bien un ObjetMap à cette case
-                    self.objets[typeObj][numCase].GL_Dessin()
+            if isinstance(self.objets["tuiles"][numCase], ObjetMap):     # Si il y a bien un ObjetMap à cette case
+                self.objets["tuiles"][numCase].GL_Dessin()
+            
+            if isinstance(self.objets["elements"][numCase], ObjetMap):
+                self.objets["elements"][numCase].GL_Dessin(self.inclinaisonElements)
             
             glPopMatrix()
         
-        
-        
+
         # Dessin du plateau:
         self.imageBordure.Bind()
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT)
@@ -295,7 +347,6 @@ class Map(BaseMap):
         
         glColor3ub(70, 70, 70)
         glVertex3f(self.hauteur, 0, -defaut.HAUTEUR_BORDURE); glVertex3f(0, 0, -defaut.HAUTEUR_BORDURE); glVertex3f(0, self.largeur, -defaut.HAUTEUR_BORDURE); glVertex3f(self.hauteur, self.largeur, -defaut.HAUTEUR_BORDURE)
-        
         
         glEnd()
         
