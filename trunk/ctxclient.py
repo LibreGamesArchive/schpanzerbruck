@@ -117,7 +117,7 @@ class ContexteClient:
             glLoadIdentity()
             gluLookAt(self.camera.pos[0], self.camera.pos[1], self.camera.pos[2], self.camera.cible[0], self.camera.cible[1], self.camera.cible[2], 0, 0, 1)
             
-            self.map.GL_Dessin()
+            self.map.GL_Dessin(self.app.GetFrameTime())
             
             # Capture d'écran
             if self.capture:
