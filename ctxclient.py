@@ -4,7 +4,7 @@ from PySFML import sf
 from OpenGL.GL import *
 from OpenGL.GLU import gluPerspective, gluLookAt
 import os
-import mapmng, img, utils, constantes
+import mapmng, img, infos, utils, constantes
 #import gui
 
 
@@ -16,7 +16,7 @@ class ContexteClient:
         self.app = app
         self.L, self.H = self.app.GetWidth(), self.app.GetHeight()
         self.input = app.GetInput()
-        self.gestImages = img.GestionnaireImages()
+        self.gestImages = img.GestionnaireImages(infos.GestionnaireInfos())
         self.map = mapmng.Map(fichierMap, self.gestImages)
         #self.interface = gui.InterfaceCombat(self.L, self.H)
         

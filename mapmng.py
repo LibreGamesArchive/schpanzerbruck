@@ -206,7 +206,7 @@ class Map(BaseMap):
         if self.bordure==0x00:
             self.imageBordure=defaut.TEXTURE_BORDURE
         else:
-            self.imageBordure=gestImages["tuiles"][self.bordure].image
+            self.imageBordure=gestImages["tuiles"][self.bordure]
         
         self.coordsCases = [] # Coordonnées du point en haut à gauche de chaque case dans le plan (0xy)
         for x in range(0, self.hauteur):
@@ -242,9 +242,8 @@ class Map(BaseMap):
                     remonterDe += 1
                 
                 elif num >= 0x01 and (typeObj=="tuiles" or (typeObj != "tuiles" and self.objets["tuiles"][ind] != None)):   # Si il n'y a pas de tuile à cet endroit-là (0x00), on ne met pas non plus d'élément(s)
-                    imgETinfos = gestImages[typeObj][num]
-                    texture = imgETinfos.image
-                    infos = imgETinfos.infos
+                    texture = gestImages[typeObj][num]
+                    infos = gestImages.gestInfos[typeObj][num]
                     etalement = infos["etalement"]
                     
                     # A FAIRE : VERIFICATION : VOIR SI L'ELEMENT NE DEBORDE PAS DE LA MAP
