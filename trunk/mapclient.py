@@ -1,13 +1,11 @@
 # encoding=UTF-8
 
-from PySFML import sf
 from OpenGL.GL import *
 from OpenGL.GLU import gluPerspective, gluPickMatrix, gluLookAt
-from xml.dom import minidom
-import fx
+from mapbase import MapBase
+import mapfx
 from constantes import defaut
 from utils import ConstsContainer
-import copy
 
 
 statut = ConstsContainer()
@@ -93,129 +91,11 @@ class Element(ObjetMap):
         glEnd()
 
 
-class BaseMap:
-    """La classe de base pour une Map"""
-    
-    def __init__(self, map):
-        self.objets = { "tuiles":[], "elements":[] }
-        # Chaque case des listes du dico contient un ObjetMap
-    
-    
-    def parserMap(self, map):
-        """Renvoie un dico contenant les listes de numéros"""
-        
-        map_node = minidom.parse(map).documentElement
-        self.nom = map_node.attributes["nom"].value
-        
-        self.largeur = int(map_node.attributes["largeur"].value)
-        self.hauteur = int(map_node.attributes["hauteur"].value)
-        if map_node.hasAttribute("bordure"):
-            self.bordure = int(map_node.attributes["bordure"].value, 16)
-        else:
-            self.bordure=0x00
-        map_strs = {"tuiles":"", "elements":""}
-        tabsNums = {"tuiles":[], "elements":[]}
-        
-        for node in map_node.childNodes:
-            if isinstance(node, minidom.Element): # On saute les Text Nodes dus au sauts de lignes
-                for i in ["tuiles", "elements"]:
-                    if node.tagName == i:
-                        map_strs[i] = node.firstChild.data.strip()
-                        break
-        
-        # Supprime le dernier "|" des chaines:
-        for i in ["tuiles", "elements"]:
-            if map_strs[i][-1] == "|":
-                map_strs[i] = map_strs[i][0:-1]
-            int(map_node.attributes["hauteur"].value)
-            tabsNums[i] = [int(x.strip(), 16) for x in map_strs[i].split("|")]
-            if len(tabsNums[i]) != self.hauteur * self.largeur:
-                raise Exception, "Hauteur et/ou largeur ne correspondent pas à la liste de nums pour les %s dans la map %s" % (i, map)
-        
-        return tabsNums
-    
-    
-    def estValide(self, numCase):
-        if numCase >= 0 and numCase < self.largeur*self.hauteur:
-            return True
-        return False
-    
-    def estSurBordHaut(self, numCase):
-        if numCase >= 0 and numCase < self.largeur:
-            return True
-        return False
-    
-    def estSurBordGauche(self, numCase):
-        if estValide(numCase) and numCase % self.largeur == 0:
-            return True
-        return False
-    
-    def estSurBordBas(self, numCase):
-        if numCase >= self.largeur*(self.hauteur-1) and numCase < self.largeur*self.hauteur:
-            return True
-        return False
-    
-    def estSurBordDroit(self, numCase):
-        if estValide(numCase) and (numCase+1) % self.largeur == 0:
-            return True
-        return False
-
-
-class MapSrv(BaseMap):
-    """La map ne contenant aucune texture, destinée à être utilisée seulement par le serveur"""
-    
-    def __init__(self, map):
-        BaseMap.__init__(self, map)
-    
-    
-    def zoneDeplacement(self, coord, mvt, origine="0", coordsPossibles=[], chemin=[], route=[], mvtRestant=[]):
-        """Renvoie 3 listes : les coords accessibles, le chemin à parcourir pour chaque et le mouvement restant au personnage pour chaque
-        Arguments:
-        - coord: la case actuelle du perso
-        - mvt: la capacité de mouvement du perso
-        Les autres arguments servent pour la recursivité"""
-        
-        if not coord in coordsPossibles:
-            coordsPossibles.append(coord)
-            chemin.append(copy.copy(route))
-            mvtRestant.append(mvt)
-        else:
-            index = coordsPossibles.index(coord)
-            if mvtRestant[index] < mvt:
-                chemin[index] = copy.copy(route)
-                mvtRestant[index] = mvt
-        
-        terrain = 1   # Cout de la case actuelle (coord) en mouvement POUR SORTIR DE LA CASE
-        
-        if mvt-terrain >= 0:
-            if (coord+1)%self.largeur != 0 and origine != "d" and True:
-                route.append("d")
-                self.zoneDeplacement(coord+1,mvt-terrain,"g",coordsPossibles,chemin,route,mvtRestant)
-                route.pop()
-            
-            if coord%self.largeur != 0 and origine != "g" and True:
-                route.append("g")
-                self.zoneDeplacement(coord-1,mvt-terrain,"d",coordsPossibles,chemin,route,mvtRestant)
-                route.pop()
-            
-            if coord-self.largeur >= 0 and origine != "h" and True:
-                route.append("h")
-                self.zoneDeplacement(coord-self.largeur,mvt-terrain,"b",coordsPossibles,chemin,route,mvtRestant)
-                route.pop()
-            
-            if coord+self.largeur < self.largeur*self.hauteur and origine != "b" and True:
-                route.append("b")
-                self.zoneDeplacement(coord+self.largeur,mvt-terrain,"h",coordsPossibles,chemin,route,mvtRestant)
-                route.pop()
-        
-        return (coordsPossibles, chemin, mvtRestant)
-
-
-class Map(BaseMap):
+class Map(MapBase):
     """La Map côté client, dessinable"""
     
     def __init__(self, map, gestImages):
-        BaseMap.__init__(self, map)
+        MapBase.__init__(self, map)
         
         tabsNums = self.parserMap(map)
         
@@ -240,7 +120,7 @@ class Map(BaseMap):
         
         self.__FXActives = []      # Liste des effets spéciaux utilisables sur la Map
         
-        self.lancerFX(fx.DeploiementElements())
+        self.lancerFX(mapfx.DeploiementElements())
     
     
     def __recupTexturesEtInfosSurMap(self, tabsNums, gestImages):
@@ -307,7 +187,7 @@ class Map(BaseMap):
         glVertex3f(coordsHG[0]+vectLarg[0]+vectHaut[0], coordsHG[1]+vectLarg[1]+vectHaut[1], coordsHG[2]+vectLarg[2]+vectHaut[2])
     
     
-    def __GL_Selection(self, frameTime, appL, appH, camera, curseurX, curseurY):
+    def GL_DessinPourPicking(self, frameTime, appL, appH, camera, curseurX, curseurY):
         """GL_Dessin pour le picking"""
         glSelectBuffer(256)
         
@@ -364,6 +244,8 @@ class Map(BaseMap):
         glEnable(GL_DEPTH_TEST)
         glEnable(GL_BLEND)
         glEnable(GL_ALPHA_TEST)
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
+        glAlphaFunc(GL_GREATER, 0)
         
         if self.__statut == statut.NOIRCIR:
             factAssomb = 5
@@ -421,7 +303,7 @@ class Map(BaseMap):
         glEnd()
         
         #if self.__statut != statut.NOIRCIR and self.__statut != statut.PAS_DE_SELECTION:
-        #   self.__GL_Selection(frameTime, appL, appH, camera, curseurX, curseurY)
+        #   self.GL_DessinPourPicking(frameTime, appL, appH, camera, curseurX, curseurY)
     
     
     def gererClic(self, evt):

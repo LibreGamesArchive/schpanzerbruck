@@ -3,8 +3,8 @@
 from PySFML import sf
 from OpenGL.GL import *
 import os
-import mapmng, img, infos, utils, constantes
-#import gui
+import mapclient, img, infos, utils, constantes
+#import mapgui
 
 
 class ContexteClient:
@@ -17,8 +17,8 @@ class ContexteClient:
         self.input = app.GetInput()
         
         self.gestImages = img.GestionnaireImages(infos.GestionnaireInfos())
-        self.map = mapmng.Map(fichierMap, self.gestImages)
-        #self.interface = gui.InterfaceCombat(self.L, self.H)
+        self.map = mapclient.Map(fichierMap, self.gestImages)
+        #self.interface = mapgui.InterfaceCombat(self.L, self.H)
         
         self.persos = []    # persos[0] est toujours le personnage dont c'est actuellement le tour
         # La liste est mise à jour depuis le serveur
@@ -62,9 +62,6 @@ class ContexteClient:
     
     def lancerBoucle(self):
         """Lancer la boucle principale du combat"""
-        
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
-        glAlphaFunc(GL_GREATER, 0)
         
         # Met le curseur au centre de l'écran (fixe le bug de scrolling)
         self.app.SetCursorPosition(self.app.GetWidth()/2, self.app.GetHeight()/2)
