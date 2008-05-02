@@ -20,16 +20,10 @@ chemins.SAUVEGARDES = os.path.join(cheminDossierRacine, "sauv")
 chemins.CAPTURES = os.path.join(cheminDossierRacine, "captures")
 
 
-tailles = utils.ConstsContainer()
-
-tailles.LARGEUR_TUILES = 128
-tailles.HAUTEUR_TUILES = 80
-
-
 defaut = utils.chargerConfig(os.path.join(chemins.SAUVEGARDES, "schpbr.cfg"))
 
 defaut.CARTE = u"maptest2-cold.xml"
-defaut.TEXTURE_BORDURE = sf.Image(tailles.LARGEUR_TUILES, tailles.HAUTEUR_TUILES, sf.Color(128, 128, 128))
+defaut.TEXTURE_BORDURE = sf.Image(1, 1, sf.Color(128, 128, 128))
 defaut.HAUTEUR_BORDURE = 0.6
 
 
