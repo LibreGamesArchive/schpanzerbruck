@@ -181,7 +181,7 @@ class Map(MapBase):
     
     
     def lancerFX(self, nouvFX):
-        """nouvFX doit être callable, et prendre en arguments map et frameTime"""
+        """nouvFX doit être callable, et prendre en arguments map et getFrameTime (fonction pour obtenir le frameTime)"""
         self.__FXActives.append(nouvFX)
     
     
@@ -192,7 +192,7 @@ class Map(MapBase):
         glVertex3f(coordsHG[0]+vectLarg[0]+vectHaut[0], coordsHG[1]+vectLarg[1]+vectHaut[1], coordsHG[2]+vectLarg[2]+vectHaut[2])
     
     
-    def GL_DessinPourPicking(self, frameTime, appL, appH, camera, curseurX, curseurY):
+    def GL_DessinPourPicking(self, getFrameTime, appL, appH, camera, curseurX, curseurY, elemsON):
         """GL_Dessin pour le picking"""
         glSelectBuffer(128)
         
@@ -223,7 +223,7 @@ class Map(MapBase):
                 glPushName(0)
                 self.objets["tuiles"][numCase].GL_DessinSansTexture()
                 glPopName()
-            if isinstance(self.objets["elements"][numCase], ObjetMap):
+            if elemsON and isinstance(self.objets["elements"][numCase], ObjetMap):
                 glPushName(1)
                 self.objets["elements"][numCase].GL_DessinSansTexture(self.inclinaisonElements)
                 glPopName()
@@ -238,7 +238,7 @@ class Map(MapBase):
             self.picked = [-1, -1]
     
     
-    def GL_Dessin(self, frameTime, appL, appH, camera, curseurX, curseurY):
+    def GL_Dessin(self, getFrameTime, appL, appH, camera, curseurX, curseurY, elemsON=True):
         """Dessine la Map dans le plan (0xy)"""
         
         glMatrixMode(GL_PROJECTION)
@@ -261,39 +261,51 @@ class Map(MapBase):
         else:
             factAssomb = 1
             for ind, FX in enumerate(self.__FXActives):
-                if FX(self, frameTime):   # Si le FX revoie True, il est terminé
+                if FX(self, getFrameTime):   # Si le FX revoie True, il est terminé
                     self.__FXActives.pop(ind)
         
         nvGris = 255/factAssomb
         glColor3ub(nvGris, nvGris, nvGris)
         
-        for numCase, coordsCase in enumerate(self.coordsCases):
-            glPushMatrix()
-            glTranslatef(*coordsCase)
-            
-            tuileSelec, elemSelec = False, False
-            if self.picked[0] == numCase:
-                if self.picked[1] == 1:
-                    elemSelec = True
-                else:
-                    tuileSelec = True
-            
-            # DESSIN DE LA TUILE ET DE L'ELEMENT:
-            if isinstance(self.objets["tuiles"][numCase], ObjetMap):     # Si il y a bien un ObjetMap à cette case
-                if tuileSelec:
+        # DESSIN DES TUILES
+        for numCase, tuile in enumerate(self.objets["tuiles"]):
+            if isinstance(tuile, ObjetMap):
+                glPushMatrix()
+                glTranslatef(*(self.coordsCases[numCase]))
+                
+                selec = False
+                if self.picked[0] == numCase:
+                    if self.picked[1] == 0:
+                        selec = True
+                
+                if selec:
                     glColor3ub(0, nvGris/2, nvGris)
-                self.objets["tuiles"][numCase].GL_Dessin()
-                if tuileSelec:
+                tuile.GL_Dessin()
+                if selec:
                     glColor3ub(nvGris, nvGris, nvGris)
-            
-            if isinstance(self.objets["elements"][numCase], ObjetMap):
-                if elemSelec:
+                
+                glPopMatrix()
+        
+        # DESSIN DES ELEMENTS
+        for numCase, element in enumerate(self.objets["elements"]):
+            if isinstance(element, ObjetMap):
+                glPushMatrix()
+                glTranslatef(*(self.coordsCases[numCase]))
+                
+                selec = False
+                if self.picked[0] == numCase:
+                    if self.picked[1] == 1:
+                        selec = True
+                
+                if selec:
                     glColor3ub(0, nvGris/2, nvGris)
-                self.objets["elements"][numCase].GL_Dessin(self.inclinaisonElements)
-                if elemSelec:
+                elif not elemsON:
+                    glColor4ub(nvGris, nvGris, nvGris, 80)
+                element.GL_Dessin(self.inclinaisonElements)
+                if selec or not elemsON:
                     glColor3ub(nvGris, nvGris, nvGris)
-            
-            glPopMatrix()
+                
+                glPopMatrix()
         
         
         # Dessin du plateau:
@@ -333,7 +345,7 @@ class Map(MapBase):
         glEnd()
         
         if self.__statut != statut.NOIRCIR and self.__statut != statut.PAS_DE_SELECTION:
-            self.GL_DessinPourPicking(frameTime, appL, appH, camera, curseurX, curseurY)
+            self.GL_DessinPourPicking(getFrameTime(), appL, appH, camera, curseurX, curseurY, elemsON)
     
     
     def gererClic(self, evt):
