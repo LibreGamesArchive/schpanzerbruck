@@ -121,6 +121,11 @@ class Map(MapBase):
         self.__FXActives = []      # Liste des effets spéciaux utilisables sur la Map
         
         self.lancerFX(mapfx.DeploiementElements())
+        
+        self.picked = [-1, -1]    # ObjetMap sélectionné par le picking.
+        # self.picked == [-1, -1] : Pas d'objet sélectionné
+        # self.picked = [numCase, typeObjet] : Objet sélectionné :
+        #       typeObjet: ==0 : tuile; ==1 : élément; ==2 : perso
     
     
     def __recupTexturesEtInfosSurMap(self, tabsNums, gestImages):
@@ -189,14 +194,14 @@ class Map(MapBase):
     
     def GL_DessinPourPicking(self, frameTime, appL, appH, camera, curseurX, curseurY):
         """GL_Dessin pour le picking"""
-        glSelectBuffer(256)
+        glSelectBuffer(128)
         
         glRenderMode(GL_SELECT)
         glInitNames()
         
         glMatrixMode(GL_PROJECTION)
         glLoadIdentity()
-        gluPickMatrix(curseurX, appH - curseurY, 5, 5, glGetIntegerv(GL_VIEWPORT))
+        gluPickMatrix(curseurX, appH - curseurY, 1, 1, glGetIntegerv(GL_VIEWPORT))
         gluPerspective(70, float(appL)/appH, 1, 50)
         
         glMatrixMode(GL_MODELVIEW)
@@ -215,18 +220,22 @@ class Map(MapBase):
             # DESSIN DE LA TUILE ET DE L'ELEMENT:
             glPushName(numCase)
             if isinstance(self.objets["tuiles"][numCase], ObjetMap):     # Si il y a bien un ObjetMap à cette case
-                glLoadName(0)
+                glPushName(0)
                 self.objets["tuiles"][numCase].GL_DessinSansTexture()
-            
+                glPopName()
             if isinstance(self.objets["elements"][numCase], ObjetMap):
-                glLoadName(1)
+                glPushName(1)
                 self.objets["elements"][numCase].GL_DessinSansTexture(self.inclinaisonElements)
+                glPopName()
             glPopName()
             
             glPopMatrix()
         
         nameStack = glRenderMode(GL_RENDER)
-        #print nameStack
+        if len(nameStack) > 0:
+            self.picked = nameStack[-1].names
+        else:
+            self.picked = [-1, -1]
     
     
     def GL_Dessin(self, frameTime, appL, appH, camera, curseurX, curseurY):
@@ -255,18 +264,34 @@ class Map(MapBase):
                 if FX(self, frameTime):   # Si le FX revoie True, il est terminé
                     self.__FXActives.pop(ind)
         
-        glColor3ub(*((255/factAssomb,)*3))
+        nvGris = 255/factAssomb
+        glColor3ub(nvGris, nvGris, nvGris)
         
         for numCase, coordsCase in enumerate(self.coordsCases):
             glPushMatrix()
             glTranslatef(*coordsCase)
             
+            tuileSelec, elemSelec = False, False
+            if self.picked[0] == numCase:
+                if self.picked[1] == 1:
+                    elemSelec = True
+                else:
+                    tuileSelec = True
+            
             # DESSIN DE LA TUILE ET DE L'ELEMENT:
             if isinstance(self.objets["tuiles"][numCase], ObjetMap):     # Si il y a bien un ObjetMap à cette case
+                if tuileSelec:
+                    glColor3ub(0, nvGris/2, nvGris)
                 self.objets["tuiles"][numCase].GL_Dessin()
+                if tuileSelec:
+                    glColor3ub(nvGris, nvGris, nvGris)
             
             if isinstance(self.objets["elements"][numCase], ObjetMap):
+                if elemSelec:
+                    glColor3ub(0, nvGris/2, nvGris)
                 self.objets["elements"][numCase].GL_Dessin(self.inclinaisonElements)
+                if elemSelec:
+                    glColor3ub(nvGris, nvGris, nvGris)
             
             glPopMatrix()
         
@@ -276,25 +301,30 @@ class Map(MapBase):
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT)
         glBegin(GL_QUADS)
-        glColor3ub(*((195/factAssomb,)*3))
+        
+        nvGris = 195/factAssomb
+        glColor3ub(nvGris, nvGris, nvGris)
         glTexCoord2d(0, 0); glVertex3f(0, 0, 0)
         glTexCoord2d(0, defaut.HAUTEUR_BORDURE); glVertex3f(0, 0, -defaut.HAUTEUR_BORDURE)
         glTexCoord2d(self.hauteur, defaut.HAUTEUR_BORDURE); glVertex3f(self.hauteur, 0, -defaut.HAUTEUR_BORDURE)
         glTexCoord2d(self.hauteur, 0); glVertex3f(self.hauteur, 0, 0)
         
-        glColor3ub(*((85/factAssomb,)*3))
+        nvGris = 85/factAssomb
+        glColor3ub(nvGris, nvGris, nvGris)
         glTexCoord2d(0, 0); glVertex3f(0, 0, 0)
         glTexCoord2d(0, defaut.HAUTEUR_BORDURE); glVertex3f(0, 0, -defaut.HAUTEUR_BORDURE)
         glTexCoord2d(self.largeur, defaut.HAUTEUR_BORDURE); glVertex3f(0, self.largeur, -defaut.HAUTEUR_BORDURE)
         glTexCoord2d(self.largeur, 0); glVertex3f(0, self.largeur, 0)
         
-        glColor3ub(*((135/factAssomb,)*3))
+        nvGris = 135/factAssomb
+        glColor3ub(nvGris, nvGris, nvGris)
         glTexCoord2d(0, 0); glVertex3f(self.hauteur, self.largeur, 0)
         glTexCoord2d(0, defaut.HAUTEUR_BORDURE); glVertex3f(self.hauteur, self.largeur, -defaut.HAUTEUR_BORDURE)
         glTexCoord2d(self.hauteur, defaut.HAUTEUR_BORDURE); glVertex3f(0, self.largeur, -defaut.HAUTEUR_BORDURE)
         glTexCoord2d(self.hauteur, 0); glVertex3f(0, self.largeur, 0)
         
-        glColor3ub(*((255/factAssomb,)*3))
+        nvGris = 255/factAssomb
+        glColor3ub(nvGris, nvGris, nvGris)
         glTexCoord2d(0, 0); glVertex3f(self.hauteur, 0, 0)
         glTexCoord2d(0, defaut.HAUTEUR_BORDURE); glVertex3f(self.hauteur, 0, -defaut.HAUTEUR_BORDURE)
         glTexCoord2d(self.largeur, defaut.HAUTEUR_BORDURE); glVertex3f(self.hauteur, self.largeur, -defaut.HAUTEUR_BORDURE)
@@ -302,8 +332,8 @@ class Map(MapBase):
         
         glEnd()
         
-        #if self.__statut != statut.NOIRCIR and self.__statut != statut.PAS_DE_SELECTION:
-        #   self.GL_DessinPourPicking(frameTime, appL, appH, camera, curseurX, curseurY)
+        if self.__statut != statut.NOIRCIR and self.__statut != statut.PAS_DE_SELECTION:
+            self.GL_DessinPourPicking(frameTime, appL, appH, camera, curseurX, curseurY)
     
     
     def gererClic(self, evt):
