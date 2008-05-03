@@ -90,22 +90,32 @@ class ContexteClient:
                         res = self.map.gererClic(evt)
                     else:
                         running = not res.quitter
+                
+                elif evt.Type == sf.Event.MouseWheelMoved:  # ZOOM de la Map avec la molette de la souris
+                    self.camera.pos[2] -= (1800.0/(self.map.hauteur*self.map.largeur))*evt.MouseWheel.Delta*self.app.GetFrameTime()
+                    if self.camera.pos[2] < 3: self.camera.pos[2] = 3
+                    if self.camera.pos[2] > 12: self.camera.pos[2] = 12
             
-            # Gestion de la souris en temps réel :
-            curseurX, curseurY = self.input.GetMouseX(), self.input.GetMouseY()
             
-            # ZOOM de la Map :
+            # ZOOM de la Map avec le clavier :
             if self.input.IsKeyDown(self.touches.ZOOM_AVANT) and self.camera.pos[2] > 3:
                 self.camera.pos[2] -= 10*self.app.GetFrameTime()
             elif self.input.IsKeyDown(self.touches.ZOOM_ARRIERE) and self.camera.pos[2] < 12:
                 self.camera.pos[2] += 10*self.app.GetFrameTime()
+            
+            # Gestion de la souris en temps réel :
+            curseurX, curseurY = self.input.GetMouseX(), self.input.GetMouseY()
             
             self.__scrolling(curseurX, curseurY)
             
             # DESSIN :
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
             
-            self.map.GL_Dessin(self.app.GetFrameTime(), self.app.GetWidth(), self.app.GetHeight(), self.camera, curseurX, curseurY)
+            if self.input.IsKeyDown(sf.Key.A):
+                elemsON = False
+            else:
+                elemsON = True
+            self.map.GL_Dessin(self.app.GetFrameTime, self.app.GetWidth(), self.app.GetHeight(), self.camera, curseurX, curseurY, elemsON)
             
             # Capture d'écran
             if self.capture:
