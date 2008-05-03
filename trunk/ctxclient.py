@@ -2,7 +2,7 @@
 
 from PySFML import sf
 from OpenGL.GL import *
-import os
+import glob, os
 import mapclient, img, infos, utils, constantes
 #import mapgui
 
@@ -82,7 +82,7 @@ class ContexteClient:
                         running = False
                     elif evt.Key.Code == self.touches.CAPTURE:
                         # Activer capture d'écran
-                        self.capture=True
+                        self.demanderCapture()
                 
                 elif evt.Type == sf.Event.MouseButtonPressed:
                     res = None # self.interface.gererClic(evt, self.vueInterface)  # L'interface est bien entendu prioritaire sur la Map dans la gestion des clics
@@ -109,25 +109,28 @@ class ContexteClient:
             
             # Capture d'écran
             if self.capture:
-                ls=os.listdir(constantes.chemins.CAPTURES)
-                ls.sort()
-                ls.reverse()
-                number=1
-                for fichier in ls:
-                    if fichier[0:3]=="cap":
-                        try:
-                            number=int(fichier[3:8])+1
-                            break
-                        except:
-                            pass
-                if number>99999:
-                    number=1
-                nom=os.path.join(constantes.chemins.CAPTURES, "cap%05d.png" %number)
-                image=self.app.Capture()
-                if image.SaveToFile(nom):
-                    print "Capture sauvegardée avec succès dans %s" %nom
+                self.capturerImmediatement()
                 self.capture=False
             
             self.app.Display()
             
             print 1/self.app.GetFrameTime()
+    
+    def demanderCapture(self):
+        self.capture=True
+    
+    def capturerImmediatement(self):
+        ls=glob.glob(os.path.join(constantes.chemins.CAPTURES, "cap[0-9][0-9][0-9][0-9][1-9].png"))
+        try:
+            number=int(os.path.basename(ls[-1])[3:8])+1
+        except:
+            number=1
+        if number>99999:
+            number=1
+        nom=os.path.join(constantes.chemins.CAPTURES, "cap%05d.png" %number)
+        self.__capturerDansFichier(nom)
+    
+    def __capturerDansFichier(self, nom):
+        image=self.app.Capture()
+        if image.SaveToFile(nom):
+            print "Capture sauvegardée avec succès dans %s" %nom
