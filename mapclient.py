@@ -10,10 +10,10 @@ from utils import ConstsContainer
 
 statut = ConstsContainer()
 statut.PAS_DE_SELECTION = 0
-statut.INFOS_SEULEMENT = 1
-statut.DEPLACEMENT = 2
-statut.CIBLAGE = 3
-statut.NOIRCIR = 4
+statut.NOIRCIR = 1
+statut.INFOS_SEULEMENT = 2
+statut.DEPLACEMENT = 3
+statut.CIBLAGE = 4
 
 
 class ResultatClicMap:
@@ -114,7 +114,7 @@ class Map(MapBase):
         
         self.__recupTexturesEtInfosSurMap(tabsNums, gestImages) # On remplit le dico self
         
-        self.__statut = statut.INFOS_SEULEMENT    # Si True, les cases de la map ne sont pas sélectionnables, et le fait de les survoler ne change rien à l'affichage
+        self.__statut = statut.INFOS_SEULEMENT
         
         self.inclinaisonElements = 1
         
@@ -213,23 +213,31 @@ class Map(MapBase):
         glDisable(GL_BLEND)
         glDisable(GL_ALPHA_TEST)
         
-        for numCase, coordsCase in enumerate(self.coordsCases):
-            glPushMatrix()
-            glTranslatef(*coordsCase)
-            
-            # DESSIN DE LA TUILE ET DE L'ELEMENT:
-            glPushName(numCase)
-            if isinstance(self.objets["tuiles"][numCase], ObjetMap):     # Si il y a bien un ObjetMap à cette case
-                glPushName(0)
-                self.objets["tuiles"][numCase].GL_DessinSansTexture()
-                glPopName()
-            if elemsON and isinstance(self.objets["elements"][numCase], ObjetMap):
-                glPushName(1)
-                self.objets["elements"][numCase].GL_DessinSansTexture(self.inclinaisonElements)
-                glPopName()
-            glPopName()
-            
-            glPopMatrix()
+        if self.__statut != statut.CIBLAGE :
+            # DESSIN DES TUILES
+            for numCase, tuile in enumerate(self.objets["tuiles"]):
+                if isinstance(tuile, ObjetMap):
+                    glPushMatrix()
+                    glTranslatef(*(self.coordsCases[numCase]))
+                    
+                    glPushName(numCase); glPushName(0)
+                    tuile.GL_DessinSansTexture()
+                    glPopName(); glPopName()
+                    
+                    glPopMatrix()
+        
+        if elemsON and self.__statut == statut.CIBLAGE:
+            # DESSIN DES ELEMENTS
+            for numCase, element in enumerate(self.objets["elements"]):
+                if isinstance(element, ObjetMap):
+                    glPushMatrix()
+                    glTranslatef(*(self.coordsCases[numCase]))
+                    
+                    glPushName(numCase); glPushName(1)
+                    element.GL_DessinSansTexture(self.inclinaisonElements)
+                    glPopName(); glPopName()
+                    
+                    glPopMatrix()
         
         nameStack = glRenderMode(GL_RENDER)
         if len(nameStack) > 0:
@@ -344,7 +352,7 @@ class Map(MapBase):
         
         glEnd()
         
-        if self.__statut != statut.NOIRCIR and self.__statut != statut.PAS_DE_SELECTION:
+        if self.__statut not in (statut.NOIRCIR, statut.PAS_DE_SELECTION):
             self.GL_DessinPourPicking(getFrameTime(), appL, appH, camera, curseurX, curseurY, elemsON)
     
     
