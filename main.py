@@ -57,7 +57,8 @@ else:   # Ou pas (mais faut éviter)
     print "Fullscreen: OFF"
     
 
-app = sf.Window(videoMode, "SCHPANZERBRUCK", style)
+# Les captures ne fonctionnent pas avec Window
+app = sf.RenderWindow(videoMode, "SCHPANZERBRUCK", style)
 #app.SetFramerateLimit(defaut.FPS_MAX)
 app.UseVerticalSync(defaut.SYNCHRO_VERTICALE)
 #app.PreserveOpenGLStates(True)
