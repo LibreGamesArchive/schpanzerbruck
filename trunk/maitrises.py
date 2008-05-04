@@ -8,45 +8,43 @@ class Maitrise:
     """Décrit une maitrise"""
 
     def __init__(self, nom, nomComplet,antagonismes,attaqueMagique,attaquePhysique,portee,precision):
-		self.nom = nom						# Nom courant utilisé pour la comparaison
-		self.nomComplet = nomComplet		# Nom complet, utilisé pour les crétins qui vont jouer à ce jeu stupide
-		self.antagonismes = antagonismes	# Liste des maitrises qui ne peuvent pas etre utilisés ensemble
-		self.attaqueMagique = attaqueMagique
-		self.attaquePhysique = attaquePhysique
-		self.portee = portee
-		self.precision = precision
-		
-	def __calculDegats(grade):
-		
-		if grade == "E":
-			ret = randrange(10)
-		elif grade == "D":
-			ret = randrange(20)
-		elif grade == "C":
-			ret = randrange(40)
-		elif grade == "B":
-			ret = randrange(60)
-		elif grade == "A":
-			ret = randrange(100)
-			
-		return ret
-	
-	def __calculDegatsMagiques(grade):
-		return (self.attaqueMagique * self.__calculDegats(grade))
-	
-	def __calculDegatsPhysiques(grade):
-		return (self.attaquePhysique * self.__calculDegats(grade))
-	
-	def __calculPortee(grade):
-		return (self.portee)
-	
-	def __calculPrecision(grade):
-		return (self.precision * self.__calculDegats(grade))
-	
-	def retourneStat():
-		return ((self.__calculDegatsMagique(),self.__calculDegatsPhysiques(),self.__calculPortee(),self.__calculPrecision()))
-	
-
+        self.nom = nom						# Nom courant utilisé pour la comparaison
+        self.nomComplet = nomComplet		# Nom complet, utilisé pour les crétins qui vont jouer à ce jeu stupide
+        self.antagonismes = antagonismes	# Liste des maitrises qui ne peuvent pas etre utilisés ensemble
+        self.attaqueMagique = attaqueMagique
+        self.attaquePhysique = attaquePhysique
+        self.portee = portee
+        self.precision = precision
+    
+    def __calculDegats(grade):
+        
+        if grade == "E":
+            ret = randrange(10)
+        elif grade == "D":
+            ret = randrange(20)
+        elif grade == "C":
+            ret = randrange(40)
+        elif grade == "B":
+            ret = randrange(60)
+        elif grade == "A":
+            ret = randrange(100)
+        
+        return ret
+    
+    def __calculDegatsMagiques(grade):
+        return (self.attaqueMagique * self.__calculDegats(grade))
+    
+    def __calculDegatsPhysiques(grade):
+        return (self.attaquePhysique * self.__calculDegats(grade))
+    
+    def __calculPortee(grade):
+        return (self.portee)
+    
+    def __calculPrecision(grade):
+        return (self.precision * self.__calculDegats(grade))
+    
+    def retourneStat():
+        return ((self.__calculDegatsMagique(),self.__calculDegatsPhysiques(),self.__calculPortee(),self.__calculPrecision()))
 
 
 
