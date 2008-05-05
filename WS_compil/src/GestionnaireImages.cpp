@@ -9,15 +9,16 @@ ImageAnnotee::ImageAnnotee(int _etalement)
 
 bool GestionnaireImages::chargerImagesMap(int _nbrCases, int* _numsTuiles, int* _numsElements, char** _cheminsTuiles, char** _cheminsElements)
 {
+    bool b = false;
     for(int i=0; i<_nbrCases; i++)
     {
-        chargerImage("tuiles", _numsTuiles[i], _cheminsTuiles[i]);
-        chargerImage("elements", _numsElements[i], _cheminsElements[i]) // ETALEMENT !! A REGLER !
+        b = b && chargerImage("tuiles", _numsTuiles[i], _cheminsTuiles[i]) && chargerImage("elements", _numsElements[i], _cheminsElements[i]);    // ETALEMENT !! A REGLER !
     }
+    return b;
 }
 
 
-bool GestionnaireImages::chargerImage(char* typeObj, int num, char* chemin, int etalement)
+bool GestionnaireImages::chargerImage(string typeObj, int num, char* chemin, int etalement)
 {
     bool chargementOK = true;
     // Les numéros des images sont en HEXADECIMAL
@@ -29,11 +30,11 @@ bool GestionnaireImages::chargerImage(char* typeObj, int num, char* chemin, int 
             if (!objets[typeObj][num].LoadFromFile(chemin))
                 chargementOK = false;
         }
-    
+
     return chargementOK;
 }
 
-sf::Image* GestionnaireImages::obtenirImage(char* typeObj, int num)
+sf::Image* GestionnaireImages::obtenirImage(string typeObj, int num)
 {
     if (objets.find(typeObj) != objets.end())
         if (objets[typeObj].find(num) != objets[typeObj].end())

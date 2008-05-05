@@ -1,0 +1,9 @@
+# depslib dependency file v1.0
+1210007530 source:/home/broken/progs/schpanzerbruck/WS_compil/src/GestionnaireImages.cpp
+	"../include/GestionnaireImages.hpp"
+
+1210007473 /home/broken/progs/schpanzerbruck/WS_compil/include/GestionnaireImages.hpp
+	<SFML/Graphics.hpp>
+	<map>
+	<string>
+
