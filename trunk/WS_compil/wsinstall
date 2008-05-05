@@ -1,0 +1,13 @@
+#! /bin/sh
+
+rm -R ../PyWS
+
+swig -python -c++ welt.i
+python setup.py build
+
+cp -R build/lib.linux-i686-2.5/PyWS ../PyWS
+cp welt.py ../PyWS/welt.py
+
+rm -R build
+rm welt_wrap.cxx
+rm welt.py
