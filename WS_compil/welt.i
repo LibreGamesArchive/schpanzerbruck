@@ -1,4 +1,4 @@
-%module gren
+%module welt
 %{
 #include "include/MoteurCombat.hpp"
 #include "include/MoteurJeu.hpp"
