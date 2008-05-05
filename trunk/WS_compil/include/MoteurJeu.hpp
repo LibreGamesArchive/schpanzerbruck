@@ -6,6 +6,7 @@
 
 #include "MoteurCombat.hpp"
 
+using namespace std;
 
 class MoteurJeu
 {
@@ -14,9 +15,9 @@ private:
 
 public:
     MoteurJeu(int appL, int appH, int bpp, bool fullscreen, bool synchroVert, int fpsMax=-1);
-    
+
     ~MoteurJeu();
-    
+
     MoteurCombat obtenirMoteurCombat(DonneesMap DM, Touches touches);
 };
 

@@ -9,6 +9,7 @@
 #include "MapClient.hpp"
 #include "GestionnaireImages.hpp"
 
+using namespace std;
 
 struct DonneesMap
 {
@@ -38,26 +39,26 @@ private:
     GestionnaireImages* gestImages;
     MapClient* map;
     Camera* camera;
-    
+
     int vitesseDefil, bordureDefil;
     bool elemsON;
-    
+
     void scrolling(int curseurX, int curseurY);
 
     friend class MoteurJeu;
-    
+
     MoteurCombat(sf::RenderWindow* _app, DonneesMap _DM, Touches _touches);
 
 public:
     ~MoteurCombat();
-    
+
     void centrerCurseur();
-    
+
     void afficher();
-    
+
     bool gestionClavierSouris();
-    
+
     float FPS();
-};  
+};
 
 #endif

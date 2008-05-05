@@ -7,14 +7,14 @@ FX::~FX()
 }
 
 
-bool DeploiementElements::effet(MapClient& map, float frameTime)
+bool DeploiementElements::effet(MapClient& carte, float frameTime)
 {
-    if (map.inclinaisonElements < 70)
+    if (carte.inclinaisonElements < 70)
     {
-        map.inclinaisonElements += 130 * frameTime;
-        if (map.inclinaisonElements > 70)
+        carte.inclinaisonElements += 130 * frameTime;
+        if (carte.inclinaisonElements > 70)
         {
-            map.inclinaisonElements = 70;
+            carte.inclinaisonElements = 70;
             return true;
         }
     }
