@@ -2,8 +2,6 @@
 
 import os.path
 from PySFML import sf
-from xml.dom import minidom
-from utils import ConstsContainer
 from constantes import chemins
 
 
