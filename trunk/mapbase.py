@@ -37,7 +37,6 @@ class MapBase:
         for i in ["tuiles", "elements"]:
             if map_strs[i][-1] == "|":
                 map_strs[i] = map_strs[i][0:-1]
-            int(map_node.attributes["hauteur"].value)
             tabsNums[i] = [int(x.strip(), 16) for x in map_strs[i].split("|")]
             if len(tabsNums[i]) != self.hauteur * self.largeur:
                 raise Exception, "Hauteur et/ou largeur ne correspondent pas à la liste de nums pour les %s dans la map %s" % (i, map)
