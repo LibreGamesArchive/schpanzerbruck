@@ -55,7 +55,7 @@ else:   # Ou pas (mais faut éviter)
     videoMode = sf.VideoMode(*defaut.MODE)
     style = sf.Style.Close
     print "Fullscreen: OFF"
-    
+
 
 # Les captures ne fonctionnent pas avec Window
 app = sf.RenderWindow(videoMode, "SCHPANZERBRUCK", style)
