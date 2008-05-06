@@ -15,7 +15,8 @@ license = 'GPL v3',
 ext_modules = [
                 Extension('PyWS._welt',
                     ["welt_wrap.cxx"] + listeSources, \
-                    libraries=['sfml-graphics', 'sfml-window', 'sfml-audio', 'sfml-system', 'GL', 'GLU'])
+                    libraries=['sfml-graphics', 'sfml-window', 'sfml-audio', 'sfml-system', 'GL', 'GLU'],
+                    include_dirs=["include"])
               ],
 packages = ["PyWS"],
 package_dir = {"PyWS":"PyWS"}

@@ -1,12 +1,13 @@
 #ifndef MAP_FX_HEADER
 #define MAP_FX_HEADER
 
-#include "MapClient.hpp"
-
-using namespace std;
+#include <MapClient.hpp>
 
 // EFFETS SPECIAUX:  Modifient à chaque image plusieurs variables de la map.
 // Retournent true si l'effet est fini, false sinon
+namespace ws
+{
+class MapClient;
 class FX
 {
 public:
@@ -19,5 +20,6 @@ class DeploiementElements : public FX
 public:
     virtual bool effet(MapClient& carte, float frameTime);
 };
+} // ws
 
-#endif
+#endif // MAP_FX_HEADER

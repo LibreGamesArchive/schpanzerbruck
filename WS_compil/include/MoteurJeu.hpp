@@ -4,9 +4,13 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
 
-#include "MoteurCombat.hpp"
+#include <MoteurCombat.hpp>
 
-using namespace std;
+namespace ws
+{
+struct DonneesMap;
+struct Touches;
+class MoteurCombat;
 
 class MoteurJeu
 {
@@ -20,5 +24,6 @@ public:
 
     MoteurCombat obtenirMoteurCombat(DonneesMap DM, Touches touches);
 };
+}
 
 #endif

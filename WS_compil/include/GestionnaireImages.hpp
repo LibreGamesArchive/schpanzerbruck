@@ -5,8 +5,8 @@
 #include <map>
 #include <string>
 
-using namespace std;
-
+namespace ws
+{
 
 class ImageAnnotee : public sf::Image
 {
@@ -20,14 +20,16 @@ public:
 class GestionnaireImages
 {
 private:
-    map<string, map<int, ImageAnnotee> > objets;
+    std::map<std::string, std::map<int, ImageAnnotee> > objets;
 
 public:
-    bool chargerImage(string typeObj, int num, char* chemin, int etalement=1);
+    bool chargerImage(std::string typeObj, int num, char* chemin, int etalement=1);
 
     bool chargerImagesMap(int _nbrCases, int* _numsTuiles, int* _numsElements, char** _cheminsTuiles, char** _cheminsElements);
 
-    sf::Image* obtenirImage(string typeObj, int num);
+    sf::Image* obtenirImage(std::string typeObj, int num);
 };
+
+}
 
 #endif

@@ -1,27 +1,31 @@
-#include "../include/MoteurCombat.hpp"
+#include <MoteurCombat.hpp>
 
-
+namespace ws
+{
 MoteurCombat::MoteurCombat(sf::RenderWindow* _app, DonneesMap _DM, Touches _touches)
 {
     app = _app;
     L = app->GetWidth();
     H = app->GetHeight();
-    gestImages = new gestImages();
+    gestImages = new GestionnaireImages();
     map = new MapClient(gestImages, _DM.largeur, _DM.hauteur, _DM.numsTuiles, _DM.numsElements, _DM.cheminsTuiles, _DM.cheminsElements, _DM.numTexBordure, _DM.hauteurBordure);
-    
+
     touches = _touches;
-    
+
     vitesseDefil = 8;
     bordureDefil = 40;
-    
+
+    curseurX = 0;
+    curseurY = 0;
+
     camera = new Camera;
-    camera->pos[0] = map->hauteur/2 + 4;
-    camera->pos[1] = map->largeur/2;
+    camera->pos[0] = map->getHauteur()/2 + 4;
+    camera->pos[1] = map->getLargeur()/2;
     camera->pos[2] = 4;
-    camera->cible[0] = map->hauteur/2;
-    camera->cible[1] = map->largeur/2;
+    camera->cible[0] = map->getHauteur()/2;
+    camera->cible[1] = map->getLargeur()/2;
     camera->cible[2] = 0;
-    
+
     elemsON = true;
 }
 
@@ -35,13 +39,13 @@ MoteurCombat::~MoteurCombat()
 void MoteurCombat::scrolling(int curseurX, int curseurY)
 {
     float defil = vitesseDefil * app->GetFrameTime();
-    
+
     if (curseurX <= bordureDefil && camera->cible[1] > -2)   // DEFILEMENT VERS LA GAUCHE
     {   camera->pos[1] -= defil;
         camera->cible[1] -= defil;
     }
     else
-        if (curseurX >= app->GetWidth() - bordureDefil and camera->cible[1] < map->largeur+2)   // DEFILEMENT VERS LA DROITE
+        if (curseurX >= app->GetWidth() - bordureDefil and camera->cible[1] < map->getLargeur()+2)   // DEFILEMENT VERS LA DROITE
         {   camera->pos[1] += defil;
             camera->cible[1] += defil;
         }
@@ -50,7 +54,7 @@ void MoteurCombat::scrolling(int curseurX, int curseurY)
         camera->cible[0] -= defil;
     }
     else
-        if (curseurY >= app->GetHeight() - bordureDefil and camera->cible[0] < map->hauteur)   // DEFILEMENT VERS LE BAS
+        if (curseurY >= app->GetHeight() - bordureDefil and camera->cible[0] < map->getHauteur())   // DEFILEMENT VERS LE BAS
         {   camera->pos[0] += defil;
             camera->cible[0] += defil;
         }
@@ -72,21 +76,21 @@ float MoteurCombat::FPS()
 void MoteurCombat::afficher()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    
+
     map->GL_Dessin(app->GetFrameTime(), app->GetWidth(), app->GetHeight(), *camera, curseurX, curseurY, elemsON);
-    
-    app->Display()
+
+    app->Display();
 }
 
 bool MoteurCombat::gestionClavierSouris()
 {
     bool running = true;
-    sf::Event evt();
+    sf::Event evt;
     while (running && app->GetEvent(evt))
     {
         if (evt.Type == sf::Event::Closed)
             running = false;
-        
+
         else
             if (evt.Type == sf::Event::KeyPressed)
             {   if (evt.Key.Code == sf::Key::Escape)
@@ -96,37 +100,38 @@ bool MoteurCombat::gestionClavierSouris()
                     running = false;
                 }
             }
-        
+
         else
             if (evt.Type == sf::Event::MouseWheelMoved)  // ZOOM de la Map avec la molette de la souris
             {
-                camera->pos[2] -= (1800.0/(map->hauteur*map->largeur))*evt.MouseWheel.Delta*app->GetFrameTime();
+                camera->pos[2] -= (1800.0/(map->getHauteur()*map->getLargeur()))*evt.MouseWheel.Delta*app->GetFrameTime();
                 if (camera->pos[2] < 3)
                     camera->pos[2] = 3;
                 if (camera->pos[2] > 12)
                     camera->pos[2] = 12;
             }
     }
-    
+
     const sf::Input& input = app->GetInput();
-    
+
     // ZOOM de la Map avec le clavier :
     if (input.IsKeyDown(touches.zoomAvant) and camera->pos[2] > 3)
         camera->pos[2] -= 10*app->GetFrameTime();
     else
         if (input.IsKeyDown(touches.zoomArriere) and camera->pos[2] < 12)
             camera->pos[2] += 10*app->GetFrameTime();
-    
+
     if (input.IsKeyDown(sf::Key::A))
-        elemsON = False;
-    else:
-        elemsON = True;
-    
+        elemsON = false;
+    else
+        elemsON = true;
+
     // Gestion de la souris en temps réel :
-    int curseurX = input.GetMouseX();
-    int curseurY = input.GetMouseY();
-    
-    scrolling(curseurX, curseurY);    
-    
+    curseurX = input.GetMouseX();
+    curseurY = input.GetMouseY();
+
+    scrolling(curseurX, curseurY);
+
     return running;
+}
 }
