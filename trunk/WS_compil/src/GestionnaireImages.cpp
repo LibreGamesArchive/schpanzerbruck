@@ -1,6 +1,8 @@
-#include "../include/GestionnaireImages.hpp"
+#include <GestionnaireImages.hpp>
 
 
+namespace ws
+{
 ImageAnnotee::ImageAnnotee(int _etalement)
 {
     etalement = _etalement;
@@ -18,7 +20,7 @@ bool GestionnaireImages::chargerImagesMap(int _nbrCases, int* _numsTuiles, int* 
 }
 
 
-bool GestionnaireImages::chargerImage(string typeObj, int num, char* chemin, int etalement)
+bool GestionnaireImages::chargerImage(std::string typeObj, int num, char* chemin, int etalement)
 {
     bool chargementOK = true;
     // Les numéros des images sont en HEXADECIMAL
@@ -34,10 +36,11 @@ bool GestionnaireImages::chargerImage(string typeObj, int num, char* chemin, int
     return chargementOK;
 }
 
-sf::Image* GestionnaireImages::obtenirImage(string typeObj, int num)
+sf::Image* GestionnaireImages::obtenirImage(std::string typeObj, int num)
 {
     if (objets.find(typeObj) != objets.end())
         if (objets[typeObj].find(num) != objets[typeObj].end())
             return &(objets[typeObj][num]);
     return NULL;
+}
 }

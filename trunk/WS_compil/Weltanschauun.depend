@@ -1,9 +1,46 @@
 # depslib dependency file v1.0
-1210007530 source:/home/broken/progs/schpanzerbruck/WS_compil/src/GestionnaireImages.cpp
-	"../include/GestionnaireImages.hpp"
+1210078259 source:/home/broken/progs/schpanzerbruck/WS_compil/src/GestionnaireImages.cpp
+	<GestionnaireImages.hpp>
 
-1210007473 /home/broken/progs/schpanzerbruck/WS_compil/include/GestionnaireImages.hpp
+1210083844 /home/broken/progs/schpanzerbruck/WS_compil/include/GestionnaireImages.hpp
 	<SFML/Graphics.hpp>
 	<map>
 	<string>
+
+1210084341 source:/home/broken/progs/schpanzerbruck/WS_compil/src/MapClient.cpp
+	<MapClient.hpp>
+
+1210086398 /home/broken/progs/schpanzerbruck/WS_compil/include/MapClient.hpp
+	<SFML/Graphics.hpp>
+	<SFML/Window.hpp>
+	<GL/gl.h>
+	<GL/glu.h>
+	<vector>
+	<GestionnaireImages.hpp>
+	<MapFX.hpp>
+
+1210081861 /home/broken/progs/schpanzerbruck/WS_compil/include/MapFX.hpp
+	<MapClient.hpp>
+
+1210077993 source:/home/broken/progs/schpanzerbruck/WS_compil/src/MapFX.cpp
+	<MapFX.hpp>
+
+1210086303 source:/home/broken/progs/schpanzerbruck/WS_compil/src/MoteurCombat.cpp
+	<MoteurCombat.hpp>
+
+1210086369 /home/broken/progs/schpanzerbruck/WS_compil/include/MoteurCombat.hpp
+	<SFML/Graphics.hpp>
+	<SFML/Window.hpp>
+	<GL/gl.h>
+	<MoteurJeu.hpp>
+	<MapClient.hpp>
+	<GestionnaireImages.hpp>
+
+1210083999 /home/broken/progs/schpanzerbruck/WS_compil/include/MoteurJeu.hpp
+	<SFML/Graphics.hpp>
+	<SFML/Window.hpp>
+	<MoteurCombat.hpp>
+
+1210078029 source:/home/broken/progs/schpanzerbruck/WS_compil/src/MoteurJeu.cpp
+	<MoteurJeu.hpp>
 

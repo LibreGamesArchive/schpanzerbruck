@@ -5,12 +5,12 @@
 #include <SFML/Window.hpp>
 #include <GL/gl.h>
 
-#include "MoteurJeu.hpp"
-#include "MapClient.hpp"
-#include "GestionnaireImages.hpp"
+#include <MoteurJeu.hpp>
+#include <MapClient.hpp>
+#include <GestionnaireImages.hpp>
 
-using namespace std;
-
+namespace ws
+{
 struct DonneesMap
 {
     int largeur;
@@ -25,22 +25,23 @@ struct DonneesMap
 
 struct Touches
 {
-    int zoomAvant;
-    int zoomArriere;
+    sf::Key::Code zoomAvant;
+    sf::Key::Code zoomArriere;
 };
 
+class MoteurJeu;
 
 class MoteurCombat      // Synchronise la Map et l'Interface
 {
 private:
     sf::RenderWindow* app;
-    int L, H;
+    unsigned int L, H, curseurX, curseurY;
     Touches touches;
     GestionnaireImages* gestImages;
     MapClient* map;
     Camera* camera;
 
-    int vitesseDefil, bordureDefil;
+    unsigned int vitesseDefil, bordureDefil;
     bool elemsON;
 
     void scrolling(int curseurX, int curseurY);
@@ -60,5 +61,6 @@ public:
 
     float FPS();
 };
+}
 
 #endif

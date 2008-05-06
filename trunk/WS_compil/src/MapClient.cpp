@@ -1,6 +1,7 @@
-#include "../include/MapClient.hpp"
+#include <MapClient.hpp>
 
-
+namespace ws
+{
 MapClient::MapClient(GestionnaireImages* _gestImages, int _largeur, int _hauteur, int* _numsTuiles, int* _numsElements, char** _cheminsTuiles, char** _cheminsElements, int _numTexBordure, float _hauteurBordure)
 {
     gestImages = _gestImages;
@@ -14,12 +15,12 @@ MapClient::MapClient(GestionnaireImages* _gestImages, int _largeur, int _hauteur
     gestImages->chargerImagesMap(largeur*hauteur, _numsTuiles, _numsElements, _cheminsTuiles, _cheminsElements);
 
     coordsCases = new int*[hauteur*largeur]; // Coordonnées du point en haut à gauche de chaque case dans le plan (0xy)
-    for(int i=0; i<hauteur*largeur; i++)
+    for(unsigned int i=0; i<hauteur*largeur; i++)
         coordsCases[i] = new int[3];
 
     int i=0;
-    for(int x=0; x<hauteur; x++)
-        for(int y=0; y<largeur; y++) {
+    for(unsigned int x=0; x<hauteur; x++)
+        for(unsigned int y=0; y<largeur; y++) {
             coordsCases[i][0] = x;
             coordsCases[i][1] = y;
             coordsCases[i][2] = 0;
@@ -30,7 +31,8 @@ MapClient::MapClient(GestionnaireImages* _gestImages, int _largeur, int _hauteur
 
     inclinaisonElements = 1;
 
-    lancerFX(DeploiementElements());
+    DeploiementElements monFX=DeploiementElements();
+    lancerFX(monFX);
 
     picked[0] = -1; picked[1] = -1;     // ObjetMap sélectionné par le picking.
     // picked == [-1, -1] : Pas d'objet sélectionné
@@ -40,7 +42,7 @@ MapClient::MapClient(GestionnaireImages* _gestImages, int _largeur, int _hauteur
 
 MapClient::~MapClient()
 {
-    for(int i=0; i<hauteur*largeur; i++)
+    for(unsigned int i=0; i<hauteur*largeur; i++)
         delete coordsCases[i];
     delete coordsCases;
 }
@@ -57,7 +59,7 @@ void MapClient::GL_DessinTuile(sf::Image* texture)
     glEnd();
 }
 
-void MapClient::GL_DessinElement(sf::Image* texture, int inclinaisonElements)
+void MapClient::GL_DessinElement(sf::Image* texture)
 {
     glTranslatef(0.5, 0, 0);
     glRotated(inclinaisonElements-90, 0, 1, 0);
@@ -69,6 +71,16 @@ void MapClient::GL_DessinElement(sf::Image* texture, int inclinaisonElements)
     glTexCoord2f(1, 1); glVertex3f(0, 1, 0);
     glTexCoord2f(1, 0); glVertex3f(0, 1, 1.15);
     glEnd();
+}
+
+int MapClient::getHauteur()
+{
+    return hauteur;
+}
+
+int MapClient::getLargeur()
+{
+    return largeur;
 }
 
 void MapClient::bloquer(bool autoriserInfos)
@@ -127,7 +139,7 @@ void MapClient::GL_DessinPourPicking(float frameTime, int appL, int appH, Camera
     if (statut != CIBLAGE)
     {
         // DESSIN DES TUILES
-        for(int numCase=0; numCase<hauteur*largeur; numCase++)
+        for(unsigned int numCase=0; numCase<hauteur*largeur; numCase++)
         {
             int numTuileAct = numsTuiles[numCase];
             if (numTuileAct > 0)
@@ -147,7 +159,7 @@ void MapClient::GL_DessinPourPicking(float frameTime, int appL, int appH, Camera
     if (elemsON && statut == CIBLAGE)
     {
         // DESSIN DES ELEMENTS
-        for(int numCase=0; numCase<hauteur*largeur; numCase++)
+        for(unsigned int numCase=0; numCase<hauteur*largeur; numCase++)
         {
             int numElemAct = numsElements[numCase];
             if (numElemAct > 0)
@@ -156,7 +168,7 @@ void MapClient::GL_DessinPourPicking(float frameTime, int appL, int appH, Camera
                 glTranslated(coordsCases[numCase][0], coordsCases[numCase][1], coordsCases[numCase][2]);
 
                 glPushName(numCase); glPushName(1);
-                GL_DessinElement(gestImages->obtenirImage("tuiles", numElemAct), inclinaisonElements);
+                GL_DessinElement(gestImages->obtenirImage("elements", numElemAct));
                 glPopName(); glPopName();
 
                 glPopMatrix();
@@ -215,7 +227,7 @@ void MapClient::GL_Dessin(float frameTime, int appL, int appH, Camera camera, in
     if (statut == NOIRCIR)
         factAssomb = 5;
     else
-        for(vector<FX>::iterator it=FXActives.begin(); it!=FXActives.end(); it++)
+        for(std::vector<FX>::iterator it=FXActives.begin(); it!=FXActives.end(); it++)
             if (it->effet(*this, frameTime))   // Si le FX revoie True, il est terminé
                 FXActives.erase(it);
 
@@ -225,7 +237,7 @@ void MapClient::GL_Dessin(float frameTime, int appL, int appH, Camera camera, in
     bool selec = false;
 
     // DESSIN DES TUILES
-    for(int numCase=0; numCase<hauteur*largeur; numCase++)
+    for(unsigned int numCase=0; numCase<hauteur*largeur; numCase++)
     {
         int numTuileAct = numsTuiles[numCase];
         if (numTuileAct > 0)
@@ -234,7 +246,7 @@ void MapClient::GL_Dessin(float frameTime, int appL, int appH, Camera camera, in
             glTranslated(coordsCases[numCase][0], coordsCases[numCase][1], coordsCases[numCase][2]);
 
             selec = false;
-            if (picked[0] == numCase)
+            if (picked[0] == static_cast<int>(numCase))
                 if (picked[1] == 0)
                     selec = true;
 
@@ -249,7 +261,7 @@ void MapClient::GL_Dessin(float frameTime, int appL, int appH, Camera camera, in
     }
 
     // DESSIN DES ELEMENTS
-    for(int numCase=0; numCase<hauteur*largeur; numCase++)
+    for(unsigned int numCase=0; numCase<hauteur*largeur; numCase++)
     {
         int numElemAct = numsElements[numCase];
         if (numElemAct > 0)
@@ -258,7 +270,7 @@ void MapClient::GL_Dessin(float frameTime, int appL, int appH, Camera camera, in
             glTranslated(coordsCases[numCase][0], coordsCases[numCase][1], coordsCases[numCase][2]);
 
             selec = false;
-            if (picked[0] == numCase)
+            if (picked[0] == static_cast<int>(numCase))
                 if (picked[1] == 1)
                     selec = true;
 
@@ -314,3 +326,4 @@ void MapClient::GL_Dessin(float frameTime, int appL, int appH, Camera camera, in
     if (statut != NOIRCIR && statut != PAS_DE_SELECTION)
         GL_DessinPourPicking(frameTime, appL, appH, camera, curseurX, curseurY, elemsON);
 }
+} // ws

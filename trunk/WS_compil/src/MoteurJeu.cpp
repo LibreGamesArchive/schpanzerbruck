@@ -1,6 +1,7 @@
-#include "../include/MoteurJeu.hpp"
+#include <MoteurJeu.hpp>
 
-
+namespace ws
+{
 MoteurJeu::MoteurJeu(int appL, int appH, int bpp, bool fullscreen, bool synchroVert, int fpsMax)
 {
     int style = sf::Style::Close;
@@ -21,4 +22,5 @@ MoteurCombat MoteurJeu::obtenirMoteurCombat(DonneesMap DM, Touches touches)
 {
     MoteurCombat MC(app, DM, touches);
     return MC;
+}
 }
