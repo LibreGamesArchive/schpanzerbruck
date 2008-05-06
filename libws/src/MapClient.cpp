@@ -112,7 +112,7 @@ void MapClient::lancerFX(FX &nouvFX)
     FXActives.push_back(nouvFX);
 }
 
-void MapClient::GL_DessinPourPicking(float frameTime, int appL, int appH, Camera camera, int curseurX, int curseurY, bool elemsON)
+void MapClient::GL_DessinPourPicking(float frameTime, int appL, int appH, const Camera& camera, int curseurX, int curseurY, bool elemsON)
 {
     GLuint buffer[128];
     glSelectBuffer(128, buffer);
@@ -205,7 +205,7 @@ void MapClient::GL_DessinPourPicking(float frameTime, int appL, int appH, Camera
         picked[0] = -1; picked[1] = -1;
 }
 
-void MapClient::GL_Dessin(float frameTime, int appL, int appH, Camera camera, int curseurX, int curseurY, bool elemsON)
+void MapClient::GL_Dessin(float frameTime, int appL, int appH, const Camera& camera, int curseurX, int curseurY, bool elemsON)
 {
     // Dessine la Map dans le plan (0xy)
 
