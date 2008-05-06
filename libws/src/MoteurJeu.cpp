@@ -2,14 +2,12 @@
 
 namespace ws
 {
-MoteurJeu::MoteurJeu(int appL, int appH, int bpp, bool fullscreen, bool synchroVert, int fpsMax)
+MoteurJeu::MoteurJeu(bool pleinEcran, bool modeAuto, bool synchroVert, int appL, int appH, int bpp)
 {
     int style = sf::Style::Close;
-    if(fullscreen)
+    if(pleinEcran)
         style |= sf::Style::Fullscreen;
     app = new sf::RenderWindow(sf::VideoMode(appL, appH, bpp), "SCHPANZERBRUCK", style);
-    if (fpsMax > 0)
-        app->SetFramerateLimit(fpsMax);
     app->UseVerticalSync(synchroVert);
 }
 
@@ -18,7 +16,12 @@ MoteurJeu::~MoteurJeu()
     delete app;
 }
 
-MoteurCombat MoteurJeu::obtenirMoteurCombat(DonneesMap DM, Touches touches)
+void MoteurJeu::limiterFPS(int fpsMax)
+{
+    app->SetFramerateLimit(fpsMax);
+}
+
+MoteurCombat MoteurJeu::getMoteurCombat(DonneesMap DM, Touches touches)
 {
     MoteurCombat MC(app, DM, touches);
     return MC;
