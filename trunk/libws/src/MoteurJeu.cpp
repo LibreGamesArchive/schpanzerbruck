@@ -9,6 +9,7 @@ MoteurJeu::MoteurJeu(bool pleinEcran, bool modeAuto, bool synchroVert, int appL,
         style |= sf::Style::Fullscreen;
     app = new sf::RenderWindow(sf::VideoMode(appL, appH, bpp), "SCHPANZERBRUCK", style);
     app->UseVerticalSync(synchroVert);
+    // app->PreserveOpenGLStates(true)
 }
 
 MoteurJeu::~MoteurJeu()

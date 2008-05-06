@@ -47,7 +47,7 @@ private:
     void GL_DessinElement(sf::Image* texture=NULL);
 
 
-    void GL_DessinPourPicking(float frameTime, int appL, int appH, Camera camera, int curseurX, int curseurY, bool elemsON);
+    void GL_DessinPourPicking(float frameTime, int appL, int appH, const Camera& camera, int curseurX, int curseurY, bool elemsON);
 
 
 public:
@@ -72,7 +72,7 @@ public:
     void lancerFX(FX &nouvFX);
 
 
-    void GL_Dessin(float frameTime, int appL, int appH, Camera camera, int curseurX, int curseurY, bool elemsON=true);
+    void GL_Dessin(float frameTime, int appL, int appH, const Camera& camera, int curseurX, int curseurY, bool elemsON=true);
 };
 }
 

@@ -59,7 +59,7 @@ public:
 
     bool gestionClavierSouris();
 
-    float FPS();
+    float getFPS();
 };
 }
 

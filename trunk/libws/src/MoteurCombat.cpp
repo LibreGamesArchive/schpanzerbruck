@@ -45,7 +45,7 @@ void MoteurCombat::scrolling()
         camera->cible[1] -= defil;
     }
     else
-        if (curseurX >= app->GetWidth() - bordureDefil and camera->cible[1] < map->getLargeur()+2)   // DEFILEMENT VERS LA DROITE
+        if (curseurX >= L - bordureDefil and camera->cible[1] < map->getLargeur()+2)   // DEFILEMENT VERS LA DROITE
         {   camera->pos[1] += defil;
             camera->cible[1] += defil;
         }
@@ -54,7 +54,7 @@ void MoteurCombat::scrolling()
         camera->cible[0] -= defil;
     }
     else
-        if (curseurY >= app->GetHeight() - bordureDefil and camera->cible[0] < map->getHauteur())   // DEFILEMENT VERS LE BAS
+        if (curseurY >= H - bordureDefil and camera->cible[0] < map->getHauteur())   // DEFILEMENT VERS LE BAS
         {   camera->pos[0] += defil;
             camera->cible[0] += defil;
         }
@@ -63,10 +63,10 @@ void MoteurCombat::scrolling()
 void MoteurCombat::centrerCurseur()
 {
     // Met le curseur au centre de l'écran (fixe le bug de scrolling)
-    app->SetCursorPosition(app->GetWidth()/2, app->GetHeight()/2);
+    app->SetCursorPosition(L/2, H/2);
 }
 
-float MoteurCombat::FPS()
+float MoteurCombat::getFPS()
 {
     if (app->GetFrameTime() != 0)
         return 1.0/(app->GetFrameTime());
@@ -77,7 +77,7 @@ void MoteurCombat::afficher()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    map->GL_Dessin(app->GetFrameTime(), app->GetWidth(), app->GetHeight(), *camera, curseurX, curseurY, elemsON);
+    map->GL_Dessin(app->GetFrameTime(), L, H, *camera, curseurX, curseurY, elemsON);
 
     app->Display();
 }
@@ -90,7 +90,7 @@ bool MoteurCombat::gestionClavierSouris()
     {
         if (evt.Type == sf::Event::Closed)
             running = false;
-
+        
         else
             if (evt.Type == sf::Event::KeyPressed)
             {   if (evt.Key.Code == sf::Key::Escape)
@@ -100,7 +100,7 @@ bool MoteurCombat::gestionClavierSouris()
                     running = false;
                 }
             }
-
+        
         else
             if (evt.Type == sf::Event::MouseWheelMoved)  // ZOOM de la Map avec la molette de la souris
             {
