@@ -18,11 +18,13 @@ private:
     sf::RenderWindow* app;
 
 public:
-    MoteurJeu(int appL, int appH, int bpp, bool fullscreen, bool synchroVert, int fpsMax=-1);
+    MoteurJeu(bool pleinEcran=true, bool modeAuto=true, bool synchroVert=true, int appL=800, int appH=600, int bpp=32);
 
     ~MoteurJeu();
 
-    MoteurCombat obtenirMoteurCombat(DonneesMap DM, Touches touches);
+    void limiterFPS(int fpsMax);
+
+    MoteurCombat getMoteurCombat(DonneesMap DM, Touches touches);
 };
 }
 
