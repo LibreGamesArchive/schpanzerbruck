@@ -34,7 +34,8 @@ private:
 
     int **coordsCases;
 
-    unsigned int hauteur, largeur, statut, hauteurBordure, numTexBordure;
+    unsigned int hauteur, largeur, statut, numTexBordure;
+    float hauteurBordure;
 
     std::vector<FX> FXActives;   // Liste des effets spéciaux actuellement utilisés sur la Map
 
@@ -50,7 +51,7 @@ private:
 
 
 public:
-    int inclinaisonElements;
+    float inclinaisonElements;
 
     MapClient(GestionnaireImages* _gestImages, int _largeur, int _hauteur, int* _numsTuiles, int* _numsElements, char** _cheminsTuiles, char** _cheminsElements, int _numTexBordure, float _hauteurBordure);
 
@@ -76,3 +77,4 @@ public:
 }
 
 #endif
+

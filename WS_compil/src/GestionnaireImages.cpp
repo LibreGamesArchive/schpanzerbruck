@@ -44,3 +44,4 @@ sf::Image* GestionnaireImages::obtenirImage(std::string typeObj, int num)
     return NULL;
 }
 }
+

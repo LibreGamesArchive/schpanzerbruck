@@ -1,10 +1,11 @@
 #include <MapFX.hpp>
 
+
 namespace ws
 {
-FX::~FX()
+bool FX::effet(MapClient& carte, float frameTime)
 {
-    // Rien à faire
+    return true;
 }
 
 
@@ -22,3 +23,4 @@ bool DeploiementElements::effet(MapClient& carte, float frameTime)
     return false;
 }
 }
+

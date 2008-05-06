@@ -24,3 +24,4 @@ MoteurCombat MoteurJeu::obtenirMoteurCombat(DonneesMap DM, Touches touches)
     return MC;
 }
 }
+

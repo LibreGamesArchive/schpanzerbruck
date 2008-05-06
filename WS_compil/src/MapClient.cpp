@@ -1,5 +1,6 @@
 #include <MapClient.hpp>
 
+
 namespace ws
 {
 MapClient::MapClient(GestionnaireImages* _gestImages, int _largeur, int _hauteur, int* _numsTuiles, int* _numsElements, char** _cheminsTuiles, char** _cheminsElements, int _numTexBordure, float _hauteurBordure)
@@ -177,11 +178,11 @@ void MapClient::GL_DessinPourPicking(float frameTime, int appL, int appH, Camera
     }
 
     GLuint hits = glRenderMode(GL_RENDER);
-    int plusPetitZ_min = 1;
+    GLfloat plusPetitZ_min = 1;
     if (hits > 0)
     {
-        GLfloat z_min=NULL;
-        //GLfloat z_max=NULL;
+        GLfloat z_min = 1.0;
+        //GLfloat z_max = 0.0;
         GLuint* ptr = buffer;
         for(GLuint i=0; i < hits; i++)
         {
@@ -326,4 +327,5 @@ void MapClient::GL_Dessin(float frameTime, int appL, int appH, Camera camera, in
     if (statut != NOIRCIR && statut != PAS_DE_SELECTION)
         GL_DessinPourPicking(frameTime, appL, appH, camera, curseurX, curseurY, elemsON);
 }
-} // ws
+}
+

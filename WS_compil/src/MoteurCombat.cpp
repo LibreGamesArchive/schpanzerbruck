@@ -36,7 +36,7 @@ MoteurCombat::~MoteurCombat()
     delete camera;
 }
 
-void MoteurCombat::scrolling(int curseurX, int curseurY)
+void MoteurCombat::scrolling()
 {
     float defil = vitesseDefil * app->GetFrameTime();
 
@@ -130,8 +130,9 @@ bool MoteurCombat::gestionClavierSouris()
     curseurX = input.GetMouseX();
     curseurY = input.GetMouseY();
 
-    scrolling(curseurX, curseurY);
+    scrolling();
 
     return running;
 }
 }
+
