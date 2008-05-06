@@ -11,15 +11,15 @@ class MapClient;
 class FX
 {
 public:
-    virtual ~FX();
-    virtual bool effet(MapClient& carte, float frameTime);
+    bool effet(MapClient& carte, float frameTime);
 };
 
 class DeploiementElements : public FX
 {
 public:
-    virtual bool effet(MapClient& carte, float frameTime);
+    bool effet(MapClient& carte, float frameTime);
 };
 } // ws
 
 #endif // MAP_FX_HEADER
+

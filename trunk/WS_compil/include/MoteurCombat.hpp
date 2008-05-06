@@ -13,14 +13,14 @@ namespace ws
 {
 struct DonneesMap
 {
-    int largeur;
-    int hauteur;
+    unsigned int largeur;
+    unsigned int hauteur;
     int* numsTuiles;
     int* numsElements;
     char** cheminsTuiles;
     char** cheminsElements;
-    int numTexBordure;
-    int hauteurBordure;
+    unsigned int numTexBordure;
+    float hauteurBordure;
 };
 
 struct Touches
@@ -44,7 +44,7 @@ private:
     unsigned int vitesseDefil, bordureDefil;
     bool elemsON;
 
-    void scrolling(int curseurX, int curseurY);
+    void scrolling();
 
     friend class MoteurJeu;
 
@@ -64,3 +64,4 @@ public:
 }
 
 #endif
+
