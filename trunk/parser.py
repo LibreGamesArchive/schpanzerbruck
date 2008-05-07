@@ -19,9 +19,11 @@
 ##########################################################################
 
 
-
 from optparse import OptionParser, make_option
+from config import Config
 from constantes import defaut
+
+config=Config.getInstance()
 
 
 def retourneOptions():
@@ -46,10 +48,14 @@ class ParserTraduit(OptionParser):
 
 # Ajouter des options ci-dessous. Utiliser u"" pour contourner le bug d'encodage.
 optionList=[make_option(u"-c", u"--carte", action=u"store", type=u"string", dest=u"carte", help=u"charge la carte à partir de FICHIER", metavar=u"FICHIER", default=defaut.CARTE),
-            make_option(u"-f", u"--fenetre", action=u"store_true", dest=u"fenetre", default=not defaut.PLEIN_ECRAN, help=u"Lance le jeu en mode fenêtré"),
-            make_option(u"--sans-psyco", action=u"store_false", dest=u"psyco", default=defaut.PSYCO, help=u"force la désactivation de psyco")
+            make_option(u"-f", u"--fenetre", action=u"store_true", dest=u"fenetre", default=not config.PLEIN_ECRAN, help=u"Lance le jeu en mode fenêtré"),
+            make_option(u"--sans-psyco", action=u"store_false", dest=u"psyco", default=config.PSYCO, help=u"force la désactivation de psyco")
            ]
 
 # Instanciation du parser
 __parser=ParserTraduit(option_list=optionList)
 __options, __args=__parser.parse_args()
+
+# Copie
+config.PLEIN_ECRAN=not __options.fenetre
+config.PSYCO=__options.psyco
