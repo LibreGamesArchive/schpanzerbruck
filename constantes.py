@@ -20,7 +20,24 @@ chemins.SAUVEGARDES = os.path.join(cheminDossierRacine, "sauv")
 chemins.CAPTURES = os.path.join(cheminDossierRacine, "captures")
 
 
-defaut = utils.chargerConfig(os.path.join(chemins.SAUVEGARDES, "schpbr.cfg"))
+#defaut = utils.chargerConfig(os.path.join(chemins.SAUVEGARDES, "schpbr.cfg"))
+defaut=utils.ConstsContainer()    # Création d'une nouvelle instance vide de defaut
+defaut.PSYCO = True
+defaut.PLEIN_ECRAN = True
+defaut.SYNCHRO_VERTICALE = True
+defaut.FPS_MAX = 240
+defaut.MODE = (800, 600, 32)
+defaut.MODE_AUTO = True
+
+# FIXME
+defaut.touches = utils.Container()
+defaut.touches.CAPTURE = sf.Key.F9
+defaut.touches.ZOOM_AVANT = sf.Key.PageUp
+defaut.touches.ZOOM_ARRIERE = sf.Key.PageDown
+defaut.touches.DEFIL_GAUCHE = sf.Key.Left
+defaut.touches.DEFIL_DROITE = sf.Key.Right
+defaut.touches.DEFIL_HAUT = sf.Key.Up
+defaut.touches.DEFIL_BAS = sf.Key.Down
 
 defaut.CARTE = u"maptest2-cold.xml"
 defaut.TEXTURE_BORDURE = sf.Image(1, 1, sf.Color(128, 128, 128))

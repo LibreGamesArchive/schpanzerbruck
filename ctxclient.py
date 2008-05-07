@@ -1,14 +1,15 @@
 # encoding=UTF-8
 
 import glob, os
-import mapclient, img, infos, utils, constantes
+import infos, utils, constantes
 
+config=utils.Config.getInstance()
 
 class ContexteClient:
     """La classe supervisant un combat (côté client), c'est le GroupeClient qui opère dessus.
     Il s'occupe des phases de rendu à l'écran et de gestion des événements souris/clavier"""
     
-    def __init__(self, moteurJeuWS, fichierMap, touches = constantes.defaut.touches):
+    def __init__(self, moteurJeuWS, fichierMap, touches = config.touches):
         # # #
         self.MC = moteurJeuWS.getMoteurCombat()
         
