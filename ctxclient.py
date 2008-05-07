@@ -1,9 +1,10 @@
 # encoding=UTF-8
 
 import glob, os
-import infos, utils, constantes
+import infos, constantes
+from config import Config
 
-config=utils.Config.getInstance()
+config=Config.getInstance()
 
 class ContexteClient:
     """La classe supervisant un combat (côté client), c'est le GroupeClient qui opère dessus.

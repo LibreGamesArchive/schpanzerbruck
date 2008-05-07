@@ -20,26 +20,31 @@
 ##########################################################################
 
 import os.path, sys
+from config import Config
+from constantes import chemins, defaut
+
+# Chargement de la config
+config=Config.getInstance()
+config.chargerConfig(os.path.join(chemins.SAUVEGARDES, "schpbr.cfg"))
+
+
 import ctxclient
-from constantes import chemins
-import parser
 import utils
+import parser
 
 try:
     from PyWS import ws
 except ImportError:
-    print >> sys.stderr, "Schpanzerbrück a besoin de SFML en plus d'OpenGL pour fonctionner correctement.\n Vous pouvez l'installer à partir de http://www.sfml-dev.org"
+    print >> sys.stderr, "Schpanzerbrück a besoin de SFML en plus d'OpenGL pour fonctionner correctement.\nVous pouvez l'installer à partir de http://www.sfml-dev.org"
     sys.exit()
 
-# Chargement de la config
-config=utils.Config.getInstance()
-config.chargerConfig(os.path.join(chemins.SAUVEGARDES, "schpbr.cfg"))
+
 
 # Parsage de ligne de commande
 options = parser.retourneOptions()
 
 try:
-    if options.psyco:
+    if config.PSYCO:
         import psyco    # A quoi ça sert ?
         psyco.full()    # A accélerer la compilation "on the fly" du code Python, mais mange plus de RAM
         print "Psyco: ON"
@@ -49,12 +54,12 @@ except ImportError:
     print "Psyco: ** Not found **"
     options.psyco = False
 
-if options.fenetre:     # On lance le jeu en fenêtré
-    print "Fullscreen: OFF"
-else:
+if config.PLEIN_ECRAN:     # On lance le jeu en fenêtré
     print "Fullscreen: ON"
+else:
+    print "Fullscreen: OFF"
 
-welt = ws.MoteurJeu(not options.fenetre, config.MODE_AUTO, config.SYNCHRO_VERTICALE, config.MODE[0], config.MODE[1], config.MODE[2]);
+welt = ws.MoteurJeu(config.PLEIN_ECRAN, config.MODE_AUTO, config.SYNCHRO_VERTICALE, config.MODE[0], config.MODE[1], config.MODE[2]);
 #welt.limiterFPS(defaut.FPS_MAX)
 
 
