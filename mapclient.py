@@ -101,7 +101,7 @@ class Map(MapBase):
         
         gestImages.chargerImagesMap(tabsNums)
         gestImages.chargerImage("tuiles", self.bordure)
-        
+
         if self.bordure==0x00:
             self.imageBordure=defaut.TEXTURE_BORDURE
         else:

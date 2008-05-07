@@ -25,9 +25,9 @@ from constantes import chemins, defaut
 import parser
 
 try:
-    from PyWS import ws
+    from PySFML import sf
 except ImportError:
-    print >> sys.stderr, "Schpanzerbrück a besoin de SFML en plus d'OpenGL pour fonctionner correctement.\n Vous pouvez l'installer à partir de http://www.sfml-dev.org"
+    print >> sys.stderr, "Schpanzerbrück a besoin de PySFML pour fonctionner correctement.\n Vous pouvez l'installer à partir de http://www.sfml-dev.org"
     sys.exit()
 
 # Parsage de ligne de commande
@@ -44,14 +44,24 @@ except ImportError:
     print "Psyco: ** Not found **"
     options.psyco = False
 
-if options.fenetre:     # On lance le jeu en fenêtré
-    print "Fullscreen: OFF"
-else:
+if not options.fenetre:     # On lance le jeu en plein écran
+    if defaut.MODE_AUTO:
+        videoMode = sf.VideoMode.GetDesktopMode()
+    else:
+        videoMode = sf.VideoMode(*defaut.MODE)
+    style = sf.Style.Close | sf.Style.Fullscreen
     print "Fullscreen: ON"
+else:   # Ou pas (mais faut éviter)
+    videoMode = sf.VideoMode(*defaut.MODE)
+    style = sf.Style.Close
+    print "Fullscreen: OFF"
+    
 
-welt = ws.MoteurJeu(not options.fenetre, defaut.MODE_AUTO, defaut.SYNCHO_VERTICALE, defaut.MODE[0], defaut.MODE[1], defaut.MODE[2]);
-#welt.limiterFPS(defaut.FPS_MAX)
-
+# Les captures ne fonctionnent pas avec Window
+app = sf.RenderWindow(videoMode, "SCHPANZERBRUCK", style)
+#app.SetFramerateLimit(defaut.FPS_MAX)
+app.UseVerticalSync(defaut.SYNCHRO_VERTICALE)
+#app.PreserveOpenGLStates(True)
 
 if os.path.exists(os.path.join(chemins.MAPS, options.carte)):
     carte = os.path.join(chemins.MAPS, options.carte)

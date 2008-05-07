@@ -13,7 +13,7 @@ from maitrises import *
 class Personnage:
     """LA classe décrivant un personnage"""
     
-    def __init__(self):
+    def __init__(self): 
         """Définit les attributs (stats, etc.) du personnage"""
         
         self.nom = ""
@@ -32,6 +32,8 @@ class Personnage:
         self.equipement = { "bras_droit": None, "bras_gauche": None, "tete": None, "torse": None, "pieds": None, "acc1": None, "acc2": None, "special": None }
         # acc1 et acc2 sont les accessoires (colliers, bracelets pour booster), et special est un objet spécial (cheval, catapulte) dépendant généralement d'une maîtrise particulière
         # Tous les items équipés sont des instances de la classe ObjetEquip
+        
+        self.sprite = None
     
     
     def ajMaitrise(self, maitrise,grade):
