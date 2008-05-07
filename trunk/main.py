@@ -21,14 +21,19 @@
 
 import os.path, sys
 import ctxclient
-from constantes import chemins, defaut
+from constantes import chemins
 import parser
+import utils
 
 try:
     from PyWS import ws
 except ImportError:
     print >> sys.stderr, "Schpanzerbrück a besoin de SFML en plus d'OpenGL pour fonctionner correctement.\n Vous pouvez l'installer à partir de http://www.sfml-dev.org"
     sys.exit()
+
+# Chargement de la config
+config=utils.Config.getInstance()
+config.chargerConfig(os.path.join(chemins.SAUVEGARDES, "schpbr.cfg"))
 
 # Parsage de ligne de commande
 options = parser.retourneOptions()
@@ -49,7 +54,7 @@ if options.fenetre:     # On lance le jeu en fenêtré
 else:
     print "Fullscreen: ON"
 
-welt = ws.MoteurJeu(not options.fenetre, defaut.MODE_AUTO, defaut.SYNCHO_VERTICALE, defaut.MODE[0], defaut.MODE[1], defaut.MODE[2]);
+welt = ws.MoteurJeu(not options.fenetre, config.MODE_AUTO, config.SYNCHRO_VERTICALE, config.MODE[0], config.MODE[1], config.MODE[2]);
 #welt.limiterFPS(defaut.FPS_MAX)
 
 

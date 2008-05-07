@@ -1,17 +1,20 @@
 # encoding=UTF-8
 
 import os.path
+import constantes
 from xml.dom import minidom
 from PySFML.sf import Key
-
+from copy import copy
 
 class Container:
-    pass
-
-
-class ConstsContainer:
     def __init__(self):
         pass
+
+
+class ConstsContainer(Container):
+    
+    def __init__(self):
+        Container.__init__(self)
     
     def __getattr__(self, attr):
         try:
@@ -34,113 +37,123 @@ class ConstsContainer:
     def __iter__(self):
         return iter(self.__dict__.values())
 
+
+class Config(Container):
+    """Contient la configuration courante"""
+    _instance=None
     
-def sauverConfig(defaut, fichier):
-    doc = minidom.Document()
+    def __init__(self):
+        assert self._instance==None
+        self._instance=self
+        Container.__init__(self)
+        self.__initialised=False
     
-    root = doc.createElement("config")
-    
-    psyco = doc.createElement("psyco")
-    psyco.setAttribute("UTILISER", str(defaut.PSYCO))
-    root.appendChild(psyco)
-    
-    ecran = doc.createElement("ecran")
-    for i in ["PLEIN_ECRAN", "SYNCHRO_VERTICALE"]:
-        ecran.setAttribute(i, str(defaut.__dict__[i]))
-    ecran.setAttribute("FPS_MAX", str(defaut.FPS_MAX))
-    mode = doc.createElement("mode")
-    mode.setAttribute("AUTO", str(defaut.MODE_AUTO))
-    mode.setAttribute("W", str(defaut.MODE[0]))
-    mode.setAttribute("H", str(defaut.MODE[1]))
-    mode.setAttribute("BPP", str(defaut.MODE[2]))
-    ecran.appendChild(mode)
-    root.appendChild(ecran)
-    
-    touches = doc.createElement("touches")
-    for i in ["CAPTURE", "ZOOM_AVANT", "ZOOM_ARRIERE", "DEFIL_GAUCHE", "DEFIL_DROITE", "DEFIL_HAUT", "DEFIL_BAS"]:
-        touches.setAttribute(i, str(defaut.touches.__dict__[i]))
-    root.appendChild(touches)
-    
-    doc.appendChild(root)
-    
-    f = open(fichier, "w")
-    f.write(doc.toprettyxml(indent="    "))
-    f.close()
+    @staticmethod
+    def getInstance():
+        if Config._instance==None:
+            Config._instance=Config()
+        return Config._instance
 
 
-def chargerConfig(fichier):
-    """Renvoie un ConstsContainer en lui attribuant les options contenues dans le fichier de config"""
-    
-    defaut = ConstsContainer()
-    
-    def chargerDepuisXML(doc):
-        """Revoie True si le chargement s'est correctement effectué"""
+    def sauverConfig(self, fichier):
+        """Sauvegarde la config dans un fichier"""
+        assert self.__initialised==True
+        doc = minidom.Document()
         
+        root = doc.createElement("config")
+        
+        psyco = doc.createElement("psyco")
+        psyco.setAttribute("UTILISER", str(self.PSYCO))
+        root.appendChild(psyco)
+        
+        ecran = doc.createElement("ecran")
+        for i in ["PLEIN_ECRAN", "SYNCHRO_VERTICALE"]:
+            ecran.setAttribute(i, str(self.__dict__[i]))
+        ecran.setAttribute("FPS_MAX", str(self.FPS_MAX))
+        mode = doc.createElement("mode")
+        mode.setAttribute("AUTO", str(self.MODE_AUTO))
+        mode.setAttribute("W", str(self.MODE[0]))
+        mode.setAttribute("H", str(self.MODE[1]))
+        mode.setAttribute("BPP", str(self.MODE[2]))
+        ecran.appendChild(mode)
+        root.appendChild(ecran)
+        
+        touches = doc.createElement("touches")
+        for i in ["CAPTURE", "ZOOM_AVANT", "ZOOM_ARRIERE", "DEFIL_GAUCHE", "DEFIL_DROITE", "DEFIL_HAUT", "DEFIL_BAS"]:
+            touches.setAttribute(i, str(self.touches.__dict__[i]))
+        root.appendChild(touches)
+        
+        doc.appendChild(root)
+        
+        f = open(fichier, "w")
+        f.write(doc.toprettyxml(indent="    "))
+        f.close()
+    
+    
+    def __chargerDepuisXML(self, doc):
+        """Revoie True si le chargement s'est correctement effectué"""
         root = doc.documentElement
         
         try:
             if root.getElementsByTagName("psyco")[0].attributes["UTILISER"].value == "True":
-                defaut.PSYCO = True
-            else:   defaut.PSYCO = False
+                self.PSYCO = True
+            else:
+                self.PSYCO = False
             
             paramsEcran = root.getElementsByTagName("ecran")[0]
             for i in ["PLEIN_ECRAN", "SYNCHRO_VERTICALE"]:
                 if paramsEcran.attributes[i].value == "True":
-                    defaut.__dict__[i] = True
-                else:   defaut.__dict__[i] = False
-            defaut.FPS_MAX = int(paramsEcran.attributes["FPS_MAX"].value)
+                    self.__dict__[i] = True
+                else:
+                    self.__dict__[i] = False
+            self.FPS_MAX = int(paramsEcran.attributes["FPS_MAX"].value)
             
             paramsMode = paramsEcran.getElementsByTagName("mode")[0]
             if paramsMode.attributes["AUTO"].value == "True":
-                defaut.MODE_AUTO = True
+                self.MODE_AUTO = True
             else:
-                defaut.MODE_AUTO = False
+                self.MODE_AUTO = False
             
             W = int(paramsMode.attributes["W"].value)
             H = int(paramsMode.attributes["H"].value)
             BPP = int(paramsMode.attributes["BPP"].value)
-            defaut.MODE = (W, H, BPP)
+            self.MODE = (W, H, BPP)
             
-            defaut.touches = Container()
+            self.touches = Container()
             codesTouches = root.getElementsByTagName("touches")[0].attributes
             for i in ["CAPTURE", "ZOOM_AVANT", "ZOOM_ARRIERE", "DEFIL_GAUCHE", "DEFIL_DROITE", "DEFIL_HAUT", "DEFIL_BAS"]:
-                defaut.touches.__dict__[i] = int(codesTouches[i].value)
+                self.touches.__dict__[i] = int(codesTouches[i].value)
         except:
             print "Certaines options du fichier de config sont manquantes,\nla config par défaut sera donc chargée"
             return False
+        self.__initialised=True
         return True
     
-
-    cfgParDefaut = False
-    
-    if os.path.exists(fichier):
-        try:
-            doc = minidom.parse(fichier)
-        except:
-            cfgParDefaut = True
-            print "Le fichier de configuration n'est pas valide,\nil sera recréé avec la config par défaut"
-        else:
-            cfgParDefaut = not chargerDepuisXML(doc)
-    else:
-        cfgParDefaut = True
-    
-    if cfgParDefaut:
-        defaut = ConstsContainer()	# Recréation de defaut (pour le vider)
-        defaut.PSYCO = True
-        defaut.PLEIN_ECRAN = True
-        defaut.SYNCHRO_VERTICALE = True
-        defaut.FPS_MAX = 240
-        defaut.MODE = (800, 600, 32)
-        defaut.MODE_AUTO = True
+    def chargerConfigParDefaut(self):
+        self.PSYCO = copy(constantes.defaut.PSYCO)
+        self.PLEIN_ECRAN = copy(constantes.defaut.PLEIN_ECRAN)
+        self.SYNCHRO_VERTICALE = copy(constantes.defaut.SYNCHRO_VERTICALE)
+        self.FPS_MAX = copy(constantes.defaut.FPS_MAX)
+        self.MODE = copy(constantes.defaut.MODE)
+        self.MODE_AUTO = copy(constantes.defaut.MODE_AUTO)
         
-        defaut.touches = Container()
-        defaut.touches.CAPTURE = Key.F9
-        defaut.touches.ZOOM_AVANT = Key.PageUp
-        defaut.touches.ZOOM_ARRIERE = Key.PageDown
-        defaut.touches.DEFIL_GAUCHE = Key.Left
-        defaut.touches.DEFIL_DROITE = Key.Right
-        defaut.touches.DEFIL_HAUT = Key.Up
-        defaut.touches.DEFIL_BAS = Key.Down
-        sauverConfig(defaut, fichier)
-    
-    return defaut
+        self.touches = copy(constantes.defaut.touches)
+        self.__initialised=True
+
+    def chargerConfig(self, fichier):
+        """Charger la config à partir d'un fichier"""
+        cfgParDefaut = False
+        
+        if os.path.exists(fichier):
+            try:
+                doc = minidom.parse(fichier)
+            except:
+                cfgParDefaut = True
+                print "Le fichier de configuration n'est pas valide,\nil sera recréé avec la config par défaut"
+            else:
+                cfgParDefaut = not self.__chargerDepuisXML(doc)
+        else:
+            cfgParDefaut = True
+        
+        if cfgParDefaut:
+            self.chargerConfigParDefaut()
