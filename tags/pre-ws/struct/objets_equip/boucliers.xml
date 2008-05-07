@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<objs>
+    <obj nom="Bouclier en fer">
+        <stats DFP="5" AGI="-2"/>
+        <requis maitrise="armures" grade="D"/>
+        <desc>Un bouclier lourd, très lourd...</desc>
+    </obj>
+</objs>
