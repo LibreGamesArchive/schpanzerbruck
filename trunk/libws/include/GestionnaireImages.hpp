@@ -3,8 +3,8 @@
 
 #include <SFML/Graphics.hpp>
 #include <map>
-#include <string>
 #include <vector>
+#include <iostream>
 
 using namespace std;
 
@@ -23,14 +23,16 @@ public:
 class GestionnaireImages
 {
 private:
-    map<string, map<int, ImageAnnotee> > objets;
+    map<char*, map<int, ImageAnnotee*> > objets;
 
 public:
-    bool chargerImage(string typeObj, int num, char* chemin, int etalement=1);
+    ~GestionnaireImages();
+    
+    bool chargerImage(char* typeObj, int num, char* chemin, int etalement=1);
 
-    bool chargerImagesMap(int _nbrCases, vector<unsigned int> _numsTuiles, vector<unsigned int> _numsElements, vector<char*> _cheminsTuiles, vector<char*> _cheminsElements);
+    bool chargerImagesMap(unsigned int _nbrCases, vector<unsigned int> _numsTuiles, vector<unsigned int> _numsElements, vector<char*> _cheminsTuiles, vector<char*> _cheminsElements);
 
-    sf::Image* obtenirImage(string typeObj, int num);
+    sf::Image* obtenirImage(char* typeObj, int num);
 };
 
 }

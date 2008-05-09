@@ -25,7 +25,11 @@ public:
 
     void limiterFPS(int fpsMax);
 
-    MoteurCombat* getMoteurCombat(const DonneesMap& DM, Touches* touches=NULL);
+    void demarrerMoteurCombat(const DonneesMap& DM, Touches* touches=NULL);
+    
+    MoteurCombat* getMoteurCombat();
+    
+    void arreterMoteurCombat();
 };
 }
 

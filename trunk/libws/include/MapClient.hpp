@@ -45,6 +45,7 @@ private:
 
     vector<unsigned int> numsTuiles, numsElements;
     GestionnaireImages *gestImages;
+    DonneesMap DM;
 
     int **coordsCases;
 

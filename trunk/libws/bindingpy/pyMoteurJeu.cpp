@@ -3,7 +3,6 @@
 
 extern PyTypeObject pyMoteurCombatType;
 
-
 // ATTRIBUTS MEMBRES (ACCESSIBLES DEPUIS PYTHON):
 static PyMemberDef pyMoteurJeu_members[] = {
     {NULL}         // Sentinel
@@ -25,10 +24,10 @@ static int pyMoteurJeu_init(pyMoteurJeu* self, PyObject* args, PyObject* kwds)
 // Doit retourner 0 si réussite et -1 si échec
 {
     static char* kwlist[] = {"pleinEcran", "modeAuto", "synchroVert", "appL", "appH", "bpp", NULL};
-    int pleinEcran=1, modeAuto=1, synchroVert=1;
+    int pleinEcran=0, modeAuto=0, synchroVert=1;
     int appL=800, appH=600, bpp=32;
     
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "iii|iii", kwlist,
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "|iiiiii", kwlist,
                                       &pleinEcran, &modeAuto, &synchroVert, &appL, &appH, &bpp) )
         return -1;
 
@@ -40,7 +39,8 @@ static int pyMoteurJeu_init(pyMoteurJeu* self, PyObject* args, PyObject* kwds)
 
 static void pyMoteurJeu_dealloc(pyMoteurJeu* self)
 {
-    delete self->instc;
+    if(self->instc != NULL)
+        delete self->instc;
     self->ob_type->tp_free((PyObject*)self);
 }
 // FIN CONSTRUCTION / DESTRUCTION
@@ -57,8 +57,9 @@ static PyObject* pyMoteurJeu_limiterFPS(pyMoteurJeu* self, PyObject* args)
     Py_RETURN_NONE;
 }
 
-static PyObject* pyMoteurJeu_getMoteurCombat(pyMoteurJeu* self, PyObject* args, PyObject* kwds)
+static PyObject* pyMoteurJeu_demarrerMoteurCombat(pyMoteurJeu* self, PyObject* args, PyObject* kwds)
 {
+    //mj.demarrerMoteurCombat(2, 1, [2, 4], [5, 9], ["tuile2.png", "tuile4.png"], ["elem5.png", "elem9.png"], 4, 0.9)
     ws::DonneesMap DM;
     PyListObject *numsTuiles=NULL, *numsElements=NULL, *cheminsTuiles=NULL, *cheminsElements=NULL;
     static char* kwlist[] = {"largeurMap", "hauteurMap", "numsTuiles", "numsElements", "cheminsTuiles", "cheminsElements", "numTexBordure", "hauteurBordure", NULL};
@@ -81,14 +82,31 @@ static PyObject* pyMoteurJeu_getMoteurCombat(pyMoteurJeu* self, PyObject* args, 
         DM.cheminsElements.push_back(chemElemAct);
     }
     
-    pyMoteurCombat* MC = PyObject_New(pyMoteurCombat, &pyMoteurCombatType);
-    MC->instc = self->instc->getMoteurCombat(DM);
-    return (PyObject*)MC;
+    self->instc->demarrerMoteurCombat(DM);
+    Py_RETURN_NONE;
+}
+
+static PyObject* pyMoteurJeu_getMoteurCombat(pyMoteurJeu* self, PyObject* args)
+{
+    ws::MoteurCombat* MC = self->instc->getMoteurCombat();
+    if (MC == NULL)
+        Py_RETURN_NONE;
+    pyMoteurCombat* pyMC = PyObject_New(pyMoteurCombat, &pyMoteurCombatType);
+    pyMC->instc = MC;
+    return (PyObject*)pyMC;
+}
+
+static PyObject* pyMoteurJeu_arreterMoteurCombat(pyMoteurJeu* self, PyObject* args)
+{
+    self->instc->arreterMoteurCombat();
+    Py_RETURN_NONE;
 }
 
 static PyMethodDef pyMoteurJeu_methods[] = {
     {"limiterFPS", (PyCFunction)pyMoteurJeu_limiterFPS, METH_VARARGS, "Bloque le FPS a une certaine valeur"},
-    {"getMoteurCombat", (PyCFunction)pyMoteurJeu_getMoteurCombat, METH_VARARGS | METH_KEYWORDS, "Crée et renvoie le MoteurCombat"},
+    {"demarrerMoteurCombat", (PyCFunction)pyMoteurJeu_demarrerMoteurCombat, METH_VARARGS | METH_KEYWORDS, "Crée le MoteurCombat"},
+    {"getMoteurCombat", (PyCFunction)pyMoteurJeu_getMoteurCombat, METH_NOARGS, "Renvoie une instance du moteur de combat"},
+    {"arreterMoteurCombat", (PyCFunction)pyMoteurJeu_arreterMoteurCombat, METH_NOARGS, "Arrête le moteur de combat"},
     {NULL}
 };
 // FIN METHODES
