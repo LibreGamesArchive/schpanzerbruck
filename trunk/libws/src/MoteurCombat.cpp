@@ -2,13 +2,13 @@
 
 namespace ws
 {
-MoteurCombat::MoteurCombat(sf::RenderWindow* _app, DonneesMap _DM, Touches _touches)
+MoteurCombat::MoteurCombat(sf::RenderWindow* _app, const DonneesMap& _DM, const Touches& _touches)
 {
     app = _app;
     L = app->GetWidth();
     H = app->GetHeight();
     gestImages = new GestionnaireImages();
-    map = new MapClient(gestImages, _DM.largeur, _DM.hauteur, _DM.numsTuiles, _DM.numsElements, _DM.cheminsTuiles, _DM.cheminsElements, _DM.numTexBordure, _DM.hauteurBordure);
+    map = new MapClient(gestImages, _DM);
 
     touches = _touches;
 
@@ -82,7 +82,7 @@ void MoteurCombat::afficher()
     app->Display();
 }
 
-bool MoteurCombat::gestionClavierSouris()
+bool MoteurCombat::traiterEvenements()
 {
     bool running = true;
     sf::Event evt;

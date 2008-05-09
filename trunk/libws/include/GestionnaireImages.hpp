@@ -4,6 +4,9 @@
 #include <SFML/Graphics.hpp>
 #include <map>
 #include <string>
+#include <vector>
+
+using namespace std;
 
 namespace ws
 {
@@ -20,14 +23,14 @@ public:
 class GestionnaireImages
 {
 private:
-    std::map<std::string, std::map<int, ImageAnnotee> > objets;
+    map<string, map<int, ImageAnnotee> > objets;
 
 public:
-    bool chargerImage(std::string typeObj, int num, char* chemin, int etalement=1);
+    bool chargerImage(string typeObj, int num, char* chemin, int etalement=1);
 
-    bool chargerImagesMap(int _nbrCases, int* _numsTuiles, int* _numsElements, char** _cheminsTuiles, char** _cheminsElements);
+    bool chargerImagesMap(int _nbrCases, vector<unsigned int> _numsTuiles, vector<unsigned int> _numsElements, vector<char*> _cheminsTuiles, vector<char*> _cheminsElements);
 
-    sf::Image* obtenirImage(std::string typeObj, int num);
+    sf::Image* obtenirImage(string typeObj, int num);
 };
 
 }

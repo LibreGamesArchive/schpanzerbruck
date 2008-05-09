@@ -3,17 +3,17 @@
 
 namespace ws
 {
-MapClient::MapClient(GestionnaireImages* _gestImages, int _largeur, int _hauteur, int* _numsTuiles, int* _numsElements, char** _cheminsTuiles, char** _cheminsElements, int _numTexBordure, float _hauteurBordure)
+MapClient::MapClient(GestionnaireImages* _gestImages, const DonneesMap& _DM)
 {
-    gestImages = _gestImages;
-    largeur = _largeur;
-    hauteur = _hauteur;
-    numsTuiles = _numsTuiles;
-    numsElements = _numsElements;
-    numTexBordure = _numTexBordure;
-    hauteurBordure = _hauteurBordure;
+    gestImages = gestImages;
+    largeur = _DM.largeur;
+    hauteur = _DM.hauteur;
+    numsTuiles = _DM.numsTuiles;
+    numsElements = _DM.numsElements;
+    numTexBordure = _DM.numTexBordure;
+    hauteurBordure = _DM.hauteurBordure;
 
-    gestImages->chargerImagesMap(largeur*hauteur, _numsTuiles, _numsElements, _cheminsTuiles, _cheminsElements);
+    gestImages->chargerImagesMap(largeur*hauteur, numsTuiles, numsElements, _DM.cheminsTuiles, _DM.cheminsElements);
 
     coordsCases = new int*[hauteur*largeur]; // Coordonnées du point en haut à gauche de chaque case dans le plan (0xy)
     for(unsigned int i=0; i<hauteur*largeur; i++)
