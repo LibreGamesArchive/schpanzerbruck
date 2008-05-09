@@ -34,7 +34,7 @@ MapClient::MapClient(GestionnaireImages* _gestImages, const DonneesMap& _DM)
 
     DeploiementElements monFX=DeploiementElements();
     lancerFX(monFX);
-
+    
     picked[0] = -1; picked[1] = -1;     // ObjetMap sélectionné par le picking.
     // picked == [-1, -1] : Pas d'objet sélectionné
     // picked = [numCase, typeObjet] : Objet sélectionné :
@@ -167,11 +167,11 @@ void MapClient::GL_DessinPourPicking(float frameTime, int appL, int appH, const 
             {
                 glPushMatrix();
                 glTranslated(coordsCases[numCase][0], coordsCases[numCase][1], coordsCases[numCase][2]);
-
+                
                 glPushName(numCase); glPushName(1);
                 GL_DessinElement(gestImages->obtenirImage("elements", numElemAct));
                 glPopName(); glPopName();
-
+                
                 glPopMatrix();
             }
         }

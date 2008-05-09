@@ -19,15 +19,11 @@ static PyObject* pyMoteurCombat_new(PyTypeObject* type, PyObject* args, PyObject
     return (PyObject *)self;
 }
 
-static int pyMoteurCombat_init(pyMoteurCombat* self, PyObject* args, PyObject* kwds)
-// Le MoteurCombat ne peut pas être initialisé depuis le binding
-{
-    return -1;
-}
 
 static void pyMoteurCombat_dealloc(pyMoteurCombat* self)
 {
-    delete self->instc;
+    // On ne fait pas de delete self->instc ! Le MoteurCombat étant crée par le MoteurJeu,
+    // c'est au MoteurJeu de le faire.
     self->ob_type->tp_free((PyObject*)self);
 }
 // FIN CONSTRUCTION / DESTRUCTION
@@ -56,8 +52,8 @@ static PyObject* pyMoteurCombat_traiterEvenements(pyMoteurCombat* self, PyObject
 
 static PyObject* pyMoteurCombat_getFPS(pyMoteurCombat* self, PyObject* args)
 {
-    float fps = self->instc->traiterEvenements();
-    return Py_BuildValue("f", fps);
+    float fps = self->instc->getFPS();
+    return Py_BuildValue("f", &fps);
 }
 
 static PyMethodDef pyMoteurCombat_methods[] = {
@@ -108,7 +104,7 @@ PyTypeObject pyMoteurCombatType = {
     0,                         /* tp_descr_get */
     0,                         /* tp_descr_set */
     0,                         /* tp_dictoffset */
-    (initproc)pyMoteurCombat_init,      /* tp_init */
+    0,      /* tp_init */
     0,                         /* tp_alloc */
     pyMoteurCombat_new,                 /* tp_new */
 };

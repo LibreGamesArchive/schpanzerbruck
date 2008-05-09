@@ -4,18 +4,22 @@ namespace ws
 {
 MoteurJeu::MoteurJeu(bool pleinEcran, bool modeAuto, bool synchroVert, int appL, int appH, int bpp)
 {
+    MC = NULL;
     int style = sf::Style::Close;
     if(pleinEcran)
         style |= sf::Style::Fullscreen;
-    app = new sf::RenderWindow(sf::VideoMode(appL, appH, bpp), "SCHPANZERBRUCK", style);
+    if(modeAuto)
+        app = new sf::RenderWindow(sf::VideoMode::GetDesktopMode(), "SCHPANZERBRUCK", style);
+    else
+        app = new sf::RenderWindow(sf::VideoMode(appL, appH, bpp), "SCHPANZERBRUCK", style);
     app->UseVerticalSync(synchroVert);
     // app->PreserveOpenGLStates(true)
 }
 
 MoteurJeu::~MoteurJeu()
 {
+    arreterMoteurCombat();
     delete app;
-    delete MC;
 }
 
 void MoteurJeu::limiterFPS(int fpsMax)
@@ -23,18 +27,32 @@ void MoteurJeu::limiterFPS(int fpsMax)
     app->SetFramerateLimit(fpsMax);
 }
 
-MoteurCombat* MoteurJeu::getMoteurCombat(const DonneesMap& DM, Touches* touches)
+void MoteurJeu::demarrerMoteurCombat(const DonneesMap& DM, Touches* touches)
 {
-    if (touches != NULL)
+    if(MC == NULL)
     {
-        MC = new MoteurCombat(app, DM, *touches);
-        return MC;
+        if (touches != NULL)
+        {
+            MC = new MoteurCombat(app, DM, *touches);
+        }
+        Touches defTouches;
+        defTouches.zoomAvant = sf::Key::PageUp;
+        defTouches.zoomArriere = sf::Key::PageDown;
+        MC = new MoteurCombat(app, DM, defTouches);
     }
-    Touches defTouches;
-    defTouches.zoomAvant = sf::Key::PageUp;
-    defTouches.zoomArriere = sf::Key::PageDown;
-    MC = new MoteurCombat(app, DM, defTouches);
-    return MC;
-}
 }
 
+MoteurCombat* MoteurJeu::getMoteurCombat()
+{
+    return MC;
+}
+
+void MoteurJeu::arreterMoteurCombat()
+{
+    if(MC != NULL)
+    {
+        delete MC;
+        MC = NULL;
+    }
+}
+}
