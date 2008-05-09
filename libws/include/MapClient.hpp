@@ -16,8 +16,22 @@
 #define DEPLACEMENT         3
 #define CIBLAGE             4
 
+using namespace std;
+
 namespace ws
 {
+struct DonneesMap
+{
+    unsigned int largeur;
+    unsigned int hauteur;
+    vector<unsigned int> numsTuiles;
+    vector<unsigned int> numsElements;
+    vector<char*> cheminsTuiles;
+    vector<char*> cheminsElements;
+    unsigned int numTexBordure;
+    float hauteurBordure;
+};
+
 struct Camera
 {
     float pos[3], cible[3];
@@ -29,7 +43,7 @@ class MapClient
 {
 private:
 
-    int *numsTuiles, *numsElements;
+    vector<unsigned int> numsTuiles, numsElements;
     GestionnaireImages *gestImages;
 
     int **coordsCases;
@@ -53,7 +67,7 @@ private:
 public:
     float inclinaisonElements;
 
-    MapClient(GestionnaireImages* _gestImages, int _largeur, int _hauteur, int* _numsTuiles, int* _numsElements, char** _cheminsTuiles, char** _cheminsElements, int _numTexBordure, float _hauteurBordure);
+    MapClient(GestionnaireImages* _gestImages, const DonneesMap& _DM);
 
     ~MapClient();
 

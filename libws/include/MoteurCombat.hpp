@@ -11,18 +11,6 @@
 
 namespace ws
 {
-struct DonneesMap
-{
-    unsigned int largeur;
-    unsigned int hauteur;
-    int* numsTuiles;
-    int* numsElements;
-    char** cheminsTuiles;
-    char** cheminsElements;
-    unsigned int numTexBordure;
-    float hauteurBordure;
-};
-
 struct Touches
 {
     sf::Key::Code zoomAvant;
@@ -48,7 +36,7 @@ private:
 
     friend class MoteurJeu;
 
-    MoteurCombat(sf::RenderWindow* _app, DonneesMap _DM, Touches _touches);
+    MoteurCombat(sf::RenderWindow* _app, const DonneesMap& _DM, const Touches& _touches);
 
 public:
     ~MoteurCombat();
@@ -57,7 +45,7 @@ public:
 
     void afficher();
 
-    bool gestionClavierSouris();
+    bool traiterEvenements();
 
     float getFPS();
 };

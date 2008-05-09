@@ -9,7 +9,7 @@ ImageAnnotee::ImageAnnotee(int _etalement)
 }
 
 
-bool GestionnaireImages::chargerImagesMap(int _nbrCases, int* _numsTuiles, int* _numsElements, char** _cheminsTuiles, char** _cheminsElements)
+bool GestionnaireImages::chargerImagesMap(int _nbrCases, vector<unsigned int> _numsTuiles, vector<unsigned int> _numsElements, vector<char*> _cheminsTuiles, vector<char*> _cheminsElements)
 {
     bool b = false;
     for(int i=0; i<_nbrCases; i++)
@@ -20,7 +20,7 @@ bool GestionnaireImages::chargerImagesMap(int _nbrCases, int* _numsTuiles, int* 
 }
 
 
-bool GestionnaireImages::chargerImage(std::string typeObj, int num, char* chemin, int etalement)
+bool GestionnaireImages::chargerImage(string typeObj, int num, char* chemin, int etalement)
 {
     bool chargementOK = true;
     // Les numéros des images sont en HEXADECIMAL
@@ -36,7 +36,7 @@ bool GestionnaireImages::chargerImage(std::string typeObj, int num, char* chemin
     return chargementOK;
 }
 
-sf::Image* GestionnaireImages::obtenirImage(std::string typeObj, int num)
+sf::Image* GestionnaireImages::obtenirImage(string typeObj, int num)
 {
     if (objets.find(typeObj) != objets.end())
         if (objets[typeObj].find(num) != objets[typeObj].end())

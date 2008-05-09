@@ -5,6 +5,7 @@ import glob, os.path
 
 
 listeSources = [f for f in glob.glob(os.path.join("src","*")) if f.endswith(".cpp")]
+listeSources += [f for f in glob.glob(os.path.join("bindingpy","*")) if f.endswith(".cpp")]
 
 
 setup(
@@ -13,8 +14,8 @@ version = '1.0',
 description = 'Moteur graphique pour Schpanzerbruck',
 license = 'GPL v3',
 ext_modules = [
-                Extension('PyWS._ws',
-                    ["ws_wrap.cxx"] + listeSources, \
+                Extension('PyWS.ws',
+                    listeSources, \
                     libraries=['sfml-graphics', 'sfml-window', 'sfml-audio', 'sfml-system', 'GL', 'GLU'],
                     include_dirs=["include"])
               ],
