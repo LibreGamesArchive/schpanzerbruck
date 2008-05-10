@@ -73,8 +73,8 @@ static PyObject* pyMoteurJeu_demarrerMoteurCombat(pyMoteurJeu* self, PyObject* a
     {
         unsigned int tuileAct = (unsigned int)PyInt_AsLong(PyList_GetItem((PyObject*)numsTuiles, i));
         unsigned int elemAct = (unsigned int)PyInt_AsLong(PyList_GetItem((PyObject*)numsElements, i));
-        char* chemTuileAct = PyString_AsString(PyList_GetItem((PyObject*)cheminsTuiles, i));
-        char* chemElemAct = PyString_AsString(PyList_GetItem((PyObject*)cheminsElements, i));
+        string chemTuileAct = PyString_AsString(PyList_GetItem((PyObject*)cheminsTuiles, i));
+        string chemElemAct = PyString_AsString(PyList_GetItem((PyObject*)cheminsElements, i));
         
         DM.numsTuiles.push_back(tuileAct);
         DM.numsElements.push_back(elemAct);

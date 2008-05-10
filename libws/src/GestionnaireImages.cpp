@@ -11,7 +11,7 @@ ImageAnnotee::ImageAnnotee(unsigned int _etalement)
 
 GestionnaireImages::~GestionnaireImages()
 {
-    for(map<char*, map<unsigned int, ImageAnnotee*> >::iterator objsAct=objets.begin() ; objsAct!=objets.end() ; objsAct++)
+    for(map<string, map<unsigned int, ImageAnnotee*> >::iterator objsAct=objets.begin() ; objsAct!=objets.end() ; objsAct++)
     {
         for(map<unsigned int, ImageAnnotee*>::iterator it=objsAct->second.begin(); it!=objsAct->second.end(); it++)
             if(it->second != NULL)
@@ -20,7 +20,7 @@ GestionnaireImages::~GestionnaireImages()
 }
 
 
-bool GestionnaireImages::chargerImagesMap(unsigned int _nbrCases, vector<unsigned int> _numsTuiles, vector<unsigned int> _numsElements, vector<char*> _cheminsTuiles, vector<char*> _cheminsElements)
+bool GestionnaireImages::chargerImagesMap(unsigned int _nbrCases, vector<unsigned int> _numsTuiles, vector<unsigned int> _numsElements, vector<string> _cheminsTuiles, vector<string> _cheminsElements)
 {
     // DEBUG : AFFICHAGE DES NUMEROS ET CHEMINS
     cout << "Chargement des images suivantes:" << endl << endl;
@@ -41,25 +41,25 @@ bool GestionnaireImages::chargerImagesMap(unsigned int _nbrCases, vector<unsigne
 }
 
 
-bool GestionnaireImages::chargerImage(char* typeObj, unsigned int num, char* chemin, unsigned int etalement)
+bool GestionnaireImages::chargerImage(string typeObj, unsigned int num, string chemin, unsigned int etalement)
 {
     bool chargementOK = true;
     // Les numéros des images sont en HEXADECIMAL
     // num == 0 (0x00) signifie qu'il n'y a pas d'image de ce type pour cette case
     if (num != 0)
     {   // Si l'image n'a pas déjà été chargée
-        if (objets[typeObj].find(num) == objets[typeObj].end())     // UNEXPLAINED CORE DUMP !
-        {
-            //objets[typeObj][num] = new ImageAnnotee();    // UNEXPLAINED CORE DUMP TOO !
-            //if ( !((objets[typeObj][num])->LoadFromFile(chemin)) )
+        //if (objets[typeObj].find(num) == objets[typeObj].end())     // UNEXPLAINED CORE DUMP !
+        //{
+            objets[typeObj][num] = new ImageAnnotee();    // UNEXPLAINED CORE DUMP TOO !
+            if ( !((objets[typeObj][num])->LoadFromFile(chemin)) )
                 chargementOK = false;
-        }
+        //}
     }
     
     return chargementOK;
 }
 
-ImageAnnotee* GestionnaireImages::obtenirImage(char* typeObj, unsigned int num)
+ImageAnnotee* GestionnaireImages::obtenirImage(string typeObj, unsigned int num)
 {
     return objets[typeObj][num];
 }

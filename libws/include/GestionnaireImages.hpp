@@ -5,6 +5,7 @@
 #include <map>
 #include <vector>
 #include <iostream>
+#include <string>
 
 using namespace std;
 
@@ -23,16 +24,16 @@ public:
 class GestionnaireImages
 {
 private:
-    map<char*, map<unsigned int, ImageAnnotee*> > objets;
+    map<string, map<unsigned int, ImageAnnotee*> > objets;
 
 public:
     ~GestionnaireImages();
     
-    bool chargerImage(char* typeObj, unsigned int num, char* chemin, unsigned int etalement=1);
+    bool chargerImage(string typeObj, unsigned int num, string chemin, unsigned int etalement=1);
 
-    bool chargerImagesMap(unsigned int _nbrCases, vector<unsigned int> _numsTuiles, vector<unsigned int> _numsElements, vector<char*> _cheminsTuiles, vector<char*> _cheminsElements);
+    bool chargerImagesMap(unsigned int _nbrCases, vector<unsigned int> _numsTuiles, vector<unsigned int> _numsElements, vector<string> _cheminsTuiles, vector<string> _cheminsElements);
 
-    ImageAnnotee* obtenirImage(char* typeObj, unsigned int num);
+    ImageAnnotee* obtenirImage(string typeObj, unsigned int num);
 };
 
 }
