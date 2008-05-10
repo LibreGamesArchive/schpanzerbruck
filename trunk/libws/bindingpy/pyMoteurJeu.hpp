@@ -7,6 +7,9 @@
 #include <MoteurCombat.hpp>
 #include <MapClient.hpp>
 #include "pyMoteurCombat.hpp"
+#include <string>
+
+using namespace std;
 
 typedef struct {
     PyObject_HEAD

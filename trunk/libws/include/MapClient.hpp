@@ -6,6 +6,7 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include <vector>
+#include <string>
 
 #include <GestionnaireImages.hpp>
 #include <MapFX.hpp>
@@ -26,8 +27,8 @@ struct DonneesMap
     unsigned int hauteur;
     vector<unsigned int> numsTuiles;
     vector<unsigned int> numsElements;
-    vector<char*> cheminsTuiles;
-    vector<char*> cheminsElements;
+    vector<string> cheminsTuiles;
+    vector<string> cheminsElements;
     unsigned int numTexBordure;
     float hauteurBordure;
 };
