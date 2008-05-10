@@ -14,25 +14,25 @@ namespace ws
 class ImageAnnotee : public sf::Image
 {
 public:
-    int etalement;
+    unsigned int etalement;
 
-    ImageAnnotee(int _etalement=1);
+    ImageAnnotee(unsigned int _etalement=1);
 };
 
 
 class GestionnaireImages
 {
 private:
-    map<char*, map<int, ImageAnnotee*> > objets;
+    map<char*, map<unsigned int, ImageAnnotee*> > objets;
 
 public:
     ~GestionnaireImages();
     
-    bool chargerImage(char* typeObj, int num, char* chemin, int etalement=1);
+    bool chargerImage(char* typeObj, unsigned int num, char* chemin, unsigned int etalement=1);
 
     bool chargerImagesMap(unsigned int _nbrCases, vector<unsigned int> _numsTuiles, vector<unsigned int> _numsElements, vector<char*> _cheminsTuiles, vector<char*> _cheminsElements);
 
-    sf::Image* obtenirImage(char* typeObj, int num);
+    ImageAnnotee* obtenirImage(char* typeObj, unsigned int num);
 };
 
 }

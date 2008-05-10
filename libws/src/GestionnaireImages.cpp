@@ -3,7 +3,7 @@
 
 namespace ws
 {
-ImageAnnotee::ImageAnnotee(int _etalement)
+ImageAnnotee::ImageAnnotee(unsigned int _etalement)
 {
     etalement = _etalement;
 }
@@ -11,9 +11,9 @@ ImageAnnotee::ImageAnnotee(int _etalement)
 
 GestionnaireImages::~GestionnaireImages()
 {
-    for(map<char*, map<int, ImageAnnotee*> >::iterator objsAct=objets.begin() ; objsAct!=objets.end() ; objsAct++)
+    for(map<char*, map<unsigned int, ImageAnnotee*> >::iterator objsAct=objets.begin() ; objsAct!=objets.end() ; objsAct++)
     {
-        for(map<int, ImageAnnotee*>::iterator it=objsAct->second.begin(); it!=objsAct->second.end(); it++)
+        for(map<unsigned int, ImageAnnotee*>::iterator it=objsAct->second.begin(); it!=objsAct->second.end(); it++)
             if(it->second != NULL)
                 delete it->second; // Delete la valeur
     }
@@ -41,7 +41,7 @@ bool GestionnaireImages::chargerImagesMap(unsigned int _nbrCases, vector<unsigne
 }
 
 
-bool GestionnaireImages::chargerImage(char* typeObj, int num, char* chemin, int etalement)
+bool GestionnaireImages::chargerImage(char* typeObj, unsigned int num, char* chemin, unsigned int etalement)
 {
     bool chargementOK = true;
     // Les numéros des images sont en HEXADECIMAL
@@ -51,8 +51,7 @@ bool GestionnaireImages::chargerImage(char* typeObj, int num, char* chemin, int 
         if (objets[typeObj].find(num) == objets[typeObj].end())     // UNEXPLAINED CORE DUMP !
         {
             //objets[typeObj][num] = new ImageAnnotee();    // UNEXPLAINED CORE DUMP TOO !
-            cout << "Pouik" << endl;
-            //if (!((objets[typeObj][num])->LoadFromFile(chemin)))
+            //if ( !((objets[typeObj][num])->LoadFromFile(chemin)) )
                 chargementOK = false;
         }
     }
@@ -60,7 +59,7 @@ bool GestionnaireImages::chargerImage(char* typeObj, int num, char* chemin, int 
     return chargementOK;
 }
 
-sf::Image* GestionnaireImages::obtenirImage(char* typeObj, int num)
+ImageAnnotee* GestionnaireImages::obtenirImage(char* typeObj, unsigned int num)
 {
     return objets[typeObj][num];
 }
