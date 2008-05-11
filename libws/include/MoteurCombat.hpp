@@ -25,7 +25,7 @@ private:
     sf::RenderWindow* app;
     unsigned int L, H, curseurX, curseurY;
     Touches touches;
-    MapGraphique* map;
+    MapGraphique* mapGraph;
     Camera* camera;
 
     unsigned int vitesseDefil, bordureDefil;

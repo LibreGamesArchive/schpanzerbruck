@@ -21,22 +21,12 @@ GestionnaireImages::~GestionnaireImages()
 
 
 bool GestionnaireImages::chargerImagesMap(unsigned int _nbrCases, vector<unsigned int> _numsTuiles, vector<unsigned int> _numsElements, vector<string> _cheminsTuiles, vector<string> _cheminsElements)
-{
-    // DEBUG : AFFICHAGE DES NUMEROS ET CHEMINS
-    cout << "Chargement des images suivantes:" << endl << endl;
-    
+{    
     bool b = true;
-    for(unsigned int i=0; i<=_nbrCases; i++)    // <= et non < à cause de la tuile bordure
+    for(unsigned int i=0; i<_nbrCases; i++)
     {
-        cout << "Case " << i << ":";
-        cout << "\t";
         bool tuileOK = chargerImage("tuiles", _numsTuiles[i], _cheminsTuiles[i]);
-        if (tuileOK)
-            cout << "Tuile no." << _numsTuiles[i] << " : " << _cheminsTuiles[i] << endl;
-        cout << "\t";
         bool elemOK = chargerImage("elements", _numsElements[i], _cheminsElements[i]);
-        if (elemOK)
-            cout << "Element no." << _numsElements[i] << " : " << _cheminsElements[i] << endl;
         b = b && tuileOK && elemOK;    // ETALEMENT !! A REGLER !
     }
     return b;
@@ -55,6 +45,8 @@ bool GestionnaireImages::chargerImage(string typeObj, unsigned int num, string c
             objets[typeObj][num] = new ImageAnnotee();
             if ( !((objets[typeObj][num])->LoadFromFile(chemin)) )
                 chargementOK = false;
+            else
+                cout << typeObj << ": no." << num << " [" << chemin << "] chargé." << endl;
         }
     }
     

@@ -13,8 +13,7 @@ class ContexteClient:
     def __init__(self, moteurJeuWS, fichierMap, touches = config.touches):
         self.map = MapBase(fichierMap)
         self.MJ = moteurJeuWS
-        LFI = self.map.listesFichiersImages()
-        self.MJ.demarrerMoteurCombat(self.map.largeur, self.map.hauteur, self.map["tuiles"]+[self.map.bordure], self.map["elements"]+[0], LFI["tuiles"]+[LFI["bordure"]], LFI["elements"]+[""], self.map.bordure, 0.4)
+        self.map.demarrerMoteurCombat(self.MJ)
         self.MC = self.MJ.getMoteurCombat()
         
         self.persos = []    # persos[0] est toujours le personnage dont c'est actuellement le tour

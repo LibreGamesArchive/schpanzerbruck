@@ -12,13 +12,13 @@ class MapGraphique;
 class FX
 {
 public:
-    bool effet(MapGraphique& carte, float frameTime);
+    bool effet(MapGraphique* carte, float frameTime);
 };
 
 class DeploiementElements : public FX
 {
 public:
-    bool effet(MapGraphique& carte, float frameTime);
+    bool effet(MapGraphique* carte, float frameTime);
 };
 } // ws
 

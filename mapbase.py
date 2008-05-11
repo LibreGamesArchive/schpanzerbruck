@@ -49,9 +49,9 @@ class MapBase(dict):
         self.largeur = int(map_node.attributes["largeur"].value)
         self.hauteur = int(map_node.attributes["hauteur"].value)
         if map_node.hasAttribute("bordure"):
-            self.bordure = int(map_node.attributes["bordure"].value, 16)
+            self.numTexBordure = int(map_node.attributes["bordure"].value, 16)
         else:
-            self.bordure=0x00
+            self.numTexBordure=0x00
         map_strs = {"tuiles":"", "elements":""}
         
         for node in map_node.childNodes:
@@ -70,10 +70,11 @@ class MapBase(dict):
                 raise Exception, "Hauteur et/ou largeur ne correspondent pas à la liste de nums pour les %s dans la map %s" % (i, map)
     
     
-    def listesFichiersImages(self):
-        """Renvoie la liste des fichiers images à charger"""
+    def demarrerMoteurCombat(self, MJ):
+        """Passe au MoteurJeu les arguments nécessaires au lancement du MoteurCombat"""
         
-        LFI = {"tuiles":[], "elements":[], "bordure":""}
+        # Liste Fichiers Images:
+        LFI = {"tuiles":[], "elements":[]}
         for typeObj in ["tuiles", "elements"]:
             for numObj in self[typeObj]:
                 if numObj == 0:
@@ -81,7 +82,9 @@ class MapBase(dict):
                 else:
                     cheminCourant = os.path.join( chemins.__dict__["IMGS_%s" % typeObj.upper()], self.gestInfos[typeObj][numObj]["fichier"] )
                 LFI[typeObj].append(cheminCourant)
-        if self.bordure > 0:
-            LFI["bordure"] = self.gestInfos["tuiles"][self.bordure]["fichier"]
+        if self.numTexBordure > 0:
+            fichierTexBordure = os.path.join(chemins.IMGS_TUILES, self.gestInfos["tuiles"][self.numTexBordure]["fichier"])
+        else:
+            fichierTexBordure = ""
         
-        return LFI
+        MJ.demarrerMoteurCombat(self.largeur, self.hauteur, self["tuiles"], self["elements"], LFI["tuiles"], LFI["elements"], self.numTexBordure, fichierTexBordure, 0.4)

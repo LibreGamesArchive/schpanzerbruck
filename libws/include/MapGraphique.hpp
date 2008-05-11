@@ -31,6 +31,7 @@ struct DonneesMap
     vector<string> cheminsTuiles;
     vector<string> cheminsElements;
     unsigned int numTexBordure;
+    string fichierTexBordure;
     float hauteurBordure;
 };
 
@@ -53,7 +54,7 @@ private:
     unsigned int hauteur, largeur, statut, numTexBordure;
     float hauteurBordure;
 
-    std::vector<FX> FXActives;   // Liste des effets spéciaux actuellement utilisés sur la Map
+    vector<FX> FXActives;   // Liste des effets spéciaux actuellement utilisés sur la Map
 
     int picked[2];
 
@@ -85,7 +86,7 @@ public:
     void phaseCiblage();
 
 
-    void lancerFX(FX &nouvFX);
+    void lancerFX(FX nouvFX);
 
 
     void GL_Dessin(float frameTime, int appL, int appH, const Camera& camera, int curseurX, int curseurY, bool elemsON=true);

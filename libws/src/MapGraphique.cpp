@@ -14,6 +14,7 @@ MapGraphique::MapGraphique(GestionnaireImages* _gestImages, const DonneesMap& _D
     hauteurBordure = _DM.hauteurBordure;
 
     gestImages->chargerImagesMap(largeur*hauteur, numsTuiles, numsElements, _DM.cheminsTuiles, _DM.cheminsElements);
+    gestImages->chargerImage("tuiles", numTexBordure, _DM.fichierTexBordure);
 
     coordsCases = new int*[hauteur*largeur]; // Coordonnées du point en haut à gauche de chaque case dans le plan (0xy)
     for(unsigned int i=0; i<hauteur*largeur; i++)
@@ -107,7 +108,7 @@ void MapGraphique::phaseCiblage()
     statut = CIBLAGE;
 }
 
-void MapGraphique::lancerFX(FX &nouvFX)
+void MapGraphique::lancerFX(FX nouvFX)
 {
     FXActives.push_back(nouvFX);
 }
@@ -147,11 +148,11 @@ void MapGraphique::GL_DessinPourPicking(float frameTime, int appL, int appH, con
             {
                 glPushMatrix();
                 glTranslated(coordsCases[numCase][0], coordsCases[numCase][1], coordsCases[numCase][2]);
-
+                
                 glPushName(numCase); glPushName(0);
                 GL_DessinTuile(gestImages->obtenirImage("tuiles", numTuileAct));
                 glPopName(); glPopName();
-
+                
                 glPopMatrix();
             }
         }
@@ -178,7 +179,7 @@ void MapGraphique::GL_DessinPourPicking(float frameTime, int appL, int appH, con
     }
 
     GLuint hits = glRenderMode(GL_RENDER);
-    GLfloat plusPetitZ_min = 1;
+    GLfloat plusPetitZ_min = 1.0;
     if (hits > 0)
     {
         GLfloat z_min = 1.0;
@@ -187,8 +188,8 @@ void MapGraphique::GL_DessinPourPicking(float frameTime, int appL, int appH, con
         for(GLuint i=0; i < hits; i++)
         {
             GLuint nbrNames = *ptr; ptr++;
-            z_min = (GLfloat)(*ptr)/0x7fffffff; ptr++;
-            /*z_max=(GLfloat)(*ptr)/0x7fffffff;*/ ptr++;
+            z_min = (GLfloat)(*ptr)/0xffffffff; ptr++;
+            /*z_max=(GLfloat)(*ptr)/0xffffffff;*/ ptr++;
             if (z_min < plusPetitZ_min)
             {
                 for(GLuint j=0; j<nbrNames; j++)
@@ -198,11 +199,12 @@ void MapGraphique::GL_DessinPourPicking(float frameTime, int appL, int appH, con
                 plusPetitZ_min = z_min;
             }
             else
-                for(GLuint j=0; j<nbrNames; j++) ptr++;
+                for(GLuint j=0; j<nbrNames; j++)
+                    ptr++;
         }
     }
     else
-        picked[0] = -1; picked[1] = -1;
+    {    picked[0] = -1; picked[1] = -1;    }
 }
 
 void MapGraphique::GL_Dessin(float frameTime, int appL, int appH, const Camera& camera, int curseurX, int curseurY, bool elemsON)
@@ -228,9 +230,13 @@ void MapGraphique::GL_Dessin(float frameTime, int appL, int appH, const Camera& 
     if (statut == NOIRCIR)
         factAssomb = 5;
     /*else
-        for(std::vector<FX>::iterator it=FXActives.begin(); it!=FXActives.end(); it++)      // BLOCAGE !
-            if (it->effet(*this, frameTime))   // Si le FX revoie True, il est terminé
-                FXActives.erase(it);*/
+        for(vector<FX>::iterator it=FXActives.begin(); it!=FXActives.end(); it++)      // BOUCLE INFINIE !
+        {
+            if (it->effet(this, frameTime))   // Si le FX revoie true, il est terminé
+            {   cout << "Erased!" << endl;
+                FXActives.erase(it);
+            }
+        }*/
     
     int nvGris = 255/factAssomb;
     glColor3ub(nvGris, nvGris, nvGris);
