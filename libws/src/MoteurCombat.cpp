@@ -2,13 +2,12 @@
 
 namespace ws
 {
-MoteurCombat::MoteurCombat(sf::RenderWindow* _app, const DonneesMap& _DM, const Touches& _touches)
+MoteurCombat::MoteurCombat(sf::RenderWindow* _app, GestionnaireImages* _gestImages, const DonneesMap& _DM, const Touches& _touches)
 {
     app = _app;
     L = app->GetWidth();
     H = app->GetHeight();
-    gestImages = new GestionnaireImages();
-    map = new MapClient(gestImages, _DM);
+    map = new MapGraphique(_gestImages, _DM);
 
     touches = _touches;
 
@@ -31,7 +30,6 @@ MoteurCombat::MoteurCombat(sf::RenderWindow* _app, const DonneesMap& _DM, const 
 
 MoteurCombat::~MoteurCombat()
 {
-    delete gestImages;
     delete map;
     delete camera;
 }
@@ -68,8 +66,9 @@ void MoteurCombat::centrerCurseur()
 
 float MoteurCombat::getFPS()
 {
-    if (app->GetFrameTime() != 0)
-        return 1.0/(app->GetFrameTime());
+    float frameTime = app->GetFrameTime();
+    if (frameTime != 0)
+        return 1.0/(frameTime);
     return 0;
 }
 
@@ -111,21 +110,21 @@ bool MoteurCombat::traiterEvenements()
                     camera->pos[2] = 12;
             }
     }
-
+    
     const sf::Input& input = app->GetInput();
-
+    
     // ZOOM de la Map avec le clavier :
     if (input.IsKeyDown(touches.zoomAvant) and camera->pos[2] > 3)
         camera->pos[2] -= 10*app->GetFrameTime();
     else
         if (input.IsKeyDown(touches.zoomArriere) and camera->pos[2] < 12)
             camera->pos[2] += 10*app->GetFrameTime();
-
+    
     if (input.IsKeyDown(sf::Key::A))
         elemsON = false;
     else
         elemsON = true;
-
+    
     // Gestion de la souris en temps réel :
     curseurX = input.GetMouseX();
     curseurY = input.GetMouseY();

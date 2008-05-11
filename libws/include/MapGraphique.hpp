@@ -7,6 +7,7 @@
 #include <GL/glu.h>
 #include <vector>
 #include <string>
+#include <iostream>
 
 #include <GestionnaireImages.hpp>
 #include <MapFX.hpp>
@@ -40,13 +41,12 @@ struct Camera
 
 class FX;
 
-class MapClient
+class MapGraphique
 {
 private:
 
     vector<unsigned int> numsTuiles, numsElements;
-    GestionnaireImages *gestImages;
-    DonneesMap DM;
+    GestionnaireImages* gestImages;
 
     int **coordsCases;
 
@@ -69,9 +69,9 @@ private:
 public:
     float inclinaisonElements;
 
-    MapClient(GestionnaireImages* _gestImages, const DonneesMap& _DM);
+    MapGraphique(GestionnaireImages* _gestImages, const DonneesMap& _DM);
 
-    ~MapClient();
+    ~MapGraphique();
 
     int getHauteur();
     int getLargeur();

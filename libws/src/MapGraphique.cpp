@@ -1,11 +1,11 @@
-#include <MapClient.hpp>
+#include <MapGraphique.hpp>
 
 
 namespace ws
 {
-MapClient::MapClient(GestionnaireImages* _gestImages, const DonneesMap& _DM)
+MapGraphique::MapGraphique(GestionnaireImages* _gestImages, const DonneesMap& _DM)
 {
-    gestImages = gestImages;
+    gestImages = _gestImages;
     largeur = _DM.largeur;
     hauteur = _DM.hauteur;
     numsTuiles = _DM.numsTuiles;
@@ -41,14 +41,14 @@ MapClient::MapClient(GestionnaireImages* _gestImages, const DonneesMap& _DM)
     //       typeObjet: ==0 : tuile; ==1 : élément; ==2 : perso
 }
 
-MapClient::~MapClient()
+MapGraphique::~MapGraphique()
 {
     for(unsigned int i=0; i<hauteur*largeur; i++)
         delete coordsCases[i];
     delete coordsCases;
 }
 
-void MapClient::GL_DessinTuile(sf::Image* texture)
+void MapGraphique::GL_DessinTuile(sf::Image* texture)
 {
     if (texture != NULL)
         texture->Bind();
@@ -60,7 +60,7 @@ void MapClient::GL_DessinTuile(sf::Image* texture)
     glEnd();
 }
 
-void MapClient::GL_DessinElement(sf::Image* texture)
+void MapGraphique::GL_DessinElement(sf::Image* texture)
 {
     glTranslatef(0.5, 0, 0);
     glRotated(inclinaisonElements-90, 0, 1, 0);
@@ -74,17 +74,17 @@ void MapClient::GL_DessinElement(sf::Image* texture)
     glEnd();
 }
 
-int MapClient::getHauteur()
+int MapGraphique::getHauteur()
 {
     return hauteur;
 }
 
-int MapClient::getLargeur()
+int MapGraphique::getLargeur()
 {
     return largeur;
 }
 
-void MapClient::bloquer(bool autoriserInfos)
+void MapGraphique::bloquer(bool autoriserInfos)
 {
     if (autoriserInfos)
         statut = INFOS_SEULEMENT;
@@ -92,27 +92,27 @@ void MapClient::bloquer(bool autoriserInfos)
         statut = PAS_DE_SELECTION;
 }
 
-void MapClient::noircir()
+void MapGraphique::noircir()
 {
     statut = NOIRCIR;
 }
 
-void MapClient::phaseDeplacement()
+void MapGraphique::phaseDeplacement()
 {
     statut = DEPLACEMENT;
 }
 
-void MapClient::phaseCiblage()
+void MapGraphique::phaseCiblage()
 {
     statut = CIBLAGE;
 }
 
-void MapClient::lancerFX(FX &nouvFX)
+void MapGraphique::lancerFX(FX &nouvFX)
 {
     FXActives.push_back(nouvFX);
 }
 
-void MapClient::GL_DessinPourPicking(float frameTime, int appL, int appH, const Camera& camera, int curseurX, int curseurY, bool elemsON)
+void MapGraphique::GL_DessinPourPicking(float frameTime, int appL, int appH, const Camera& camera, int curseurX, int curseurY, bool elemsON)
 {
     GLuint buffer[128];
     glSelectBuffer(128, buffer);
@@ -205,7 +205,7 @@ void MapClient::GL_DessinPourPicking(float frameTime, int appL, int appH, const 
         picked[0] = -1; picked[1] = -1;
 }
 
-void MapClient::GL_Dessin(float frameTime, int appL, int appH, const Camera& camera, int curseurX, int curseurY, bool elemsON)
+void MapGraphique::GL_Dessin(float frameTime, int appL, int appH, const Camera& camera, int curseurX, int curseurY, bool elemsON)
 {
     // Dessine la Map dans le plan (0xy)
 
@@ -223,20 +223,20 @@ void MapClient::GL_Dessin(float frameTime, int appL, int appH, const Camera& cam
     glEnable(GL_ALPHA_TEST);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glAlphaFunc(GL_GREATER, 0);
-
+    
     int factAssomb = 1;
     if (statut == NOIRCIR)
         factAssomb = 5;
-    else
-        for(std::vector<FX>::iterator it=FXActives.begin(); it!=FXActives.end(); it++)
+    /*else
+        for(std::vector<FX>::iterator it=FXActives.begin(); it!=FXActives.end(); it++)      // BLOCAGE !
             if (it->effet(*this, frameTime))   // Si le FX revoie True, il est terminé
-                FXActives.erase(it);
-
+                FXActives.erase(it);*/
+    
     int nvGris = 255/factAssomb;
     glColor3ub(nvGris, nvGris, nvGris);
 
     bool selec = false;
-
+    
     // DESSIN DES TUILES
     for(unsigned int numCase=0; numCase<hauteur*largeur; numCase++)
     {
@@ -245,22 +245,22 @@ void MapClient::GL_Dessin(float frameTime, int appL, int appH, const Camera& cam
         {
             glPushMatrix();
             glTranslated(coordsCases[numCase][0], coordsCases[numCase][1], coordsCases[numCase][2]);
-
+            
             selec = false;
             if (picked[0] == static_cast<int>(numCase))
                 if (picked[1] == 0)
                     selec = true;
-
+            
             if (selec)
                 glColor3ub(0, nvGris/2, nvGris);
             GL_DessinTuile(gestImages->obtenirImage("tuiles", numTuileAct));
             if (selec)
                 glColor3ub(nvGris, nvGris, nvGris);
-
+            
             glPopMatrix();
         }
     }
-
+    
     // DESSIN DES ELEMENTS
     for(unsigned int numCase=0; numCase<hauteur*largeur; numCase++)
     {
@@ -269,12 +269,12 @@ void MapClient::GL_Dessin(float frameTime, int appL, int appH, const Camera& cam
         {
             glPushMatrix();
             glTranslated(coordsCases[numCase][0], coordsCases[numCase][1], coordsCases[numCase][2]);
-
+            
             selec = false;
             if (picked[0] == static_cast<int>(numCase))
                 if (picked[1] == 1)
                     selec = true;
-
+            
             if (selec)
                 glColor3ub(0, nvGris/2, nvGris);
             else
@@ -283,11 +283,11 @@ void MapClient::GL_Dessin(float frameTime, int appL, int appH, const Camera& cam
             GL_DessinElement(gestImages->obtenirImage("elements", numElemAct));
             if (selec || !elemsON)
                 glColor3ub(nvGris, nvGris, nvGris);
-
+            
             glPopMatrix();
         }
     }
-
+    
     // Dessin du plateau:
     gestImages->obtenirImage("tuiles", numTexBordure)->Bind();
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);

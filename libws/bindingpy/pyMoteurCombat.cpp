@@ -53,7 +53,7 @@ static PyObject* pyMoteurCombat_traiterEvenements(pyMoteurCombat* self, PyObject
 static PyObject* pyMoteurCombat_getFPS(pyMoteurCombat* self, PyObject* args)
 {
     float fps = self->instc->getFPS();
-    return Py_BuildValue("f", &fps);
+    return Py_BuildValue("f", fps);
 }
 
 static PyMethodDef pyMoteurCombat_methods[] = {

@@ -5,7 +5,8 @@
 #include <SFML/Window.hpp>
 
 #include <MoteurCombat.hpp>
-#include <MapClient.hpp>
+#include <MapGraphique.hpp>
+#include <GestionnaireImages.hpp>
 
 namespace ws
 {
@@ -16,6 +17,7 @@ class MoteurJeu
 {
 private:
     sf::RenderWindow* app;
+    GestionnaireImages* gestImages;
     MoteurCombat* MC;
 
 public:

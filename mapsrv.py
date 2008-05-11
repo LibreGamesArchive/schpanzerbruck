@@ -7,9 +7,8 @@ from mapbase import MapBase
 class MapSrv(MapBase):
     """La map ne contenant aucune texture, destinée à être utilisée seulement par le serveur"""
     
-    def __init__(self, map, gestInfos):
-        MapBase.__init__(self, map)
-        self.gestInfos = gestInfos
+    def __init__(self, fichierMap):
+        MapBase.__init__(self, fichierMap)
     
     
     def zoneDeplacement(self, coord, mvt, origine="0", coordsPossibles=[], chemin=[], route=[], mvtRestant=[]):

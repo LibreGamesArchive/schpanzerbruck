@@ -6,7 +6,7 @@
 #include <GL/gl.h>
 
 #include <MoteurJeu.hpp>
-#include <MapClient.hpp>
+#include <MapGraphique.hpp>
 #include <GestionnaireImages.hpp>
 
 namespace ws
@@ -25,8 +25,7 @@ private:
     sf::RenderWindow* app;
     unsigned int L, H, curseurX, curseurY;
     Touches touches;
-    GestionnaireImages* gestImages;
-    MapClient* map;
+    MapGraphique* map;
     Camera* camera;
 
     unsigned int vitesseDefil, bordureDefil;
@@ -36,7 +35,7 @@ private:
 
     friend class MoteurJeu;
 
-    MoteurCombat(sf::RenderWindow* _app, const DonneesMap& _DM, const Touches& _touches);
+    MoteurCombat(sf::RenderWindow* _app, GestionnaireImages* _gestImages, const DonneesMap& _DM, const Touches& _touches);
 
 public:
     ~MoteurCombat();
