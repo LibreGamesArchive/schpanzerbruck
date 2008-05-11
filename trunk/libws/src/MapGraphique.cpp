@@ -12,14 +12,14 @@ MapGraphique::MapGraphique(GestionnaireImages* _gestImages, const DonneesMap& _D
     numsElements = _DM.numsElements;
     numTexBordure = _DM.numTexBordure;
     hauteurBordure = _DM.hauteurBordure;
-
+    
     gestImages->chargerImagesMap(largeur*hauteur, numsTuiles, numsElements, _DM.cheminsTuiles, _DM.cheminsElements);
     gestImages->chargerImage("tuiles", numTexBordure, _DM.fichierTexBordure);
-
+    
     coordsCases = new int*[hauteur*largeur]; // Coordonnées du point en haut à gauche de chaque case dans le plan (0xy)
     for(unsigned int i=0; i<hauteur*largeur; i++)
         coordsCases[i] = new int[3];
-
+    
     int i=0;
     for(unsigned int x=0; x<hauteur; x++)
         for(unsigned int y=0; y<largeur; y++) {
@@ -28,12 +28,12 @@ MapGraphique::MapGraphique(GestionnaireImages* _gestImages, const DonneesMap& _D
             coordsCases[i][2] = 0;
             i++;
         }
-
+    
     statut = INFOS_SEULEMENT;
-
+    
     inclinaisonElements = 1;
-
-    DeploiementElements monFX=DeploiementElements();
+    
+    DeploiementElements* monFX = new DeploiementElements();
     lancerFX(monFX);
     
     picked[0] = -1; picked[1] = -1;     // ObjetMap sélectionné par le picking.
@@ -108,7 +108,7 @@ void MapGraphique::phaseCiblage()
     statut = CIBLAGE;
 }
 
-void MapGraphique::lancerFX(FX nouvFX)
+void MapGraphique::lancerFX(FX* nouvFX)
 {
     FXActives.push_back(nouvFX);
 }
@@ -229,14 +229,20 @@ void MapGraphique::GL_Dessin(float frameTime, int appL, int appH, const Camera& 
     int factAssomb = 1;
     if (statut == NOIRCIR)
         factAssomb = 5;
-    /*else
-        for(vector<FX>::iterator it=FXActives.begin(); it!=FXActives.end(); it++)      // BOUCLE INFINIE !
+    else
+    {
+        for(vector<FX*>::iterator it=FXActives.begin(); it!=FXActives.end(); it++)
         {
-            if (it->effet(this, frameTime))   // Si le FX revoie true, il est terminé
-            {   cout << "Erased!" << endl;
-                FXActives.erase(it);
-            }
-        }*/
+            FX* FXActuel = *it;
+            if (FXActuel != NULL)
+                if (FXActuel->effet(this, frameTime))   // Si le FX revoie true, il est terminé
+                {
+                    delete FXActuel;
+                    cout << "Gneuh !";
+                    (*it) = NULL;
+                }
+        }
+    }
     
     int nvGris = 255/factAssomb;
     glColor3ub(nvGris, nvGris, nvGris);
