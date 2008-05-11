@@ -3,11 +3,10 @@
 
 namespace ws
 {
-bool FX::effet(MapGraphique* carte, float frameTime)
+FX::~FX()
 {
-    return true;
+    /*Rien*/
 }
-
 
 bool DeploiementElements::effet(MapGraphique* carte, float frameTime)
 {
