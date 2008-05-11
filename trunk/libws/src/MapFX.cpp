@@ -3,13 +3,13 @@
 
 namespace ws
 {
-bool FX::effet(MapClient& carte, float frameTime)
+bool FX::effet(MapGraphique& carte, float frameTime)
 {
     return true;
 }
 
 
-bool DeploiementElements::effet(MapClient& carte, float frameTime)
+bool DeploiementElements::effet(MapGraphique& carte, float frameTime)
 {
     if (carte.inclinaisonElements < 70)
     {

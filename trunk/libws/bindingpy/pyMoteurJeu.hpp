@@ -5,7 +5,7 @@
 #include <structmember.h>
 #include <MoteurJeu.hpp>
 #include <MoteurCombat.hpp>
-#include <MapClient.hpp>
+#include <MapGraphique.hpp>
 #include "pyMoteurCombat.hpp"
 #include <string>
 

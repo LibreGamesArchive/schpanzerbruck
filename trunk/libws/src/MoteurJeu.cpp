@@ -5,6 +5,7 @@ namespace ws
 MoteurJeu::MoteurJeu(bool pleinEcran, bool modeAuto, bool synchroVert, int appL, int appH, int bpp)
 {
     MC = NULL;
+    gestImages = new GestionnaireImages();
     int style = sf::Style::Close;
     if(pleinEcran)
         style |= sf::Style::Fullscreen;
@@ -20,6 +21,7 @@ MoteurJeu::~MoteurJeu()
 {
     arreterMoteurCombat();
     delete app;
+    delete gestImages;
 }
 
 void MoteurJeu::limiterFPS(int fpsMax)
@@ -33,12 +35,12 @@ void MoteurJeu::demarrerMoteurCombat(const DonneesMap& DM, Touches* touches)
     {
         if (touches != NULL)
         {
-            MC = new MoteurCombat(app, DM, *touches);
+            MC = new MoteurCombat(app, gestImages, DM, *touches);
         }
         Touches defTouches;
         defTouches.zoomAvant = sf::Key::PageUp;
         defTouches.zoomArriere = sf::Key::PageDown;
-        MC = new MoteurCombat(app, DM, defTouches);
+        MC = new MoteurCombat(app, gestImages, DM, defTouches);
     }
 }
 

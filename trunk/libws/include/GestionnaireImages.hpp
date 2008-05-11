@@ -34,6 +34,8 @@ public:
     bool chargerImagesMap(unsigned int _nbrCases, vector<unsigned int> _numsTuiles, vector<unsigned int> _numsElements, vector<string> _cheminsTuiles, vector<string> _cheminsElements);
 
     ImageAnnotee* obtenirImage(string typeObj, unsigned int num);
+    
+    const map<unsigned int, ImageAnnotee*>& operator[](string typeObj);
 };
 
 }

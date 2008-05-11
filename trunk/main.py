@@ -59,7 +59,7 @@ if config.PLEIN_ECRAN:     # On lance le jeu en fenêtré
 else:
     print "Fullscreen: OFF"
 
-welt = ws.MoteurJeu(config.PLEIN_ECRAN, config.MODE_AUTO, config.SYNCHRO_VERTICALE, config.MODE[0], config.MODE[1], config.MODE[2]);
+MJ = ws.MoteurJeu(config.PLEIN_ECRAN, config.MODE_AUTO, config.SYNCHRO_VERTICALE, config.MODE[0], config.MODE[1], config.MODE[2]);
 #welt.limiterFPS(defaut.FPS_MAX)
 
 
@@ -70,5 +70,5 @@ else:
 # Fin parsage
 
 
-CTX = ctxclient.ContexteClient(app, carte)
+CTX = ctxclient.ContexteClient(MJ, carte)
 CTX.lancerBoucle()

@@ -59,7 +59,6 @@ static PyObject* pyMoteurJeu_limiterFPS(pyMoteurJeu* self, PyObject* args)
 
 static PyObject* pyMoteurJeu_demarrerMoteurCombat(pyMoteurJeu* self, PyObject* args, PyObject* kwds)
 {
-    //mj.demarrerMoteurCombat(2, 1, [2, 4], [5, 9], ["tuile2.png", "tuile4.png"], ["elem5.png", "elem9.png"], 4, 0.9)
     ws::DonneesMap DM;
     PyListObject *numsTuiles=NULL, *numsElements=NULL, *cheminsTuiles=NULL, *cheminsElements=NULL;
     static char* kwlist[] = {"largeurMap", "hauteurMap", "numsTuiles", "numsElements", "cheminsTuiles", "cheminsElements", "numTexBordure", "hauteurBordure", NULL};
