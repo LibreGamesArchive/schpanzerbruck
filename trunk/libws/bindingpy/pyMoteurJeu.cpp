@@ -61,10 +61,13 @@ static PyObject* pyMoteurJeu_demarrerMoteurCombat(pyMoteurJeu* self, PyObject* a
 {
     ws::DonneesMap DM;
     PyListObject *numsTuiles=NULL, *numsElements=NULL, *cheminsTuiles=NULL, *cheminsElements=NULL;
-    static char* kwlist[] = {"largeurMap", "hauteurMap", "numsTuiles", "numsElements", "cheminsTuiles", "cheminsElements", "numTexBordure", "hauteurBordure", NULL};
-    if(!PyArg_ParseTupleAndKeywords(args, kwds, "iiO!O!O!O!if", kwlist,
-                     &DM.largeur, &DM.hauteur, &PyList_Type, &numsTuiles, &PyList_Type, &numsElements, &PyList_Type, &cheminsTuiles, &PyList_Type, &cheminsElements, &DM.numTexBordure, &DM.hauteurBordure))
+    PyObject *fichierTexBordure=NULL;
+    static char* kwlist[] = {"largeurMap", "hauteurMap", "numsTuiles", "numsElements", "cheminsTuiles", "cheminsElements", "numTexBordure", "fichierTexBordure", "hauteurBordure", NULL};
+    if(!PyArg_ParseTupleAndKeywords(args, kwds, "iiO!O!O!O!iOf", kwlist,
+                     &DM.largeur, &DM.hauteur, &PyList_Type, &numsTuiles, &PyList_Type, &numsElements, &PyList_Type, &cheminsTuiles, &PyList_Type, &cheminsElements, &DM.numTexBordure, &fichierTexBordure, &DM.hauteurBordure))
         return NULL;
+    
+    DM.fichierTexBordure = PyString_AsString(fichierTexBordure);
     
     unsigned int nbrCases = DM.largeur*DM.hauteur;
     

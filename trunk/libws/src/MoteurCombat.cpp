@@ -7,7 +7,7 @@ MoteurCombat::MoteurCombat(sf::RenderWindow* _app, GestionnaireImages* _gestImag
     app = _app;
     L = app->GetWidth();
     H = app->GetHeight();
-    map = new MapGraphique(_gestImages, _DM);
+    mapGraph = new MapGraphique(_gestImages, _DM);
 
     touches = _touches;
 
@@ -18,11 +18,11 @@ MoteurCombat::MoteurCombat(sf::RenderWindow* _app, GestionnaireImages* _gestImag
     curseurY = 0;
 
     camera = new Camera;
-    camera->pos[0] = map->getHauteur()/2 + 4;
-    camera->pos[1] = map->getLargeur()/2;
+    camera->pos[0] = mapGraph->getHauteur()/2 + 4;
+    camera->pos[1] = mapGraph->getLargeur()/2;
     camera->pos[2] = 4;
-    camera->cible[0] = map->getHauteur()/2;
-    camera->cible[1] = map->getLargeur()/2;
+    camera->cible[0] = mapGraph->getHauteur()/2;
+    camera->cible[1] = mapGraph->getLargeur()/2;
     camera->cible[2] = 0;
 
     elemsON = true;
@@ -30,7 +30,7 @@ MoteurCombat::MoteurCombat(sf::RenderWindow* _app, GestionnaireImages* _gestImag
 
 MoteurCombat::~MoteurCombat()
 {
-    delete map;
+    delete mapGraph;
     delete camera;
 }
 
@@ -43,7 +43,7 @@ void MoteurCombat::scrolling()
         camera->cible[1] -= defil;
     }
     else
-        if (curseurX >= L - bordureDefil and camera->cible[1] < map->getLargeur()+2)   // DEFILEMENT VERS LA DROITE
+        if (curseurX >= L - bordureDefil and camera->cible[1] < mapGraph->getLargeur()+2)   // DEFILEMENT VERS LA DROITE
         {   camera->pos[1] += defil;
             camera->cible[1] += defil;
         }
@@ -52,7 +52,7 @@ void MoteurCombat::scrolling()
         camera->cible[0] -= defil;
     }
     else
-        if (curseurY >= H - bordureDefil and camera->cible[0] < map->getHauteur())   // DEFILEMENT VERS LE BAS
+        if (curseurY >= H - bordureDefil and camera->cible[0] < mapGraph->getHauteur())   // DEFILEMENT VERS LE BAS
         {   camera->pos[0] += defil;
             camera->cible[0] += defil;
         }
@@ -76,7 +76,7 @@ void MoteurCombat::afficher()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    map->GL_Dessin(app->GetFrameTime(), L, H, *camera, curseurX, curseurY, elemsON);
+    mapGraph->GL_Dessin(app->GetFrameTime(), L, H, *camera, curseurX, curseurY, elemsON);
 
     app->Display();
 }
@@ -93,7 +93,7 @@ bool MoteurCombat::traiterEvenements()
         else
             if (evt.Type == sf::Event::KeyPressed)
             {   if (evt.Key.Code == sf::Key::Escape)
-                {   map->noircir();
+                {   mapGraph->noircir();
                     // A FAIRE :
                     // Interface : Afficher le menuEchap
                     running = false;
@@ -103,7 +103,7 @@ bool MoteurCombat::traiterEvenements()
         else
             if (evt.Type == sf::Event::MouseWheelMoved)  // ZOOM de la Map avec la molette de la souris
             {
-                camera->pos[2] -= (1800.0/(map->getHauteur()*map->getLargeur()))*evt.MouseWheel.Delta*app->GetFrameTime();
+                camera->pos[2] -= (1800.0/(mapGraph->getHauteur()*mapGraph->getLargeur()))*evt.MouseWheel.Delta*app->GetFrameTime();
                 if (camera->pos[2] < 3)
                     camera->pos[2] = 3;
                 if (camera->pos[2] > 12)
