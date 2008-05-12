@@ -5,7 +5,7 @@
 #include <SFML/Window.hpp>
 #include <GL/gl.h>
 #include <GL/glu.h>
-#include <vector>
+#include <list>
 #include <string>
 #include <iostream>
 
@@ -54,7 +54,7 @@ private:
     unsigned int hauteur, largeur, statut, numTexBordure;
     float hauteurBordure;
 
-    vector<FX*> FXActives;   // Liste des effets spéciaux actuellement utilisés sur la Map
+    list<FX*> FXActives;   // Liste des effets spéciaux actuellement utilisés sur la Map
 
     int picked[2];
 
