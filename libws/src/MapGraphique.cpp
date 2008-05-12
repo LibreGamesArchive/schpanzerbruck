@@ -230,17 +230,17 @@ void MapGraphique::GL_Dessin(float frameTime, int appL, int appH, const Camera& 
     if (statut == NOIRCIR)
         factAssomb = 5;
     else
-    {
-        for(vector<FX*>::iterator it=FXActives.begin(); it!=FXActives.end(); it++)
+    {   list<FX*>::iterator it = FXActives.begin();
+        while(it != FXActives.end())
         {
             FX* FXActuel = *it;
-            if (FXActuel != NULL)
-                if (FXActuel->effet(this, frameTime))   // Si le FX revoie true, il est terminé
-                {
-                    delete FXActuel;
-                    cout << "Gneuh !";
-                    (*it) = NULL;
-                }
+            if (FXActuel->effet(this, frameTime))
+            {
+                delete FXActuel;
+                it = FXActives.erase(it);
+            }
+            else
+            {   it++;   }
         }
     }
     
