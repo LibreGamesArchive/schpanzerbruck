@@ -47,6 +47,9 @@ MapGraphique::~MapGraphique()
     for(unsigned int i=0; i<hauteur*largeur; i++)
         delete coordsCases[i];
     delete coordsCases;
+    
+    for(list<FX*>::iterator it = FXActives.begin(); it != FXActives.end(); it++)
+        delete (*it);
 }
 
 void MapGraphique::GL_DessinTuile(sf::Image* texture)
