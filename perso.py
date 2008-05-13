@@ -6,7 +6,7 @@
 from PySFML import sf
 from xml.dom import minidom
 from utils import Container
-from maitrises import *
+import maitrises, objequip
 
 
 
@@ -34,22 +34,22 @@ class Personnage:
         # Tous les items équipés sont des instances de la classe ObjetEquip
     
     
-    def ajMaitrise(self, maitrise,grade):
+    def ajMaitrise(self, maitrise, grade):
         """ Ajoute une maitrise à la liste de maitrise du personnage"""
         self.maitrises.append([maitrise, grade]) #maitrise de type maitrises
     
-    def detMaitrise(self,indiceMaitrise):
+    def detMaitrise(self, indiceMaitrise):
         """ Détruit une maitrise existante"""
         if (indiceMaitrise >= 0) and (indiceMaitrise < len(self.maitrise)):
             self.maitrise.remove(indiceMaitrise)
     
-    def changeGrade(self,indiceMaitrise,grade):
+    def changeGrade(self, indiceMaitrise, grade):
         """ Change le grade d'une maitrise donnée """
         self.maitrises[indiceMaitrise][1] = grade
-
+    
     def changeNom(self,nom):
         self.nom = nom
-
+    
     def importerDepuisXML(self, doc):
         """Charge le perso depuis un minidom.Document"""
         root = doc.documentElement
@@ -60,12 +60,13 @@ class Personnage:
             self.stats[st] = int(stats.attributes[st].value)
         
         listeMaitrises_str = root.getElementsByTagName("maitrises")[0].firstChild.data.strip().split(",")
-        # FAUT FAIRE LE CHARGEMENT DES MAITRISES EN FONCTION DE LEUR NOM
+        for maitriseEtGrade_str in listeMaitrises_str:
+            maitrise_str, grade = maitriseEtGrade_str.split(":")
+            self.ajMaitrise(maitrises.__dict__[maitrise_str], grade)
         
-        dictEquipement_noms = {}
         for typeEq, objEq in root.getElementsByTagName("equipement")[0].attributes.items():
-            dictEquipement_noms[typeEq] = objEq.value
-        # PAREIL POUR L'EQUIPEMENT
+            if objEq != "aucun":
+                self.equipement[typeEq] = objequip.ObjetEquip(typeEq, objEq)
     
     
     def exporterEnXML(self):
@@ -82,7 +83,7 @@ class Personnage:
         maitrises = doc.createElement("maitrises")
         maitrises_text = doc.createTextNode("")
         for m in self.maitrises:
-            maitrises_text.data += m.nom + ","
+            maitrises_text.data += m[0].nom + ":" + m[1] + ","
         if maitrises_text.data != "":
             maitrises_text.data = maitrises_text.data[0:-1] # On vire la dernière ","
         maitrises.appendChild(maitrises_text)
