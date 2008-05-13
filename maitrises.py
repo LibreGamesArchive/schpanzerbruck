@@ -7,44 +7,44 @@ from random import *
 class Maitrise:
     """Décrit une maitrise"""
 
-    def __init__(self, nom, nomComplet,antagonismes,attaqueMagique,attaquePhysique,portee,precision):
-        self.nom = nom						# Nom courant utilisé pour la comparaison
+    def __init__(self, nom, nomComplet, antagonismes, FCP, FCM, AGI, portee):
+        self.nom = nom				# Nom courant utilisé pour la comparaison
         self.nomComplet = nomComplet		# Nom complet, utilisé pour les crétins qui vont jouer à ce jeu stupide
         self.antagonismes = antagonismes	# Liste des maitrises qui ne peuvent pas etre utilisés ensemble
-        self.attaqueMagique = attaqueMagique
-        self.attaquePhysique = attaquePhysique
+        self.FCP = FCP
+        self.FCM = FCM
+	self.AGI = AGI
         self.portee = portee
-        self.precision = precision
     
     def __calculDegats(grade):
         
         if grade == "E":
             ret = randrange(10)
         elif grade == "D":
-            ret = randrange(20)
+            ret = randrange(10) + 10
         elif grade == "C":
-            ret = randrange(40)
+            ret = randrange(20) + 20
         elif grade == "B":
-            ret = randrange(60)
+            ret = randrange(20) + 40
         elif grade == "A":
-            ret = randrange(100)
+            ret = randrange(40) + 60
         
         return ret
     
-    def __calculDegatsMagiques(grade):
-        return (self.attaqueMagique * self.__calculDegats(grade))
-    
-    def __calculDegatsPhysiques(grade):
-        return (self.attaquePhysique * self.__calculDegats(grade))
-    
+    def __calculFCP(grade):
+        return (self.FCP * self.__calculDegats(grade))
+
+    def __calculFCM(grade):
+        return (self.FCM * self.__calculDegats(grade))
+        
+    def __calculAGI(grade):
+        return (self.AGI * self.__calculDegats(grade))
+
     def __calculPortee(grade):
         return (self.portee)
-    
-    def __calculPrecision(grade):
-        return (self.precision * self.__calculDegats(grade))
-    
+
     def retourneStat():
-        return ((self.__calculDegatsMagique(),self.__calculDegatsPhysiques(),self.__calculPortee(),self.__calculPrecision()))
+        return (self.__calculFCP(),self.__calculFCM(),self.__calculAGI(),self.__calculPortee())
 
 
 
