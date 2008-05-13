@@ -35,7 +35,7 @@ import parser
 try:
     from PyWS import ws
 except ImportError:
-    print >> sys.stderr, "Schpanzerbrück a besoin de SFML en plus d'OpenGL pour fonctionner correctement.\nVous pouvez l'installer à partir de http://www.sfml-dev.org"
+    print >> sys.stderr, "Vérifiez que PyWS est bien compilé et se trouve bien dans le dossier racine de Schpanzerbrück"
     sys.exit()
 
 
@@ -60,7 +60,7 @@ else:
     print "Fullscreen: OFF"
 
 MJ = ws.MoteurJeu(config.PLEIN_ECRAN, config.MODE_AUTO, config.SYNCHRO_VERTICALE, config.MODE[0], config.MODE[1], config.MODE[2]);
-#welt.limiterFPS(defaut.FPS_MAX)
+#MJ.limiterFPS(defaut.FPS_MAX)
 
 
 if os.path.exists(os.path.join(chemins.MAPS, options.carte)):
