@@ -29,7 +29,7 @@ class Maitrise:
         elif grade == "A":
             ret = randrange(40) + 60
         
-        return ret
+        return ret / 100.0		# Adapté à l'algorithme de combat : chaque stat est sur une base 100, donc modificateur compris entre 0 et 1
     
     def __calculFCP(grade):
         return (self.FCP * self.__calculDegats(grade))
@@ -52,7 +52,7 @@ feu = Maitrise("feu","Maîtrise du Feu",["eau"],22,15,23,12)
 
 eau = Maitrise("eau","Maitrise de l'Eau",["feu"],15,22,23,12)
 
-epees = Maitrise("epees","Maniement des épées",["arcs"],0,30,1,14)
+epees = Maitrise("epees","Maniement des épées",["arcs"],30,0,1,14)
 
 armures = Maitrise("armures","Techniques de défenses à l'armure",[],0,0,1,0)
 
