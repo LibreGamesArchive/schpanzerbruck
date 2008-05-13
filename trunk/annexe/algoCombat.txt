@@ -1,0 +1,21 @@
+Algo de combat :
+
+Toutes les caractéristiques sont sur une base 100 par perso et équipement (soit une base 900 si l'on prend en compte un perso et maximum 8 équipements - cf perso.py)
+
+Variables à utiliser :
+	- dégâts physiques : FCP, DFP
+	- dégâts magiques : FCM, DFM
+	- chances de toucher : AGI
+
+Chance de toucher (en %) = ( AGI(lanceur) - AGI(cible) + 1000 ) / 100 ==> tronqué à 100
+
+AGI(lanceur) = AGI(perso) + somme( AGI(equip) ) + AGI(maitrises)
+
+AGI(cible) = AGI(perso) + somme( AGI(equip) ) + D100
+
+AGI(maitrises) = AGI maîtrise arme si utilisée
+		 AGI la plus faible sinon
+
+FCP(lanceur) = FCP(perso) + somme( FCP(equip) ) + 3 * somme( FCP(maitrises) )
+
+FCP(
