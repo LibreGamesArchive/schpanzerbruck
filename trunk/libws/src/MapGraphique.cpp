@@ -57,6 +57,9 @@ MapGraphique::~MapGraphique()
     
     for(list<FX*>::iterator it = FXActives.begin(); it != FXActives.end(); it++)
         delete (*it);
+    
+    if (numTexBordure == 0)
+        delete texBordure;
 }
 
 void MapGraphique::GL_DessinTuile(sf::Image* texture)
