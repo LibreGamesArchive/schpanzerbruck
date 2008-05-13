@@ -72,9 +72,14 @@ class Config(Container):
         
         doc.appendChild(root)
         
-        f = open(fichier, "w")
-        f.write(doc.toprettyxml(indent="    "))
-        f.close()
+        if not os.path.exists(os.path.dirname(fichier)):
+            os.makedirs(os.path.dirname(fichier))      # Create the directories if they don't exist
+        
+        try:
+            f = open(fichier, "w")
+            f.write(doc.toprettyxml(indent="    "))
+        finally:
+            f.close()
     
     
     def __chargerDepuisXML(self, doc):

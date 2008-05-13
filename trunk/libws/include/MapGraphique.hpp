@@ -53,6 +53,8 @@ private:
 
     unsigned int hauteur, largeur, statut, numTexBordure;
     float hauteurBordure;
+    
+    sf::Image* texBordure;
 
     list<FX*> FXActives;   // Liste des effets spéciaux actuellement utilisés sur la Map
 

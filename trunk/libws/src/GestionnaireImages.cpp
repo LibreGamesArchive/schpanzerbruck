@@ -49,7 +49,6 @@ bool GestionnaireImages::chargerImage(string typeObj, unsigned int num, string c
                 cout << typeObj << ": no." << num << " [" << chemin << "] chargé." << endl;
         }
     }
-    
     return chargementOK;
 }
 
