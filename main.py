@@ -72,3 +72,5 @@ else:
 
 CTX = ctxclient.ContexteClient(MJ, carte)
 CTX.lancerBoucle()
+
+config.sauverConfig(os.path.join(chemins.SAUVEGARDES, "schpbr.cfg"))

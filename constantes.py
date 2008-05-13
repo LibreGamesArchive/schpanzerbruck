@@ -16,15 +16,13 @@ chemins.IMGS_ELEMENTS = os.path.join(cheminDossierRacine, "rsc", "visuels", "ele
 chemins.IMGS_PERSOS = os.path.join(cheminDossierRacine, "rsc", "visuels", "persos")
 chemins.SONS = os.path.join(cheminDossierRacine, "rsc", "sons")
 chemins.MAPS = os.path.join(cheminDossierRacine, "maps")
-chemins.SAUVEGARDES = os.path.join(cheminDossierRacine, "sauv")
+chemins.SAUVEGARDES = os.path.expanduser(os.path.join("~", ".schpanzerbruck"))
 chemins.CAPTURES = os.path.join(cheminDossierRacine, "captures")
 
-
-#defaut = utils.chargerConfig(os.path.join(chemins.SAUVEGARDES, "schpbr.cfg"))
 defaut=utils.ConstsContainer()    # Création d'une nouvelle instance vide de defaut
 defaut.PSYCO = True
 defaut.PLEIN_ECRAN = True
-defaut.SYNCHRO_VERTICALE = True
+defaut.SYNCHRO_VERTICALE = False
 defaut.FPS_MAX = 240
 defaut.MODE = (800, 600, 32)
 defaut.MODE_AUTO = True
@@ -42,7 +40,6 @@ defaut.touches.DEFIL_BAS = sf.Key.Down
 defaut.CARTE = u"maptest2-cold.xml"
 defaut.TEXTURE_BORDURE = sf.Image(1, 1, sf.Color(128, 128, 128))
 defaut.HAUTEUR_BORDURE = 0.6
-
 
 reseau = utils.ConstsContainer()
 reseau.IP_PORT_SERVEUR = ("", 3088)

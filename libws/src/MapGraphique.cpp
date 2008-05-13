@@ -12,11 +12,18 @@ MapGraphique::MapGraphique(GestionnaireImages* _gestImages, const DonneesMap& _D
     numsElements = _DM.numsElements;
     numTexBordure = _DM.numTexBordure;
     hauteurBordure = _DM.hauteurBordure;
+    texBordure = NULL;
     
     gestImages->chargerImagesMap(largeur*hauteur, numsTuiles, numsElements, _DM.cheminsTuiles, _DM.cheminsElements);
-    gestImages->chargerImage("tuiles", numTexBordure, _DM.fichierTexBordure);
+    if (numTexBordure!=0)
+    {
+        gestImages->chargerImage("tuiles", numTexBordure, _DM.fichierTexBordure);
+        texBordure=gestImages->obtenirImage("tuiles", numTexBordure);
+    }
+    else
+        texBordure=new sf::Image(1, 1, sf::Color(128, 128, 128));
     
-    coordsCases = new int*[hauteur*largeur]; // Coordonnées du point en haut à gauche de chaque case dans le plan (0xy)
+    coordsCases = new int*[hauteur*largeur]; // Coordonnï¿½es du point en haut ï¿½ gauche de chaque case dans le plan (0xy)
     for(unsigned int i=0; i<hauteur*largeur; i++)
         coordsCases[i] = new int[3];
     
@@ -36,10 +43,10 @@ MapGraphique::MapGraphique(GestionnaireImages* _gestImages, const DonneesMap& _D
     DeploiementElements* monFX = new DeploiementElements();
     lancerFX(monFX);
     
-    picked[0] = -1; picked[1] = -1;     // ObjetMap sélectionné par le picking.
-    // picked == [-1, -1] : Pas d'objet sélectionné
-    // picked = [numCase, typeObjet] : Objet sélectionné :
-    //       typeObjet: ==0 : tuile; ==1 : élément; ==2 : perso
+    picked[0] = -1; picked[1] = -1;     // ObjetMap sï¿½lectionnï¿½ par le picking.
+    // picked == [-1, -1] : Pas d'objet sï¿½lectionnï¿½
+    // picked = [numCase, typeObjet] : Objet sï¿½lectionnï¿½ :
+    //       typeObjet: ==0 : tuile; ==1 : ï¿½lï¿½ment; ==2 : perso
 }
 
 MapGraphique::~MapGraphique()
@@ -304,7 +311,7 @@ void MapGraphique::GL_Dessin(float frameTime, int appL, int appH, const Camera& 
     }
     
     // Dessin du plateau:
-    gestImages->obtenirImage("tuiles", numTexBordure)->Bind();
+    texBordure->Bind();
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     glBegin(GL_QUADS);
