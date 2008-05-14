@@ -189,7 +189,7 @@ void MapGraphique::GL_DessinPourSelection(float frameTime, int appL, int appH, c
     }
 }
 
-void MapGraphique::GL_Dessin(float frameTime, int appL, int appH, const Camera& camera, int curseurX, int curseurY, bool elemsON)
+void MapGraphique::GL_Dessin(float frameTime, int appL, int appH, const Camera& camera, bool elemsON)
 {
     // Dessine la Map dans le plan (0xy)
 
@@ -317,5 +317,17 @@ void MapGraphique::GL_Dessin(float frameTime, int appL, int appH, const Camera& 
     glTexCoord2d(largeur, 0); glVertex3f(hauteur, largeur, 0);
 
     glEnd();
+}
+
+void MapGraphique::traiterSelection(int* selection)
+{
+    picked[0] = selection[0];
+    picked[1] = selection[1];
+}
+
+void MapGraphique::pasDeSelection()
+{
+    picked[0] = -1;
+    picked[1] = -1;
 }
 }

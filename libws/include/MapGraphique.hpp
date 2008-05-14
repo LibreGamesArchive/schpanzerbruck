@@ -80,7 +80,10 @@ public:
     void lancerFX(FX* nouvFX);
     
     void GL_DessinPourSelection(float frameTime, int appL, int appH, const Camera& camera, int curseurX, int curseurY, bool elemsON);
-    void GL_Dessin(float frameTime, int appL, int appH, const Camera& camera, int curseurX, int curseurY, bool elemsON=true);
+    void GL_Dessin(float frameTime, int appL, int appH, const Camera& camera, bool elemsON=true);
+    
+    void traiterSelection(int* selection);
+    void pasDeSelection();
 };
 }
 
