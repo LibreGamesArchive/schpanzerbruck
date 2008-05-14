@@ -5,9 +5,10 @@
 #include <SFML/Window.hpp>
 #include <GL/gl.h>
 
-#include <MoteurJeu.hpp>
-#include <MapGraphique.hpp>
-#include <GestionnaireImages.hpp>
+#include "MoteurJeu.hpp"
+#include "MapGraphique.hpp"
+#include "InterfaceCombat.hpp"
+#include "GestionnaireImages.hpp"
 
 namespace ws
 {
@@ -26,6 +27,7 @@ private:
     unsigned int L, H, curseurX, curseurY;
     Touches touches;
     MapGraphique* mapGraph;
+    InterfaceCombat* gui;
     Camera* camera;
 
     unsigned int vitesseDefil, bordureDefil;
@@ -51,4 +53,3 @@ public:
 }
 
 #endif
-

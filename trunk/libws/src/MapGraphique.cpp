@@ -43,10 +43,10 @@ MapGraphique::MapGraphique(GestionnaireImages* _gestImages, const DonneesMap& _D
     DeploiementElements* monFX = new DeploiementElements();
     lancerFX(monFX);
     
-    picked[0] = -1; picked[1] = -1;     // ObjetMap s�lectionn� par le picking.
-    // picked == [-1, -1] : Pas d'objet s�lectionn�
-    // picked = [numCase, typeObjet] : Objet s�lectionn� :
-    //       typeObjet: ==0 : tuile; ==1 : �l�ment; ==2 : perso
+    picked[0] = -1; picked[1] = -1;     // ObjetMap sélectionné par le picking.
+    // picked == [-1, -1] : Pas d'objet sélectionné
+    // picked = [numCase, typeObjet] : Objet sélectionné :
+    //       typeObjet: ==0 : tuile; ==1 : élément; ==2 : perso
 }
 
 MapGraphique::~MapGraphique()
@@ -126,31 +126,28 @@ void MapGraphique::lancerFX(FX* nouvFX)
     FXActives.push_back(nouvFX);
 }
 
-void MapGraphique::GL_DessinPourPicking(float frameTime, int appL, int appH, const Camera& camera, int curseurX, int curseurY, bool elemsON)
+void MapGraphique::GL_DessinPourSelection(float frameTime, int appL, int appH, const Camera& camera, int curseurX, int curseurY, bool elemsON)
 {
-    GLuint buffer[128];
-    glSelectBuffer(128, buffer);
-
-    glRenderMode(GL_SELECT);
-    glInitNames();
-
+    if (statut == NOIRCIR || statut == PAS_DE_SELECTION)
+        return;
+    
     GLint viewport[4];
-    glGetIntegerv (GL_VIEWPORT, viewport);
-
+    glGetIntegerv(GL_VIEWPORT, viewport);
+    
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     gluPickMatrix(curseurX, appH - curseurY, 1, 1, viewport);
     gluPerspective(70, static_cast<float>(appL)/appH, 1, 50);
-
+    
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     gluLookAt(camera.pos[0], camera.pos[1], camera.pos[2], camera.cible[0], camera.cible[1], camera.cible[2], 0, 0, 1);
-
+    
     glDisable(GL_TEXTURE_2D);
     glDisable(GL_DEPTH_TEST);
     glDisable(GL_BLEND);
     glDisable(GL_ALPHA_TEST);
-
+    
     if (statut != CIBLAGE)
     {
         // DESSIN DES TUILES
@@ -170,7 +167,7 @@ void MapGraphique::GL_DessinPourPicking(float frameTime, int appL, int appH, con
             }
         }
     }
-
+    
     if (elemsON && statut == CIBLAGE)
     {
         // DESSIN DES ELEMENTS
@@ -190,34 +187,6 @@ void MapGraphique::GL_DessinPourPicking(float frameTime, int appL, int appH, con
             }
         }
     }
-
-    GLuint hits = glRenderMode(GL_RENDER);
-    GLfloat plusPetitZ_min = 1.0;
-    if (hits > 0)
-    {
-        GLfloat z_min = 1.0;
-        //GLfloat z_max = 0.0;
-        GLuint* ptr = buffer;
-        for(GLuint i=0; i < hits; i++)
-        {
-            GLuint nbrNames = *ptr; ptr++;
-            z_min = (GLfloat)(*ptr)/0xffffffff; ptr++;
-            /*z_max=(GLfloat)(*ptr)/0xffffffff;*/ ptr++;
-            if (z_min < plusPetitZ_min)
-            {
-                for(GLuint j=0; j<nbrNames; j++)
-                {
-                    picked[j] = *ptr; ptr++;
-                }
-                plusPetitZ_min = z_min;
-            }
-            else
-                for(GLuint j=0; j<nbrNames; j++)
-                    ptr++;
-        }
-    }
-    else
-    {    picked[0] = -1; picked[1] = -1;    }
 }
 
 void MapGraphique::GL_Dessin(float frameTime, int appL, int appH, const Camera& camera, int curseurX, int curseurY, bool elemsON)
@@ -348,9 +317,5 @@ void MapGraphique::GL_Dessin(float frameTime, int appL, int appH, const Camera& 
     glTexCoord2d(largeur, 0); glVertex3f(hauteur, largeur, 0);
 
     glEnd();
-
-    if (statut != NOIRCIR && statut != PAS_DE_SELECTION)
-        GL_DessinPourPicking(frameTime, appL, appH, camera, curseurX, curseurY, elemsON);
 }
 }
-

@@ -1,5 +1,5 @@
-#ifndef MAP_CLIENT_HEADER
-#define MAP_CLIENT_HEADER
+#ifndef MAP_GRAPHIQUE_HEADER
+#define MAP_GRAPHIQUE_HEADER
 
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
@@ -9,8 +9,8 @@
 #include <string>
 #include <iostream>
 
-#include <GestionnaireImages.hpp>
-#include <MapFX.hpp>
+#include "GestionnaireImages.hpp"
+#include "MapFX.hpp"
 
 #define PAS_DE_SELECTION    0
 #define NOIRCIR             1
@@ -58,42 +58,30 @@ private:
 
     list<FX*> FXActives;   // Liste des effets spéciaux actuellement utilisés sur la Map
 
-    int picked[2];
-
-
     void GL_DessinTuile(sf::Image* texture=NULL);
-
     void GL_DessinElement(sf::Image* texture=NULL);
 
 
-    void GL_DessinPourPicking(float frameTime, int appL, int appH, const Camera& camera, int curseurX, int curseurY, bool elemsON);
-
-
 public:
+    int picked[2];
     float inclinaisonElements;
-
+    
     MapGraphique(GestionnaireImages* _gestImages, const DonneesMap& _DM);
-
     ~MapGraphique();
-
+    
     int getHauteur();
     int getLargeur();
-
+    
     void bloquer(bool autoriserInfos=true);
-
     void noircir();
-
     void phaseDeplacement();
-
     void phaseCiblage();
-
-
+    
     void lancerFX(FX* nouvFX);
-
-
+    
+    void GL_DessinPourSelection(float frameTime, int appL, int appH, const Camera& camera, int curseurX, int curseurY, bool elemsON);
     void GL_Dessin(float frameTime, int appL, int appH, const Camera& camera, int curseurX, int curseurY, bool elemsON=true);
 };
 }
 
 #endif
-

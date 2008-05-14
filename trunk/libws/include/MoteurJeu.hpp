@@ -4,9 +4,9 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
 
-#include <MoteurCombat.hpp>
-#include <MapGraphique.hpp>
-#include <GestionnaireImages.hpp>
+#include "MoteurCombat.hpp"
+#include "MapGraphique.hpp"
+#include "GestionnaireImages.hpp"
 
 namespace ws
 {
