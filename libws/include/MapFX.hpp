@@ -1,7 +1,7 @@
 #ifndef MAP_FX_HEADER
 #define MAP_FX_HEADER
 
-#include <MapGraphique.hpp>
+#include "MapGraphique.hpp"
 
 // EFFETS SPECIAUX:  Modifient à chaque image plusieurs variables de la map.
 // Retournent true si l'effet est fini, false sinon

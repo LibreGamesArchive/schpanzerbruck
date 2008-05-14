@@ -8,6 +8,7 @@ MoteurCombat::MoteurCombat(sf::RenderWindow* _app, GestionnaireImages* _gestImag
     L = app->GetWidth();
     H = app->GetHeight();
     mapGraph = new MapGraphique(_gestImages, _DM);
+    gui = new InterfaceCombat();
 
     touches = _touches;
 
@@ -31,6 +32,7 @@ MoteurCombat::MoteurCombat(sf::RenderWindow* _app, GestionnaireImages* _gestImag
 MoteurCombat::~MoteurCombat()
 {
     delete mapGraph;
+    delete gui;
     delete camera;
 }
 
@@ -76,7 +78,57 @@ void MoteurCombat::afficher()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    mapGraph->GL_Dessin(app->GetFrameTime(), L, H, *camera, curseurX, curseurY, elemsON);
+    float frameTime = app->GetFrameTime();
+    mapGraph->GL_Dessin(frameTime, L, H, *camera, curseurX, curseurY, elemsON);
+    
+    GLuint buffer[512];
+    glSelectBuffer(512, buffer);
+    
+    glRenderMode(GL_SELECT);
+    glInitNames();
+    
+    glPushName(0); // O pour la Map, 1 pour l'interface
+    mapGraph->GL_DessinPourSelection(frameTime, L, H, *camera, curseurX, curseurY, elemsON);
+    glPopName();
+    
+    /*glPushName(1);
+    gui->GL_DessinPourSelection(app->GetFrameTime());
+    glPopName();*/
+
+    GLuint hits = glRenderMode(GL_RENDER);
+    GLfloat plusPetitZ_min = 1.0;
+    if (hits > 0)
+    {
+        GLfloat z_min = 1.0;
+        //GLfloat z_max = 0.0;
+        GLuint* ptr = buffer;
+        for(GLuint i=0; i < hits; i++)
+        {
+            GLuint nbrNames = *ptr; ptr++;
+            z_min = (GLfloat)(*ptr)/0xffffffff; ptr++;
+            /*z_max=(GLfloat)(*ptr)/0xffffffff;*/ ptr++;
+            if (z_min < plusPetitZ_min)
+            {
+                GLuint clicSur = *ptr; ptr++;   // Le premier nom est 0 ou 1 (map ou interface)
+                if (clicSur == 0)   // CLIC SUR LA MAP
+                    for(GLuint j=1; j<nbrNames; j++)
+                    {
+                        mapGraph->picked[j-1] = *ptr; ptr++;
+                    }
+                else    // CLIC SUR L'INTERFACE
+                {
+                    mapGraph->picked[0] = -1; mapGraph->picked[1] = -1;
+                }
+                plusPetitZ_min = z_min;
+            }
+            else
+                for(GLuint j=0; j<nbrNames; j++)
+                    ptr++;
+        }
+    }
+    else
+    {    mapGraph->picked[0] = -1; mapGraph->picked[1] = -1;    }
+
 
     app->Display();
 }
@@ -134,4 +186,3 @@ bool MoteurCombat::traiterEvenements()
     return running;
 }
 }
-
