@@ -79,7 +79,8 @@ void MoteurCombat::afficher()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     float frameTime = app->GetFrameTime();
-    mapGraph->GL_Dessin(frameTime, L, H, *camera, curseurX, curseurY, elemsON);
+    mapGraph->GL_Dessin(frameTime, L, H, *camera, elemsON);
+    gui->GL_Dessin(L, H);
     
     GLuint buffer[512];
     glSelectBuffer(512, buffer);
@@ -91,12 +92,15 @@ void MoteurCombat::afficher()
     mapGraph->GL_DessinPourSelection(frameTime, L, H, *camera, curseurX, curseurY, elemsON);
     glPopName();
     
-    /*glPushName(1);
-    gui->GL_DessinPourSelection(app->GetFrameTime());
-    glPopName();*/
+    glPushName(1);
+    gui->GL_DessinPourSelection(L, H, curseurX, curseurY);
+    glPopName();
 
     GLuint hits = glRenderMode(GL_RENDER);
     GLfloat plusPetitZ_min = 1.0;
+    GLuint clicSur = 0;
+    int selection[2];
+    
     if (hits > 0)
     {
         GLfloat z_min = 1.0;
@@ -109,15 +113,10 @@ void MoteurCombat::afficher()
             /*z_max=(GLfloat)(*ptr)/0xffffffff;*/ ptr++;
             if (z_min < plusPetitZ_min)
             {
-                GLuint clicSur = *ptr; ptr++;   // Le premier nom est 0 ou 1 (map ou interface)
-                if (clicSur == 0)   // CLIC SUR LA MAP
-                    for(GLuint j=1; j<nbrNames; j++)
-                    {
-                        mapGraph->picked[j-1] = *ptr; ptr++;
-                    }
-                else    // CLIC SUR L'INTERFACE
+                clicSur = *ptr; ptr++;   // Le premier nom est 0 ou 1 (map ou interface)
+                for(GLuint j=0; j<nbrNames-1; j++)
                 {
-                    mapGraph->picked[0] = -1; mapGraph->picked[1] = -1;
+                    selection[j] = *ptr; ptr++;
                 }
                 plusPetitZ_min = z_min;
             }
@@ -125,10 +124,20 @@ void MoteurCombat::afficher()
                 for(GLuint j=0; j<nbrNames; j++)
                     ptr++;
         }
+        
+        if (clicSur == 0)   // CLIC SUR LA MAP
+        {
+            mapGraph->traiterSelection(selection);
+            gui->pasDeSelection();
+        }
+        else    // CLIC SUR L'INTERFACE
+        {
+            mapGraph->pasDeSelection();
+            gui->traiterSelection(selection);
+        }
     }
     else
-    {    mapGraph->picked[0] = -1; mapGraph->picked[1] = -1;    }
-
+    {    mapGraph->pasDeSelection(); gui->pasDeSelection();    }
 
     app->Display();
 }
@@ -146,8 +155,7 @@ bool MoteurCombat::traiterEvenements()
             if (evt.Type == sf::Event::KeyPressed)
             {   if (evt.Key.Code == sf::Key::Escape)
                 {   mapGraph->noircir();
-                    // A FAIRE :
-                    // Interface : Afficher le menuEchap
+                    gui->switchMenuEchap();
                     running = false;
                 }
             }
