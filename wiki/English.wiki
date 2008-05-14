@@ -1,4 +1,4 @@
-#summary Welcome to the Schpanzerbrück wiki !
+#summary Welcome to the Schpanzerbrück wiki!
 #labels Featured
 
 = Introduction =
