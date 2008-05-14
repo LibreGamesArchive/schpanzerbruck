@@ -1,14 +1,15 @@
-#summary One-sentence summary of this page.
+#summary The starting page
 #labels Featured
+
+Welcome to the Schpanzerbrück wiki !
 
 = Introduction =
 
-Add your content here.
+Schpanzerbrück is an open-source (GPL) multiplayer-only 3D tactical RPG featuring a cool cardboard art style.
+It is mainly written in Python, even though the graphical engine is designed in C++ in order to achieve greater rendering performance.
 
+= Table of content =
 
-= Details =
-
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+    * GettingSchpanzerbruck
+    * CompilingSchpanzerbruck
+    * PlayerManual
