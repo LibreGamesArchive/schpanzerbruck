@@ -88,7 +88,7 @@ SYSTEME DES PERSONNAGES :
 
 	* VIE / FATIGUE :
 		La VIE et la FATIGUE de chaque personnage sont exprimés en %
-		L'évolution du la VIE est fonction de la Défense Physique
+		L'évolution de la VIE est fonction de la Défense Physique
 		L'évolution de la FATIGUE est fonction de la Défense Magique
 		Plus la FATIGUE est élevée, plus la VIE baissera vite/montera lentement
 		Attaquer/Bouger fait monter la FATIGUE
@@ -97,12 +97,12 @@ SYSTEME DES PERSONNAGES :
 	* MAITRISES :
 		Afin d'éviter un système de "classes" surexploité dans les jeux du genre, le joueur (après avoir choisi la race de son
 		personnage) pourra à tout moment lui attribuer des MAITRISES (Ex: "Maitrise des épées", "Magie des Flammes",
-		"Alchimie", "Equitation", etc.), afin de le personnaliser au maximum.
+		"Alchimie", "Équitation", etc.), afin de le personnaliser au maximum.
 		Chaque maîtrise a plusieurs grades (usuellement E,D,C,B,A,S). En LAN, les maîtrises peuvent être choisies à n'importe quel
-		grade (mais bien sûr, celà fera grimper la valeur du personnage). ONLINE, toute maîtrise est démarrée au grade minimum
+		grade (mais bien sûr, cela fera grimper la valeur du personnage). ONLINE, toute maîtrise est démarrée au grade minimum
 		(généralement E), ce sont en suite les joueurs qui répartissent les XP gagnés dans chaque maîtrise pour en faire
 		monter le grade (et encore une fois, la valeur du personnage en question)
 		
-		Les maîtrises et leurs grades détermine la capacité qu'a le personnage à porter telle arme ou à user de telle technique, par exemple.
+		Les maîtrises et leurs grades déterminent la capacité qu'a le personnage à porter telle arme ou à user de telle technique, par exemple.
 		Elle peuvent également influer sur beaucoup d'autres choses : les modificateurs liés au terrain, l'évolution du personnage,
 		ses aptitudes à résister aux changements d'état (Sommeil, Poison...), etc.
