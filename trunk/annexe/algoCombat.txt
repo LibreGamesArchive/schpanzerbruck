@@ -1,21 +1,39 @@
 Algo de combat :
 
-Toutes les caractéristiques sont sur une base 100 par perso et équipement (soit une base 900 si l'on prend en compte un perso et maximum 8 équipements - cf perso.py)
+Toutes les caractéristiques sont sur une base 100 par perso et équipement (soit une base 900 si l'on prend en compte un perso et maximum 8 équipements pour les chances de toucher, ou une base 1800 pour la même chose plus la somme des 3 maîtrises, coefficientée par 3 pour les dégâts - cf perso.py)
+
+** Toutes les constantes utilisées ici sont purement à titre d'exemple, et seront certainement modifiées pendant les tests du jeu **
 
 Variables à utiliser :
-	- dégâts physiques : FCP, DFP
-	- dégâts magiques : FCM, DFM
-	- chances de toucher : AGI
+	- dégâts physiques : FCP, DFP -> base 100
+	- dégâts magiques : FCM, DFM -> base 100
+	- chances de toucher : AGI -> base 100
+	- VIE, FATIGUE -> en %
 
 Chance de toucher (en %) = ( AGI(lanceur) - AGI(cible) + 1000 ) / 100 ==> tronqué à 100
 
 AGI(lanceur) = AGI(perso) + somme( AGI(equip) ) + AGI(maitrises)
-
 AGI(cible) = AGI(perso) + somme( AGI(equip) ) + D100
 
 AGI(maitrises) = AGI maîtrise arme si utilisée
-		 AGI la plus faible sinon
+				 AGI la plus faible sinon
 
 FCP(lanceur) = FCP(perso) + somme( FCP(equip) ) + 3 * somme( FCP(maitrises) )
 
-FCP(
+FCM(lanceur) = FCM(perso) + somme( FCM(equip) ) + 3 * somme( FCM(maitrises) )
+
+DFP(cible) = DFP(perso) + somme( DFP(equip) ) + 9 * D100
+
+DFM(cible) = DFM(perso) + somme( DFM(equip) ) + 9 * D100
+
+** Je ne suis pas certain ici du nombre de D100, à cause de la possibilité que le lanceur n'utilise qu'une ou deux maîtrises, auquel cas la cible serait avantagée par son nombre de D100 supérieur -> possibilité de ne mettre que 3 D100, pour égaler l'utilisation d'une seule maîtrise, rendant l'utilisation de plusieurs maîtrises "uniquement" intéressante, alors qu'elle est ici quasiment obligatoire pour faire de réels dégâts **
+
+* Dégâts sur cible : des facteurs seront à appliquer en fonction des caractéristiques des armes et des armures (afin d'éviter qu'un perso ne puisse être intouchable en toute circonstance)
+
+Dégâts VIE (en %) = (70% * ( FCP(lanceur)*sqrt( FATIGUE(lanceur) ) - DFP(cible)*FATIGUE(cible) ) + 30% * ( FCM(lanceur)*FATIGUE(cible) - DFM(cible)*(FATIGUE(cible))² ))/180
+
+** À réétudier, car ici l'évolution de la VIE est fonction des attaques physiques et magiques, ce qui est contraire au cahier des charges (ligne 91) **
+
+* Dégâts sur lanceur : il faudrait soit une information dans les caractéristiques des objets et maîtrises afin d'avoir une FATIGUE spécifique à chaque, soit une formule (que je peux faire sur demande) qui généraliserait la FATIGUE prise par le lanceur en fonction de la puissance de ses attaques
+
+Dégâts FATIGUE (en %) = (60% * FCP(lanceur) + 40% * FCM(lanceur))/180
