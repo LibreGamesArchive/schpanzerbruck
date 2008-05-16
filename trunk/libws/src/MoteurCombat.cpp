@@ -7,8 +7,8 @@ MoteurCombat::MoteurCombat(sf::RenderWindow* _app, GestionnaireImages* _gestImag
     app = _app;
     L = app->GetWidth();
     H = app->GetHeight();
-    mapGraph = new MapGraphique(_gestImages, _DM);
-    gui = new InterfaceCombat();
+    mapGraph = new MapGraphique(_gestImages, _DM, L, H);
+    gui = new InterfaceCombat(L, H);
 
     touches = _touches;
 
@@ -79,8 +79,8 @@ void MoteurCombat::afficher()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     float frameTime = app->GetFrameTime();
-    mapGraph->GL_Dessin(frameTime, L, H, *camera, elemsON);
-    gui->GL_Dessin(L, H);
+    mapGraph->GL_Dessin(frameTime, *camera, elemsON);
+    gui->GL_Dessin();
     
     GLuint buffer[512];
     glSelectBuffer(512, buffer);
@@ -89,11 +89,11 @@ void MoteurCombat::afficher()
     glInitNames();
     
     glPushName(0); // O pour la Map, 1 pour l'interface
-    mapGraph->GL_DessinPourSelection(frameTime, L, H, *camera, curseurX, curseurY, elemsON);
+    mapGraph->GL_DessinPourSelection(frameTime, *camera, curseurX, curseurY, elemsON);
     glPopName();
     
     glPushName(1);
-    gui->GL_DessinPourSelection(L, H, curseurX, curseurY);
+    gui->GL_DessinPourSelection(curseurX, curseurY);
     glPopName();
 
     GLuint hits = glRenderMode(GL_RENDER);
@@ -163,7 +163,7 @@ bool MoteurCombat::traiterEvenements()
         else
             if (evt.Type == sf::Event::MouseWheelMoved)  // ZOOM de la Map avec la molette de la souris
             {
-                camera->pos[2] -= (1800.0/(mapGraph->getHauteur()*mapGraph->getLargeur()))*evt.MouseWheel.Delta*app->GetFrameTime();
+                camera->pos[2] -= 50*evt.MouseWheel.Delta*app->GetFrameTime();
                 if (camera->pos[2] < 3)
                     camera->pos[2] = 3;
                 if (camera->pos[2] > 12)

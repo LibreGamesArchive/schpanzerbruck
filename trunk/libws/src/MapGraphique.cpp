@@ -3,8 +3,10 @@
 
 namespace ws
 {
-MapGraphique::MapGraphique(GestionnaireImages* _gestImages, const DonneesMap& _DM)
+MapGraphique::MapGraphique(GestionnaireImages* _gestImages, const DonneesMap& _DM, unsigned int _appL, unsigned int _appH)
 {
+    appL = _appL;
+    appH = _appH;
     gestImages = _gestImages;
     largeur = _DM.largeur;
     hauteur = _DM.hauteur;
@@ -23,7 +25,7 @@ MapGraphique::MapGraphique(GestionnaireImages* _gestImages, const DonneesMap& _D
     else
         texBordure=new sf::Image(1, 1, sf::Color(128, 128, 128));
     
-    coordsCases = new int*[hauteur*largeur]; // Coordonn�es du point en haut � gauche de chaque case dans le plan (0xy)
+    coordsCases = new int*[hauteur*largeur]; // Coordonnées du point en haut à gauche de chaque case dans le plan (0xy)
     for(unsigned int i=0; i<hauteur*largeur; i++)
         coordsCases[i] = new int[3];
     
@@ -126,7 +128,7 @@ void MapGraphique::lancerFX(FX* nouvFX)
     FXActives.push_back(nouvFX);
 }
 
-void MapGraphique::GL_DessinPourSelection(float frameTime, int appL, int appH, const Camera& camera, int curseurX, int curseurY, bool elemsON)
+void MapGraphique::GL_DessinPourSelection(float frameTime, const Camera& camera, int curseurX, int curseurY, bool elemsON, bool clic)
 {
     if (statut == NOIRCIR || statut == PAS_DE_SELECTION)
         return;
@@ -189,7 +191,7 @@ void MapGraphique::GL_DessinPourSelection(float frameTime, int appL, int appH, c
     }
 }
 
-void MapGraphique::GL_Dessin(float frameTime, int appL, int appH, const Camera& camera, bool elemsON)
+void MapGraphique::GL_Dessin(float frameTime, const Camera& camera, bool elemsON)
 {
     // Dessine la Map dans le plan (0xy)
 
