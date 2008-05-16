@@ -5,7 +5,7 @@
 #include <GL/glu.h>
 
 
-enum{   SLC_MENU_ECHAP, SLC_CONTINUER, SLC_QUITTER,
+enum{   SLC_CONTINUER, SLC_QUITTER, SLC_MENU_ECHAP,
         SLC_MENU_TRIANGLE, SLC_DEPLACEMENT, SLC_ACTION, SLC_FIN_DU_TOUR
     };
 
@@ -30,10 +30,10 @@ public:
     
     void switchMenuEchap();
     
-    void GL_DessinPourSelection(int curseurX, int curseurY, bool clic=false);
+    void GL_DessinPourSelection(unsigned int curseurX, unsigned int curseurY);
     void GL_Dessin();
     
-    void traiterSelection(int* selection);
+    bool traiterSelection(int* selection, bool clic=false);
     void pasDeSelection();
 };
 

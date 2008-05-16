@@ -78,12 +78,14 @@ public:
     void phaseDeplacement();
     void phaseCiblage();
     
+    int getStatut();
+    
     void lancerFX(FX* nouvFX);
     
-    void GL_DessinPourSelection(float frameTime, const Camera& camera, int curseurX, int curseurY, bool elemsON, bool clic=false);
+    void GL_DessinPourSelection(float frameTime, const Camera& camera, unsigned int curseurX, unsigned int curseurY, bool elemsON);
     void GL_Dessin(float frameTime, const Camera& camera, bool elemsON=true);
     
-    void traiterSelection(int* selection);
+    void traiterSelection(int* selection, bool clic=false);
     void pasDeSelection();
 };
 }

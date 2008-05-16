@@ -78,9 +78,81 @@ void MoteurCombat::afficher()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    float frameTime = app->GetFrameTime();
-    mapGraph->GL_Dessin(frameTime, *camera, elemsON);
+    mapGraph->GL_Dessin(app->GetFrameTime(), *camera, elemsON);
     gui->GL_Dessin();
+    
+    app->Display();
+}
+
+bool MoteurCombat::traiterEvenements()
+{
+    bool running = true, clic = false;
+    sf::Event evt;
+    while (running && app->GetEvent(evt))
+    {
+        switch(evt.Type)
+        {
+            case sf::Event::Closed:
+               running = false;
+               break;
+            
+            case sf::Event::KeyPressed:
+                switch(evt.Key.Code)
+                {
+                    case sf::Key::Escape:
+                        if(mapGraph->getStatut() == NOIRCIR)
+                            mapGraph->bloquer(true);
+                        else
+                            mapGraph->noircir();
+                        gui->switchMenuEchap();
+                        break;
+                    
+                    default: break;
+                }
+                break;
+            
+            case sf::Event::MouseButtonPressed:
+                switch(evt.MouseButton.Button)
+                {
+                    case sf::Mouse::Left:
+                        clic = true;
+                        break;
+                    
+                    default: break;
+                }
+            
+            case sf::Event::MouseWheelMoved:  // ZOOM de la Map avec la molette de la souris
+                camera->pos[2] -= 50*evt.MouseWheel.Delta*app->GetFrameTime();
+                if (camera->pos[2] < 3)
+                    camera->pos[2] = 3;
+                if (camera->pos[2] > 12)
+                    camera->pos[2] = 12;
+                break;
+            
+            default: break;
+        }
+    }
+    
+    const sf::Input& input = app->GetInput();
+    
+    // ZOOM de la Map avec le clavier :
+    if (input.IsKeyDown(touches.zoomAvant) and camera->pos[2] > 3)
+        camera->pos[2] -= 10*app->GetFrameTime();
+    else
+        if (input.IsKeyDown(touches.zoomArriere) and camera->pos[2] < 12)
+            camera->pos[2] += 10*app->GetFrameTime();
+    
+    if (input.IsKeyDown(sf::Key::A))
+        elemsON = false;
+    else
+        elemsON = true;
+    
+    // Gestion de la souris en temps réel :
+    curseurX = input.GetMouseX();
+    curseurY = input.GetMouseY();
+
+    scrolling();
+    
     
     GLuint buffer[512];
     glSelectBuffer(512, buffer);
@@ -89,7 +161,7 @@ void MoteurCombat::afficher()
     glInitNames();
     
     glPushName(0); // O pour la Map, 1 pour l'interface
-    mapGraph->GL_DessinPourSelection(frameTime, *camera, curseurX, curseurY, elemsON);
+    mapGraph->GL_DessinPourSelection(app->GetFrameTime(), *camera, curseurX, curseurY, elemsON);
     glPopName();
     
     glPushName(1);
@@ -100,6 +172,8 @@ void MoteurCombat::afficher()
     GLfloat plusPetitZ_min = 1.0;
     GLuint clicSur = 0;
     int selection[2];
+    selection[0] = -1;
+    selection[1] = -1;
     
     if (hits > 0)
     {
@@ -133,64 +207,13 @@ void MoteurCombat::afficher()
         else    // CLIC SUR L'INTERFACE
         {
             mapGraph->pasDeSelection();
-            gui->traiterSelection(selection);
+            running = gui->traiterSelection(selection, clic);
         }
     }
     else
     {    mapGraph->pasDeSelection(); gui->pasDeSelection();    }
-
-    app->Display();
-}
-
-bool MoteurCombat::traiterEvenements()
-{
-    bool running = true;
-    sf::Event evt;
-    while (running && app->GetEvent(evt))
-    {
-        if (evt.Type == sf::Event::Closed)
-            running = false;
-        
-        else
-            if (evt.Type == sf::Event::KeyPressed)
-            {   if (evt.Key.Code == sf::Key::Escape)
-                {   mapGraph->noircir();
-                    gui->switchMenuEchap();
-                    running = false;
-                }
-            }
-        
-        else
-            if (evt.Type == sf::Event::MouseWheelMoved)  // ZOOM de la Map avec la molette de la souris
-            {
-                camera->pos[2] -= 50*evt.MouseWheel.Delta*app->GetFrameTime();
-                if (camera->pos[2] < 3)
-                    camera->pos[2] = 3;
-                if (camera->pos[2] > 12)
-                    camera->pos[2] = 12;
-            }
-    }
     
-    const sf::Input& input = app->GetInput();
     
-    // ZOOM de la Map avec le clavier :
-    if (input.IsKeyDown(touches.zoomAvant) and camera->pos[2] > 3)
-        camera->pos[2] -= 10*app->GetFrameTime();
-    else
-        if (input.IsKeyDown(touches.zoomArriere) and camera->pos[2] < 12)
-            camera->pos[2] += 10*app->GetFrameTime();
-    
-    if (input.IsKeyDown(sf::Key::A))
-        elemsON = false;
-    else
-        elemsON = true;
-    
-    // Gestion de la souris en temps réel :
-    curseurX = input.GetMouseX();
-    curseurY = input.GetMouseY();
-
-    scrolling();
-
     return running;
 }
 }

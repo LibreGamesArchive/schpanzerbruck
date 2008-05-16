@@ -10,6 +10,7 @@
 #include "InterfaceCombat.hpp"
 #include "GestionnaireImages.hpp"
 
+
 namespace ws
 {
 struct Touches
