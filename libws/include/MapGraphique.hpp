@@ -49,6 +49,7 @@ private:
     vector<unsigned int> numsTuiles, numsElements;
     GestionnaireImages* gestImages;
 
+    unsigned int appL, appH;
     int **coordsCases;
 
     unsigned int hauteur, largeur, statut, numTexBordure;
@@ -66,7 +67,7 @@ public:
     int picked[2];
     float inclinaisonElements;
     
-    MapGraphique(GestionnaireImages* _gestImages, const DonneesMap& _DM);
+    MapGraphique(GestionnaireImages* _gestImages, const DonneesMap& _DM, unsigned int _appL, unsigned int _appH);
     ~MapGraphique();
     
     int getHauteur();
@@ -79,8 +80,8 @@ public:
     
     void lancerFX(FX* nouvFX);
     
-    void GL_DessinPourSelection(float frameTime, int appL, int appH, const Camera& camera, int curseurX, int curseurY, bool elemsON);
-    void GL_Dessin(float frameTime, int appL, int appH, const Camera& camera, bool elemsON=true);
+    void GL_DessinPourSelection(float frameTime, const Camera& camera, int curseurX, int curseurY, bool elemsON, bool clic=false);
+    void GL_Dessin(float frameTime, const Camera& camera, bool elemsON=true);
     
     void traiterSelection(int* selection);
     void pasDeSelection();

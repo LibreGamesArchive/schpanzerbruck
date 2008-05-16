@@ -6,7 +6,7 @@
 
 
 enum{   SLC_MENU_ECHAP, SLC_CONTINUER, SLC_QUITTER,
-        SLC_MENU_TRIANGLE, SLC_DEPLACEMENT, SLC_ACTION, SLC_PASSER
+        SLC_MENU_TRIANGLE, SLC_DEPLACEMENT, SLC_ACTION, SLC_FIN_DU_TOUR
     };
 
 
@@ -21,13 +21,17 @@ private:
     void GL_MenuEchapPourSelection();
     void GL_MenuEchap();
     
+    unsigned int appL, appH;
+    
+    int picked[2];
+    
 public:
-    InterfaceCombat();
+    InterfaceCombat(unsigned int _appL, unsigned int _appH);
     
     void switchMenuEchap();
     
-    void GL_DessinPourSelection(int appL, int appH, int curseurX, int curseurY);
-    void GL_Dessin(int appL, int appH);
+    void GL_DessinPourSelection(int curseurX, int curseurY, bool clic=false);
+    void GL_Dessin();
     
     void traiterSelection(int* selection);
     void pasDeSelection();
