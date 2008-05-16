@@ -123,12 +123,17 @@ void MapGraphique::phaseCiblage()
     statut = CIBLAGE;
 }
 
+int MapGraphique::getStatut()
+{
+    return statut;
+}
+
 void MapGraphique::lancerFX(FX* nouvFX)
 {
     FXActives.push_back(nouvFX);
 }
 
-void MapGraphique::GL_DessinPourSelection(float frameTime, const Camera& camera, int curseurX, int curseurY, bool elemsON, bool clic)
+void MapGraphique::GL_DessinPourSelection(float frameTime, const Camera& camera, unsigned int curseurX, unsigned int curseurY, bool elemsON)
 {
     if (statut == NOIRCIR || statut == PAS_DE_SELECTION)
         return;
@@ -321,7 +326,7 @@ void MapGraphique::GL_Dessin(float frameTime, const Camera& camera, bool elemsON
     glEnd();
 }
 
-void MapGraphique::traiterSelection(int* selection)
+void MapGraphique::traiterSelection(int* selection, bool clic)
 {
     picked[0] = selection[0];
     picked[1] = selection[1];
