@@ -13,6 +13,13 @@ InterfaceCombat::InterfaceCombat(GestionnaireImages* _gestImages, unsigned int _
     menuEchapON = false;
 }
 
+
+void InterfaceCombat::switchMenuEchap()
+{
+    menuEchapON = !menuEchapON;
+}
+
+
 void InterfaceCombat::GL_LigneTexte(string texte, float largeurTxt, float hauteurTxt, unsigned int numPoliceBmp)
 {
     // Le texte sera affiché dans le plan (0xy), en (0,0,0)
@@ -44,73 +51,78 @@ void InterfaceCombat::GL_LigneTexte(string texte, float largeurTxt, float hauteu
     glPopMatrix();
 }
 
-void InterfaceCombat::switchMenuEchap()
+void InterfaceCombat::GL_Cadre(float L, float H, float offset)
 {
-    menuEchapON = !menuEchapON;
+    glBegin(GL_POLYGON);
+        glVertex2f(0, H-offset);
+        glVertex2f(0, offset);
+        glVertex2f(offset, 0);
+        glVertex2f(L-offset, 0);
+        glVertex2f(L, offset);
+        glVertex2f(L, H-offset);
+        glVertex2f(L-offset, H);
+        glVertex2f(offset, H);
+    glEnd();
 }
+
+void InterfaceCombat::GL_Bouton(string texte, int R_txt, int V_txt, int B_txt, float L, float H, float offset)
+{
+    GL_Cadre(L, H, offset);
+    
+    float L_txt = (4.0/5)*L;
+    
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();     // TEXTE
+        glColor3ub(R_txt, V_txt, B_txt);
+        glTranslatef((1.0/10)*L, 0, 0);
+        GL_LigneTexte(texte, L_txt, H);
+    glPopMatrix();
+}
+
 
 void InterfaceCombat::GL_MenuEchapPourSelection()
 {
-    unsigned int menuL = appL/3;
-    unsigned int menuH = static_cast<unsigned int>((3.0/4)*menuL);
-    glPushMatrix();     // MODELVIEW à ce stade
+    float menuL = appL/3;
+    float menuH = (3.0/4)*menuL;
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
     glTranslatef(appL/2 - menuL/2, appH/2 - menuH/2, 0);    // Origine au point en bas à gauche du MenuEchap
     
-    unsigned int obActL = static_cast<unsigned int>((2.0/3)*menuL);
-    unsigned int obActH = static_cast<unsigned int>((1.5/10)*menuH);
+    float obActL = (2.0/3)*menuL;
+    float obActH = (1.5/10)*menuH;
     
-    glPushName(SLC_QUITTER);
-    glPushMatrix();     // BOUTON "QUITTER"
-    glTranslatef(menuL/2 - obActL/2, (1.5/10)*menuH, 0);
-    glBegin(GL_QUADS);
-        glVertex2i(0, obActH);
-        glVertex2i(0, 0);
-        glVertex2i(obActL, 0);
-        glVertex2i(obActL, obActH);
-    glEnd();
-    glPopMatrix();
-    glPopName();
+    glPushName(SLC_QUITTER); glPushMatrix();     // BOUTON "QUITTER"
+        glTranslatef(menuL/2 - obActL/2, (1.5/10)*menuH, 0);
+        GL_Cadre(obActL, obActH, 10);
+    glPopMatrix(); glPopName();
     
     glPopMatrix();
 }
 
+
 void InterfaceCombat::GL_MenuEchap()
 {
-    glColor4ub(40, 40, 40, 200);
-    unsigned int menuL = appL/3;
-    unsigned int menuH = static_cast<unsigned int>((3.0/4)*menuL);
-    glPushMatrix();     // MODELVIEW à ce stade
-    glTranslatef(appL/2 - menuL/2, appH/2 - menuH/2, 0);    // Origine au point en bas à gauche du MenuEchap
-    glBegin(GL_POLYGON);
-        glVertex2i(0, menuH-15);
-        glVertex2i(0, 15);
-        glVertex2i(15, 0);
-        glVertex2i(menuL-15, 0);
-        glVertex2i(menuL, 15);
-        glVertex2i(menuL, menuH-15);
-        glVertex2i(menuL-15, menuH);
-        glVertex2i(15, menuH);
-    glEnd();
+    float menuL = appL/3;
+    float menuH = (3.0/4)*menuL;
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
     
-    unsigned int obActL = static_cast<unsigned int>((2.0/3)*menuL);
-    unsigned int obActH = static_cast<unsigned int>((1.5/10)*menuH);
-    glColor3ub(255, 25, 25);
+    glColor4ub(40, 40, 40, 200);
+    glTranslatef(appL/2 - menuL/2, appH/2 - menuH/2, 0);    // Origine au point en bas à gauche du MenuEchap
+    GL_Cadre(menuL, menuH, 15);
+    
+    float obActL = (2.0/3)*menuL;
+    float obActH = (1.5/10)*menuH;
+    
     glPushMatrix();     // BOUTON "QUITTER"
-    glTranslatef(menuL/2 - obActL/2, (1.5/10)*menuH, 0);
-    glBegin(GL_QUADS);
-        glVertex2i(0, obActH);
-        glVertex2i(0, 0);
-        glVertex2i(obActL, 0);
-        glVertex2i(obActL, obActH);
-    glEnd();
-    glPushMatrix();     // TEXTE "QUITTER"
-    glColor3ub(255, 255, 255);
-    GL_LigneTexte("QUITTER", obActL, obActH);
-    glPopMatrix();
+        glColor3ub(255, 25, 25);
+        glTranslatef(menuL/2 - obActL/2, (1.5/10)*menuH, 0);
+        GL_Bouton("QUITTER", 255, 255, 255, obActL, obActH, 10);
     glPopMatrix();
     
     glPopMatrix();
 }
+
 
 void InterfaceCombat::GL_DessinPourSelection(unsigned int curseurX, unsigned int curseurY)
 {
@@ -142,6 +154,7 @@ void InterfaceCombat::GL_DessinPourSelection(unsigned int curseurX, unsigned int
     }
 }
 
+
 void InterfaceCombat::GL_Dessin()
 {
     glMatrixMode(GL_PROJECTION);
@@ -164,6 +177,7 @@ void InterfaceCombat::GL_Dessin()
     if(menuEchapON)
         GL_MenuEchap();
 }
+
 
 bool InterfaceCombat::traiterSelection(int* selection, bool clic)
 {
@@ -188,6 +202,7 @@ bool InterfaceCombat::traiterSelection(int* selection, bool clic)
     
     return true;
 }
+
 
 void InterfaceCombat::pasDeSelection()
 {

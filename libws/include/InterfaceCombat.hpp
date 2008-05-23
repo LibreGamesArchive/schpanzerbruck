@@ -24,15 +24,19 @@ class InterfaceCombat
 private:
     bool menuEchapON;
     
-    void GL_MenuEchapPourSelection();
-    void GL_MenuEchap();
-    
     unsigned int appL, appH;
     GestionnaireImages* gestImages;
     
     int picked[2];
     
     void GL_LigneTexte(string texte, float largeurTxt, float hauteurTxt, unsigned int numPoliceBmp=1);
+    
+    void GL_Cadre(float L, float H, float offset=0);
+    
+    void GL_Bouton(string texte, int R_txt, int V_txt, int B_txt, float L, float H, float offset=0);
+    
+    void GL_MenuEchapPourSelection();
+    void GL_MenuEchap();
     
 public:
     InterfaceCombat(GestionnaireImages* _gestImages, unsigned int _appL, unsigned int _appH);
