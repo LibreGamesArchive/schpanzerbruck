@@ -61,10 +61,10 @@ static PyObject* pyMoteurJeu_demarrerMoteurCombat(pyMoteurJeu* self, PyObject* a
 {
     ws::DonneesMap DM;
     PyListObject *numsTuiles=NULL, *numsElements=NULL, *cheminsTuiles=NULL, *cheminsElements=NULL;
-    PyObject *fichierTexBordure=NULL;
-    static char* kwlist[] = {"largeurMap", "hauteurMap", "numsTuiles", "numsElements", "cheminsTuiles", "cheminsElements", "numTexBordure", "fichierTexBordure", "hauteurBordure", NULL};
-    if(!PyArg_ParseTupleAndKeywords(args, kwds, "iiO!O!O!O!iOf", kwlist,
-                     &DM.largeur, &DM.hauteur, &PyList_Type, &numsTuiles, &PyList_Type, &numsElements, &PyList_Type, &cheminsTuiles, &PyList_Type, &cheminsElements, &DM.numTexBordure, &fichierTexBordure, &DM.hauteurBordure))
+    PyObject *fichierTexBordure=NULL, *policeBmp=NULL;
+    static char* kwlist[] = {"largeurMap", "hauteurMap", "numsTuiles", "numsElements", "cheminsTuiles", "cheminsElements", "numTexBordure", "fichierTexBordure", "hauteurBordure", "policeBmp", NULL};
+    if(!PyArg_ParseTupleAndKeywords(args, kwds, "iiO!O!O!O!iOfO", kwlist,
+                     &DM.largeur, &DM.hauteur, &PyList_Type, &numsTuiles, &PyList_Type, &numsElements, &PyList_Type, &cheminsTuiles, &PyList_Type, &cheminsElements, &DM.numTexBordure, &fichierTexBordure, &DM.hauteurBordure, &policeBmp))
         return NULL;
     
     DM.fichierTexBordure = PyString_AsString(fichierTexBordure);
@@ -84,7 +84,7 @@ static PyObject* pyMoteurJeu_demarrerMoteurCombat(pyMoteurJeu* self, PyObject* a
         DM.cheminsElements.push_back(chemElemAct);
     }
     
-    self->instc->demarrerMoteurCombat(DM);
+    self->instc->demarrerMoteurCombat(DM, PyString_AsString(policeBmp));
     Py_RETURN_NONE;
 }
 

@@ -4,8 +4,8 @@
 #include <SFML/Graphics.hpp>
 #include <map>
 #include <vector>
-#include <iostream>
 #include <string>
+#include <iostream>
 
 using namespace std;
 

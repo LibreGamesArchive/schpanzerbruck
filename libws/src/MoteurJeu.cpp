@@ -29,8 +29,11 @@ void MoteurJeu::limiterFPS(int fpsMax)
     app->SetFramerateLimit(fpsMax);
 }
 
-void MoteurJeu::demarrerMoteurCombat(const DonneesMap& DM, Touches* touches)
+void MoteurJeu::demarrerMoteurCombat(const DonneesMap& DM, string policeBmp, Touches* touches)
 {
+    // CHARGEMENT DES POLICES:
+    gestImages->chargerImage("polices_bmp", 1, policeBmp);
+    
     if(MC == NULL)
     {
         if (touches != NULL)
