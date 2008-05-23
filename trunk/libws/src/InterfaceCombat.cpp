@@ -11,6 +11,7 @@ InterfaceCombat::InterfaceCombat(GestionnaireImages* _gestImages, unsigned int _
     gestImages = _gestImages;
     picked[0] = -1; picked[1] = -1;
     menuEchapON = false;
+    clic = false;
 }
 
 
@@ -24,6 +25,7 @@ void InterfaceCombat::GL_LigneTexte(string texte, float largeurTxt, float hauteu
 {
     // Le texte sera affiché dans le plan (0xy), en (0,0,0)
     
+    glEnable(GL_TEXTURE_2D);
     gestImages->obtenirImage("polices_bmp", numPoliceBmp)->Bind();
     
     float unit = 1.0/16;
@@ -35,7 +37,7 @@ void InterfaceCombat::GL_LigneTexte(string texte, float largeurTxt, float hauteu
     for(unsigned int i=0; i<texte.length(); i++)
     {
         int numAscii = texte[i];
-        float coordTexX = 0.0, coordTexY = 0.0;
+        float coordTexX, coordTexY;
         coordTexX = (numAscii % 16) * unit;
         coordTexY = (numAscii / 16) * unit;
         
@@ -49,6 +51,8 @@ void InterfaceCombat::GL_LigneTexte(string texte, float largeurTxt, float hauteu
         glTranslatef(largeurLettres, 0, 0);
     }
     glPopMatrix();
+    
+    glDisable(GL_TEXTURE_2D);
 }
 
 void InterfaceCombat::GL_Cadre(float L, float H, float offset)
@@ -66,13 +70,12 @@ void InterfaceCombat::GL_Cadre(float L, float H, float offset)
 }
 
 void InterfaceCombat::GL_Bouton(string texte, int R_txt, int V_txt, int B_txt, float L, float H, float offset)
-{
-    GL_Cadre(L, H, offset);
-    
+{    
     float L_txt = (4.0/5)*L;
     
     glMatrixMode(GL_MODELVIEW);
-    glPushMatrix();     // TEXTE
+    glPushMatrix();
+        GL_Cadre(L, H, offset);
         glColor3ub(R_txt, V_txt, B_txt);
         glTranslatef((1.0/10)*L, 0, 0);
         GL_LigneTexte(texte, L_txt, H);
@@ -91,10 +94,17 @@ void InterfaceCombat::GL_MenuEchapPourSelection()
     float obActL = (2.0/3)*menuL;
     float obActH = (1.5/10)*menuH;
     
-    glPushName(SLC_QUITTER); glPushMatrix();     // BOUTON "QUITTER"
-        glTranslatef(menuL/2 - obActL/2, (1.5/10)*menuH, 0);
-        GL_Cadre(obActL, obActH, 10);
-    glPopMatrix(); glPopName();
+    glPushMatrix();
+        glPushName(SLC_QUITTER);      // BOUTON "QUITTER"
+            glTranslatef(menuL/2 - obActL/2, (1.5/10)*menuH, 0);
+            GL_Cadre(obActL, obActH, 10);
+        glPopName();
+        
+        glPushName(SLC_CONTINUER);     // BOUTON "CONTINUER"
+            glTranslatef(0, (3.0/10)*menuH, 0);
+            GL_Cadre(obActL, obActH, 10);
+        glPopName();
+    glPopMatrix(); 
     
     glPopMatrix();
 }
@@ -114,18 +124,43 @@ void InterfaceCombat::GL_MenuEchap()
     float obActL = (2.0/3)*menuL;
     float obActH = (1.5/10)*menuH;
     
-    glPushMatrix();     // BOUTON "QUITTER"
-        glColor3ub(255, 25, 25);
+    glPushMatrix();
+        // BOUTON "QUITTER"
         glTranslatef(menuL/2 - obActL/2, (1.5/10)*menuH, 0);
-        GL_Bouton("QUITTER", 255, 255, 255, obActL, obActH, 10);
+        glColor3ub(255, 25, 25);
+        if (picked[1] == SLC_QUITTER)
+        {   if (clic)
+                glColor3ub(255, 204, 0);
+            GL_Bouton("QUITTER", 255, 150, 0, obActL, obActH, 10);
+        }
+        else
+            GL_Bouton("QUITTER", 255, 255, 255, obActL, obActH, 10);
+        
+        // BOUTON "CONTINUER"
+        glTranslatef(0, (3.0/10)*menuH, 0);
+        glColor3ub(255, 25, 25);
+        if (picked[1] == SLC_CONTINUER)
+        {   if (clic)
+                glColor3ub(255, 204, 0);
+            GL_Bouton("CONTINUER", 255, 150, 0, obActL, obActH, 10);
+        }
+        else
+            GL_Bouton("CONTINUER", 255, 255, 255, obActL, obActH, 10);
+        
+        // TITRE
+        glTranslatef(0, (3.0/10)*menuH, 0);
+        glColor3ub(255, 255, 255);
+        GL_LigneTexte("MENU ECHAP", obActL, obActH);
     glPopMatrix();
     
     glPopMatrix();
 }
 
 
-void InterfaceCombat::GL_DessinPourSelection(unsigned int curseurX, unsigned int curseurY)
+void InterfaceCombat::GL_DessinPourSelection(unsigned int curseurX, unsigned int curseurY, bool _clic)
 {
+    clic = _clic;
+    
     GLint viewport[4];
     glGetIntegerv(GL_VIEWPORT, viewport);
     
@@ -179,8 +214,11 @@ void InterfaceCombat::GL_Dessin()
 }
 
 
-bool InterfaceCombat::traiterSelection(int* selection, bool clic)
+bool InterfaceCombat::traiterSelection(int* selection)
 {
+    picked[0] = selection[0];
+    picked[1] = selection[1];
+    
     switch(picked[0])
     {
         case SLC_MENU_ECHAP:
@@ -197,9 +235,6 @@ bool InterfaceCombat::traiterSelection(int* selection, bool clic)
         default: break;
     }
     
-    picked[0] = selection[0];
-    picked[1] = selection[1];
-    
     return true;
 }
 
@@ -207,6 +242,7 @@ bool InterfaceCombat::traiterSelection(int* selection, bool clic)
 void InterfaceCombat::pasDeSelection()
 {
     picked[0] = -1; picked[1] = -1;
+    clic = false;
 }
 
 }

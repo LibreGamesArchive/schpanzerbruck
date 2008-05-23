@@ -162,11 +162,11 @@ bool MoteurCombat::traiterEvenements()
     glInitNames();
     
     glPushName(0); // O pour la Map, 1 pour l'interface
-    mapGraph->GL_DessinPourSelection(app->GetFrameTime(), *camera, curseurX, curseurY, elemsON);
+    mapGraph->GL_DessinPourSelection(app->GetFrameTime(), *camera, curseurX, curseurY, elemsON, clic);
     glPopName();
     
     glPushName(1);
-    gui->GL_DessinPourSelection(curseurX, curseurY);
+    gui->GL_DessinPourSelection(curseurX, curseurY, clic);
     glPopName();
 
     GLuint hits = glRenderMode(GL_RENDER);
@@ -208,7 +208,7 @@ bool MoteurCombat::traiterEvenements()
         else    // CLIC SUR L'INTERFACE
         {
             mapGraph->pasDeSelection();
-            running = gui->traiterSelection(selection, clic);
+            running = gui->traiterSelection(selection);
         }
     }
     else

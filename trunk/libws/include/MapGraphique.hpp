@@ -48,7 +48,8 @@ private:
 
     vector<unsigned int> numsTuiles, numsElements;
     GestionnaireImages* gestImages;
-
+    
+    bool clic;
     unsigned int appL, appH;
     int **coordsCases;
 
@@ -82,10 +83,10 @@ public:
     
     void lancerFX(FX* nouvFX);
     
-    void GL_DessinPourSelection(float frameTime, const Camera& camera, unsigned int curseurX, unsigned int curseurY, bool elemsON);
+    void GL_DessinPourSelection(float frameTime, const Camera& camera, unsigned int curseurX, unsigned int curseurY, bool elemsON, bool _clic=false);
     void GL_Dessin(float frameTime, const Camera& camera, bool elemsON=true);
     
-    void traiterSelection(int* selection, bool clic=false);
+    void traiterSelection(int* selection);
     void pasDeSelection();
 };
 }

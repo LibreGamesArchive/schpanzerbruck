@@ -16,6 +16,8 @@ MapGraphique::MapGraphique(GestionnaireImages* _gestImages, const DonneesMap& _D
     hauteurBordure = _DM.hauteurBordure;
     texBordure = NULL;
     
+    clic = false;
+    
     gestImages->chargerImagesMap(largeur*hauteur, numsTuiles, numsElements, _DM.cheminsTuiles, _DM.cheminsElements);
     if (numTexBordure!=0)
     {
@@ -133,8 +135,10 @@ void MapGraphique::lancerFX(FX* nouvFX)
     FXActives.push_back(nouvFX);
 }
 
-void MapGraphique::GL_DessinPourSelection(float frameTime, const Camera& camera, unsigned int curseurX, unsigned int curseurY, bool elemsON)
+void MapGraphique::GL_DessinPourSelection(float frameTime, const Camera& camera, unsigned int curseurX, unsigned int curseurY, bool elemsON, bool _clic)
 {
+    clic = _clic;
+    
     if (statut == NOIRCIR || statut == PAS_DE_SELECTION)
         return;
     
@@ -326,7 +330,7 @@ void MapGraphique::GL_Dessin(float frameTime, const Camera& camera, bool elemsON
     glEnd();
 }
 
-void MapGraphique::traiterSelection(int* selection, bool clic)
+void MapGraphique::traiterSelection(int* selection)
 {
     picked[0] = selection[0];
     picked[1] = selection[1];
@@ -334,7 +338,7 @@ void MapGraphique::traiterSelection(int* selection, bool clic)
 
 void MapGraphique::pasDeSelection()
 {
-    picked[0] = -1;
-    picked[1] = -1;
+    picked[0] = -1; picked[1] = -1;
+    clic = false;
 }
 }
