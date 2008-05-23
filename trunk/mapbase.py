@@ -87,4 +87,4 @@ class MapBase(dict):
         else:
             fichierTexBordure = ""
         
-        MJ.demarrerMoteurCombat(self.largeur, self.hauteur, self["tuiles"], self["elements"], LFI["tuiles"], LFI["elements"], self.numTexBordure, fichierTexBordure, 0.4)
+        MJ.demarrerMoteurCombat(self.largeur, self.hauteur, self["tuiles"], self["elements"], LFI["tuiles"], LFI["elements"], self.numTexBordure, fichierTexBordure, 0.4, os.path.join(chemins.POLICES_BITMAP, "monospaced.png"))

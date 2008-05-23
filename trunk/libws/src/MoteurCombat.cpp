@@ -8,7 +8,7 @@ MoteurCombat::MoteurCombat(sf::RenderWindow* _app, GestionnaireImages* _gestImag
     L = app->GetWidth();
     H = app->GetHeight();
     mapGraph = new MapGraphique(_gestImages, _DM, L, H);
-    gui = new InterfaceCombat(L, H);
+    gui = new InterfaceCombat(_gestImages, L, H);
 
     touches = _touches;
 
@@ -120,9 +120,10 @@ bool MoteurCombat::traiterEvenements()
                     
                     default: break;
                 }
+                break;
             
             case sf::Event::MouseWheelMoved:  // ZOOM de la Map avec la molette de la souris
-                camera->pos[2] -= 50*evt.MouseWheel.Delta*app->GetFrameTime();
+                camera->pos[2] -= evt.MouseWheel.Delta;
                 if (camera->pos[2] < 3)
                     camera->pos[2] = 3;
                 if (camera->pos[2] > 12)

@@ -1,14 +1,14 @@
 #ifndef MOTEUR_COMBAT_HEADER
 #define MOTEUR_COMBAT_HEADER
 
-#include <SFML/Graphics.hpp>
-#include <SFML/Window.hpp>
-#include <GL/gl.h>
-
 #include "MoteurJeu.hpp"
 #include "MapGraphique.hpp"
 #include "InterfaceCombat.hpp"
 #include "GestionnaireImages.hpp"
+
+#include <SFML/Graphics.hpp>
+#include <SFML/Window.hpp>
+#include <GL/gl.h>
 
 
 namespace ws

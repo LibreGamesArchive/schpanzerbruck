@@ -4,12 +4,44 @@
 namespace ws
 {
 
-InterfaceCombat::InterfaceCombat(unsigned int _appL, unsigned int _appH)
+InterfaceCombat::InterfaceCombat(GestionnaireImages* _gestImages, unsigned int _appL, unsigned int _appH)
 {
     appL = _appL;
     appH = _appH;
+    gestImages = _gestImages;
     picked[0] = -1; picked[1] = -1;
     menuEchapON = false;
+}
+
+void InterfaceCombat::GL_LigneTexte(string texte, float largeurTxt, float hauteurTxt, unsigned int numPoliceBmp)
+{
+    // Le texte sera affiché dans le plan (0xy), en (0,0,0)
+    
+    gestImages->obtenirImage("polices_bmp", numPoliceBmp)->Bind();
+    
+    float unit = 1.0/16;
+    float largeurLettres = largeurTxt / texte.length();
+    float hauteurLettres = hauteurTxt;
+    
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
+    for(unsigned int i=0; i<texte.length(); i++)
+    {
+        int numAscii = texte[i];
+        float coordTexX = 0.0, coordTexY = 0.0;
+        coordTexX = (numAscii % 16) * unit;
+        coordTexY = (numAscii / 16) * unit;
+        
+        glBegin(GL_QUADS);
+            glTexCoord2f(coordTexX, coordTexY);             glVertex3f(0, hauteurLettres, 0);
+            glTexCoord2f(coordTexX, coordTexY+unit);        glVertex3f(0, 0, 0);
+            glTexCoord2f(coordTexX+unit, coordTexY+unit);   glVertex3f(largeurLettres, 0, 0);
+            glTexCoord2f(coordTexX+unit, coordTexY);        glVertex3f(largeurLettres, hauteurLettres, 0);
+        glEnd();
+        
+        glTranslatef(largeurLettres, 0, 0);
+    }
+    glPopMatrix();
 }
 
 void InterfaceCombat::switchMenuEchap()
@@ -71,6 +103,10 @@ void InterfaceCombat::GL_MenuEchap()
         glVertex2i(obActL, 0);
         glVertex2i(obActL, obActH);
     glEnd();
+    glPushMatrix();     // TEXTE "QUITTER"
+    glColor3ub(255, 255, 255);
+    GL_LigneTexte("QUITTER", obActL, obActH);
+    glPopMatrix();
     glPopMatrix();
     
     glPopMatrix();

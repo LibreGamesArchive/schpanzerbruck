@@ -1,12 +1,16 @@
 #ifndef MOTEUR_JEU_HEADER
 #define MOTEUR_JEU_HEADER
 
-#include <SFML/Graphics.hpp>
-#include <SFML/Window.hpp>
-
 #include "MoteurCombat.hpp"
 #include "MapGraphique.hpp"
 #include "GestionnaireImages.hpp"
+
+#include <SFML/Graphics.hpp>
+#include <SFML/Window.hpp>
+
+#include <string>
+
+using namespace std;
 
 namespace ws
 {
@@ -27,7 +31,7 @@ public:
 
     void limiterFPS(int fpsMax);
 
-    void demarrerMoteurCombat(const DonneesMap& DM, Touches* touches=NULL);
+    void demarrerMoteurCombat(const DonneesMap& DM, string policeBmp, Touches* touches=NULL);
     
     MoteurCombat* getMoteurCombat();
     

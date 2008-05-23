@@ -1,6 +1,9 @@
 #ifndef MAP_GRAPHIQUE_HEADER
 #define MAP_GRAPHIQUE_HEADER
 
+#include "GestionnaireImages.hpp"
+#include "MapFX.hpp"
+
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
 #include <GL/gl.h>
@@ -8,9 +11,6 @@
 #include <list>
 #include <string>
 #include <iostream>
-
-#include "GestionnaireImages.hpp"
-#include "MapFX.hpp"
 
 #define PAS_DE_SELECTION    0
 #define NOIRCIR             1
