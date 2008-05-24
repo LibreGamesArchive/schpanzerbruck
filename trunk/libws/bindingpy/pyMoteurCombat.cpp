@@ -1,7 +1,6 @@
 #include "pyMoteurCombat.hpp"
 
 
-
 // ATTRIBUTS MEMBRES (ACCESSIBLES DEPUIS PYTHON):
 static PyMemberDef pyMoteurCombat_members[] = {
     {NULL}         // Sentinel
@@ -45,7 +44,7 @@ static PyObject* pyMoteurCombat_afficher(pyMoteurCombat* self, PyObject* args)
 static PyObject* pyMoteurCombat_traiterEvenements(pyMoteurCombat* self, PyObject* args)
 {
     bool running = self->instc->traiterEvenements();
-    if(running)
+    if (running)
         Py_RETURN_TRUE;
     Py_RETURN_FALSE;
 }
@@ -56,11 +55,25 @@ static PyObject* pyMoteurCombat_getFPS(pyMoteurCombat* self, PyObject* args)
     return Py_BuildValue("f", fps);
 }
 
+static PyObject* pyMoteurCombat_selectMapActuelle(pyMoteurCombat* self, PyObject* args)
+{
+    int* select = self->instc->selectMapActuelle();
+    return Py_BuildValue("(ii)", select[0], select[1]);
+}
+
+static PyObject* pyMoteurCombat_maitrisesChoisies(pyMoteurCombat* self, PyObject* args)
+{
+    int* mtrChoisies = self->instc->maitrisesChoisies();
+    return Py_BuildValue("(iii)", mtrChoisies[0], mtrChoisies[1], mtrChoisies[2]);
+}
+
 static PyMethodDef pyMoteurCombat_methods[] = {
     {"centrerCurseur", (PyCFunction)pyMoteurCombat_centrerCurseur, METH_NOARGS, "Centre le curseur"},
     {"afficher", (PyCFunction)pyMoteurCombat_afficher, METH_NOARGS, "Met a jour l'affichage du jeu"},
     {"traiterEvenements", (PyCFunction)pyMoteurCombat_traiterEvenements, METH_NOARGS, "Traite les evenements venant du clavier/de la souris et effectue les operations en decoulant (scrolling, zoom...)"},
     {"getFPS", (PyCFunction)pyMoteurCombat_getFPS, METH_NOARGS, "Renvoie le FPS actuel"},
+    {"selectMapActuelle", (PyCFunction)pyMoteurCombat_selectMapActuelle, METH_NOARGS, "Renvoie la sélection actuellement faite sur la Map"},
+    {"maitrisesChoisies", (PyCFunction)pyMoteurCombat_maitrisesChoisies, METH_NOARGS, "Renvoie la liste des 3 maîtrises actuellement choisies"},
     {NULL}
 };
 // FIN METHODES

@@ -60,11 +60,11 @@ static PyObject* pyMoteurJeu_limiterFPS(pyMoteurJeu* self, PyObject* args)
 static PyObject* pyMoteurJeu_demarrerMoteurCombat(pyMoteurJeu* self, PyObject* args, PyObject* kwds)
 {
     ws::DonneesMap DM;
-    PyListObject *numsTuiles=NULL, *numsElements=NULL, *cheminsTuiles=NULL, *cheminsElements=NULL;
+    PyObject *numsTuiles=NULL, *numsElements=NULL, *cheminsTuiles=NULL, *cheminsElements=NULL;
     PyObject *fichierTexBordure=NULL, *policeBmp=NULL;
     static char* kwlist[] = {"largeurMap", "hauteurMap", "numsTuiles", "numsElements", "cheminsTuiles", "cheminsElements", "numTexBordure", "fichierTexBordure", "hauteurBordure", "policeBmp", NULL};
-    if(!PyArg_ParseTupleAndKeywords(args, kwds, "iiO!O!O!O!iOfO", kwlist,
-                     &DM.largeur, &DM.hauteur, &PyList_Type, &numsTuiles, &PyList_Type, &numsElements, &PyList_Type, &cheminsTuiles, &PyList_Type, &cheminsElements, &DM.numTexBordure, &fichierTexBordure, &DM.hauteurBordure, &policeBmp))
+    if(!PyArg_ParseTupleAndKeywords(args, kwds, "iiOOOOiOfO", kwlist,
+                     &DM.largeur, &DM.hauteur, &numsTuiles, &numsElements, &cheminsTuiles, &cheminsElements, &DM.numTexBordure, &fichierTexBordure, &DM.hauteurBordure, &policeBmp))
         return NULL;
     
     DM.fichierTexBordure = PyString_AsString(fichierTexBordure);
@@ -73,10 +73,10 @@ static PyObject* pyMoteurJeu_demarrerMoteurCombat(pyMoteurJeu* self, PyObject* a
     
     for(unsigned int i=0; i<nbrCases; i++)
     {
-        unsigned int tuileAct = (unsigned int)PyInt_AsLong(PyList_GetItem((PyObject*)numsTuiles, i));
-        unsigned int elemAct = (unsigned int)PyInt_AsLong(PyList_GetItem((PyObject*)numsElements, i));
-        string chemTuileAct = PyString_AsString(PyList_GetItem((PyObject*)cheminsTuiles, i));
-        string chemElemAct = PyString_AsString(PyList_GetItem((PyObject*)cheminsElements, i));
+        unsigned int tuileAct = (unsigned int)PyInt_AsLong(PyList_GetItem(numsTuiles, i));
+        unsigned int elemAct = (unsigned int)PyInt_AsLong(PyList_GetItem(numsElements, i));
+        string chemTuileAct = PyString_AsString(PyList_GetItem(cheminsTuiles, i));
+        string chemElemAct = PyString_AsString(PyList_GetItem(cheminsElements, i));
         
         DM.numsTuiles.push_back(tuileAct);
         DM.numsElements.push_back(elemAct);

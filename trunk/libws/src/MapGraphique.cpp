@@ -25,7 +25,7 @@ MapGraphique::MapGraphique(GestionnaireImages* _gestImages, const DonneesMap& _D
         texBordure=gestImages->obtenirImage("tuiles", numTexBordure);
     }
     else
-        texBordure=new sf::Image(1, 1, sf::Color(128, 128, 128));
+        texBordure = new sf::Image(1, 1, sf::Color(128, 128, 128));
     
     coordsCases = new int*[hauteur*largeur]; // Coordonnées du point en haut à gauche de chaque case dans le plan (0xy)
     for(unsigned int i=0; i<hauteur*largeur; i++)
