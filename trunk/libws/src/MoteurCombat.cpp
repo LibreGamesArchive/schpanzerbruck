@@ -37,7 +37,7 @@ MoteurCombat::~MoteurCombat()
 }
 
 void MoteurCombat::scrolling()
-{
+{    
     float defil = vitesseDefil * app->GetFrameTime();
 
     if (curseurX <= bordureDefil && camera->cible[1] > -2)   // DEFILEMENT VERS LA GAUCHE
@@ -153,6 +153,8 @@ bool MoteurCombat::traiterEvenements()
                 break;
             
             case sf::Event::MouseWheelMoved:  // ZOOM de la Map avec la molette de la souris
+                if (mapGraph->getStatut() == NOIRCIR)
+                    break;
                 camera->pos[2] -= evt.MouseWheel.Delta;
                 if (camera->pos[2] < 3)
                     camera->pos[2] = 3;
@@ -165,24 +167,26 @@ bool MoteurCombat::traiterEvenements()
     }
     
     const sf::Input& input = app->GetInput();
-    
-    // ZOOM de la Map avec le clavier :
-    if (input.IsKeyDown(touches.zoomAvant) and camera->pos[2] > 3)
-        camera->pos[2] -= 10*app->GetFrameTime();
-    else
-        if (input.IsKeyDown(touches.zoomArriere) and camera->pos[2] < 12)
-            camera->pos[2] += 10*app->GetFrameTime();
-    
-    if (input.IsKeyDown(sf::Key::A))
-        elemsON = false;
-    else
-        elemsON = true;
-    
     // Gestion de la souris en temps réel :
     curseurX = input.GetMouseX();
     curseurY = input.GetMouseY();
-
-    scrolling();
+    
+    if (mapGraph->getStatut() != NOIRCIR)
+    {
+        // ZOOM de la Map avec le clavier :
+        if (input.IsKeyDown(touches.zoomAvant) and camera->pos[2] > 3)
+            camera->pos[2] -= 10*app->GetFrameTime();
+        else
+            if (input.IsKeyDown(touches.zoomArriere) and camera->pos[2] < 12)
+                camera->pos[2] += 10*app->GetFrameTime();
+        
+        if (input.IsKeyDown(sf::Key::A))
+            elemsON = false;
+        else
+            elemsON = true;
+        
+        scrolling();
+    }
     
     
     GLuint buffer[512];
