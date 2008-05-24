@@ -40,6 +40,9 @@ private:
 
     MoteurCombat(sf::RenderWindow* _app, GestionnaireImages* _gestImages, const DonneesMap& _DM, const Touches& _touches);
 
+    void traiterSelecMap(int* selec, bool clic, bool& running);
+    void traiterSelecInterface(int* selec, bool clic, bool& running);
+
 public:
     ~MoteurCombat();
 

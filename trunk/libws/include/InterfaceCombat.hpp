@@ -46,7 +46,7 @@ public:
     void GL_DessinPourSelection(unsigned int curseurX, unsigned int curseurY, bool _clic=false);
     void GL_Dessin();
     
-    bool traiterSelection(int* selection);
+    void passerSelection(int* selection);
     void pasDeSelection();
 };
 

@@ -330,10 +330,11 @@ void MapGraphique::GL_Dessin(float frameTime, const Camera& camera, bool elemsON
     glEnd();
 }
 
-void MapGraphique::traiterSelection(int* selection)
+void MapGraphique::passerSelection(int* selection)
 {
     picked[0] = selection[0];
     picked[1] = selection[1];
+    clic = false;
 }
 
 void MapGraphique::pasDeSelection()

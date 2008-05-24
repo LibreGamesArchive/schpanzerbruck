@@ -86,7 +86,7 @@ public:
     void GL_DessinPourSelection(float frameTime, const Camera& camera, unsigned int curseurX, unsigned int curseurY, bool elemsON, bool _clic=false);
     void GL_Dessin(float frameTime, const Camera& camera, bool elemsON=true);
     
-    void traiterSelection(int* selection);
+    void passerSelection(int* selection);
     void pasDeSelection();
 };
 }
