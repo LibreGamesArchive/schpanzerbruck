@@ -84,6 +84,36 @@ void MoteurCombat::afficher()
     app->Display();
 }
 
+void MoteurCombat::traiterSelecMap(int* selec, bool clic, bool& running)
+{
+    
+}
+
+void MoteurCombat::traiterSelecInterface(int* selec, bool clic, bool& running)
+{
+    switch(selec[0])
+    {
+        case SLC_MENU_ECHAP:
+            switch(selec[1])
+            {
+                case SLC_CONTINUER:
+                    if(clic)
+                    {   gui->switchMenuEchap();
+                        mapGraph->bloquer(true);
+                    }
+                    break;
+                case SLC_QUITTER:
+                    if(clic)
+                        running = false;
+                    break;
+                default: break;
+            }
+            break;
+        
+        default: break;
+    }
+}
+
 bool MoteurCombat::traiterEvenements()
 {
     bool running = true, clic = false;
@@ -202,13 +232,15 @@ bool MoteurCombat::traiterEvenements()
         
         if (clicSur == 0)   // CLIC SUR LA MAP
         {
-            mapGraph->traiterSelection(selection);
+            mapGraph->passerSelection(selection);
             gui->pasDeSelection();
+            traiterSelecMap(selection, clic, running);
         }
         else    // CLIC SUR L'INTERFACE
         {
             mapGraph->pasDeSelection();
-            running = gui->traiterSelection(selection);
+            gui->passerSelection(selection);
+            traiterSelecInterface(selection, clic, running);
         }
     }
     else

@@ -214,28 +214,11 @@ void InterfaceCombat::GL_Dessin()
 }
 
 
-bool InterfaceCombat::traiterSelection(int* selection)
+void InterfaceCombat::passerSelection(int* selection)
 {
     picked[0] = selection[0];
-    picked[1] = selection[1];
-    
-    switch(picked[0])
-    {
-        case SLC_MENU_ECHAP:
-            switch(picked[1])
-            {
-                case SLC_QUITTER:
-                    if(clic)
-                        return false;
-                    break;
-                default: break;
-            }
-            break;
-        
-        default: break;
-    }
-    
-    return true;
+    picked[1] = selection[1];    
+    clic = false;
 }
 
 
