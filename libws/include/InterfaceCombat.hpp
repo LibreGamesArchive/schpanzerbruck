@@ -39,6 +39,8 @@ private:
     void GL_MenuEchap();
     
 public:
+    int mtrChoisies[3];
+    
     InterfaceCombat(GestionnaireImages* _gestImages, unsigned int _appL, unsigned int _appH);
     
     void switchMenuEchap();

@@ -1,8 +1,5 @@
 #include "pyWS.hpp"
 
-#include "pyMoteurJeu.hpp"
-#include "pyMoteurCombat.hpp"
-
 
 extern PyTypeObject pyMoteurJeuType;
 extern PyTypeObject pyMoteurCombatType;

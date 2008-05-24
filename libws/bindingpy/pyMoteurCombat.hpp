@@ -4,7 +4,7 @@
 #include <Python.h>
 #include <structmember.h>
 #include <MoteurCombat.hpp>
-#include "pyMoteurJeu.hpp"
+
 
 typedef struct {
     PyObject_HEAD

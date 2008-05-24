@@ -13,6 +13,7 @@
 
 namespace ws
 {
+
 struct Touches
 {
     sf::Key::Code zoomAvant;
@@ -20,6 +21,8 @@ struct Touches
 };
 
 class MoteurJeu;
+
+class EvenementCombat;
 
 class MoteurCombat      // Synchronise la Map et l'Interface
 {
@@ -30,30 +33,33 @@ private:
     MapGraphique* mapGraph;
     InterfaceCombat* gui;
     Camera* camera;
-
+    
     unsigned int vitesseDefil, bordureDefil;
-    bool elemsON;
-
+    bool running, elemsON;
+    
     void scrolling();
-
+    
     friend class MoteurJeu;
-
+    
     MoteurCombat(sf::RenderWindow* _app, GestionnaireImages* _gestImages, const DonneesMap& _DM, const Touches& _touches);
-
-    void traiterSelecMap(int* selec, bool clic, bool& running);
-    void traiterSelecInterface(int* selec, bool clic, bool& running);
+    
+    void traiterSelectInterface(int* selec, bool clic);
 
 public:
     ~MoteurCombat();
-
+    
     void centrerCurseur();
-
+    
     void afficher();
-
+    
     bool traiterEvenements();
-
+    
     float getFPS();
+    
+    int* selectMapActuelle();
+    int* maitrisesChoisies();
 };
+
 }
 
 #endif

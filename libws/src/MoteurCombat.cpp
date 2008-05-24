@@ -2,6 +2,7 @@
 
 namespace ws
 {
+
 MoteurCombat::MoteurCombat(sf::RenderWindow* _app, GestionnaireImages* _gestImages, const DonneesMap& _DM, const Touches& _touches)
 {
     app = _app;
@@ -9,15 +10,15 @@ MoteurCombat::MoteurCombat(sf::RenderWindow* _app, GestionnaireImages* _gestImag
     H = app->GetHeight();
     mapGraph = new MapGraphique(_gestImages, _DM, L, H);
     gui = new InterfaceCombat(_gestImages, L, H);
-
+    
     touches = _touches;
-
+    
     vitesseDefil = 8;
     bordureDefil = 40;
-
+    
     curseurX = 0;
     curseurY = 0;
-
+    
     camera = new Camera;
     camera->pos[0] = mapGraph->getHauteur()/2 + 4;
     camera->pos[1] = mapGraph->getLargeur()/2;
@@ -25,7 +26,8 @@ MoteurCombat::MoteurCombat(sf::RenderWindow* _app, GestionnaireImages* _gestImag
     camera->cible[0] = mapGraph->getHauteur()/2;
     camera->cible[1] = mapGraph->getLargeur()/2;
     camera->cible[2] = 0;
-
+    
+    running = true;
     elemsON = true;
 }
 
@@ -77,19 +79,24 @@ float MoteurCombat::getFPS()
 void MoteurCombat::afficher()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+    
     mapGraph->GL_Dessin(app->GetFrameTime(), *camera, elemsON);
     gui->GL_Dessin();
     
     app->Display();
 }
 
-void MoteurCombat::traiterSelecMap(int* selec, bool clic, bool& running)
+int* MoteurCombat::selectMapActuelle()
 {
-    
+    return mapGraph->picked;
 }
 
-void MoteurCombat::traiterSelecInterface(int* selec, bool clic, bool& running)
+int* MoteurCombat::maitrisesChoisies()
+{
+    return gui->mtrChoisies;
+}
+
+void MoteurCombat::traiterSelectInterface(int* selec, bool clic)
 {
     switch(selec[0])
     {
@@ -116,9 +123,12 @@ void MoteurCombat::traiterSelecInterface(int* selec, bool clic, bool& running)
 
 bool MoteurCombat::traiterEvenements()
 {
-    bool running = true, clic = false;
+    bool clic = false;
     sf::Event evt;
-    while (running && app->GetEvent(evt))
+    
+    running = true;
+    
+    while(app->GetEvent(evt))
     {
         switch(evt.Type)
         {
@@ -188,7 +198,6 @@ bool MoteurCombat::traiterEvenements()
         scrolling();
     }
     
-    
     GLuint buffer[512];
     glSelectBuffer(512, buffer);
     
@@ -238,13 +247,12 @@ bool MoteurCombat::traiterEvenements()
         {
             mapGraph->passerSelection(selection);
             gui->pasDeSelection();
-            traiterSelecMap(selection, clic, running);
         }
         else    // CLIC SUR L'INTERFACE
         {
             mapGraph->pasDeSelection();
             gui->passerSelection(selection);
-            traiterSelecInterface(selection, clic, running);
+            traiterSelectInterface(selection, clic);
         }
     }
     else
@@ -253,4 +261,5 @@ bool MoteurCombat::traiterEvenements()
     
     return running;
 }
+
 }

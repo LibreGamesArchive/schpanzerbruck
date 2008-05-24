@@ -3,5 +3,7 @@
 
 #include <Python.h>
 #include <structmember.h>
+#include "pyMoteurJeu.hpp"
+#include "pyMoteurCombat.hpp"
 
 #endif
