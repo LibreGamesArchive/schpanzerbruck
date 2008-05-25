@@ -220,19 +220,19 @@ void InterfaceCombat::GL_BarreInfos()
 {
     float barreL = appL/2.0;
     float barreH = barreL/9;
-    float rayonBarre = 10;
-    float rayonA45Deg = rayonBarre*(sqrt(2.0)/2);
-    float zoneEcritureL = barreL - rayonA45Deg*2;
-    float zoneEcritureH = barreH - rayonA45Deg*2;
+    float rayonSommets = 10;
+    float decalA45Deg = rayonSommets*(sqrt(2.0)/2);
+    float zoneEcritureL = barreL - decalA45Deg*2;
+    float zoneEcritureH = barreH - decalA45Deg*2;
     
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
     
     glTranslatef(5, 5, 0);
     glColor4ub(225/factAssomb, 162/factAssomb, 0, 220);
-    GL_Cadre(barreL, barreH, rayonBarre);
+    GL_Cadre(barreL, barreH, rayonSommets);
     
-    glTranslatef(rayonA45Deg, rayonA45Deg, 0);
+    glTranslatef(decalA45Deg, decalA45Deg, 0);
     glColor3ub(0, 0, 0);
     
     float hautTxt = zoneEcritureH*(2.0/5);
@@ -240,14 +240,14 @@ void InterfaceCombat::GL_BarreInfos()
     
     glPushMatrix();
         // Infos TUILE
-        GL_LigneTexteLargeurMax(infosActDsBarre[0], largTxtMax, hautTxt, false);
+        GL_LigneTexteLargeurMax(infosActDsBarre[0] == "" ? "---" : infosActDsBarre[0], largTxtMax, hautTxt, false);
         
         glTranslatef(largTxtMax + zoneEcritureL/10, 0, 0);       // Infos ELEMENT
-        GL_LigneTexteLargeurMax(infosActDsBarre[1], largTxtMax, hautTxt, false);
+        GL_LigneTexteLargeurMax(infosActDsBarre[1] == "" ? "---" : infosActDsBarre[1], largTxtMax, hautTxt, false);
     glPopMatrix();
     
     glTranslatef(0, hautTxt + zoneEcritureH/5, 0);    // Infos PERSO
-    GL_LigneTexteLargeurMax(infosActDsBarre[2], zoneEcritureL, hautTxt, false);
+    GL_LigneTexteLargeurMax(infosActDsBarre[2] == "" ? "---" : infosActDsBarre[2], zoneEcritureL, hautTxt, false);
     
     glPopMatrix();
 }
@@ -256,18 +256,18 @@ void InterfaceCombat::GL_BarreInfos()
 void InterfaceCombat::GL_Chrono()
 {
     float tailleChrono = appL/12;
-    float rayonChrono = 10;
-    float rayonA45Deg = rayonChrono*(sqrt(2.0)/2);
-    float tailleZoneEcriture = tailleChrono - rayonA45Deg*2;
+    float rayonSommets = 10;
+    float decalA45Deg = rayonSommets*(sqrt(2.0)/2);
+    float tailleZoneEcriture = tailleChrono - decalA45Deg*2;
     
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
     
     glTranslatef(appL*(11.0/12) - 5, 5, 0);
     glColor4ub(0, 0, 0, 220);
-    GL_Cadre(tailleChrono, tailleChrono, rayonChrono);
+    GL_Cadre(tailleChrono, tailleChrono, rayonSommets);
     
-    glTranslatef(rayonA45Deg, rayonA45Deg, 0);
+    glTranslatef(decalA45Deg, decalA45Deg, 0);
     glColor3ub(255, 255, 255);
     GL_LigneTexteLargeurMax(txtChrono, tailleZoneEcriture, tailleZoneEcriture);
     
