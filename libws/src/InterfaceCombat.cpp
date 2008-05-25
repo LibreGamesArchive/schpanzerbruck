@@ -104,27 +104,35 @@ void InterfaceCombat::GL_LigneTexteHauteurMax(string texte, float largeurTxt, fl
         glPopMatrix();
 }
 
-void InterfaceCombat::GL_Cadre(float L, float H, float offset)
+void InterfaceCombat::GL_Cadre(float L, float H, float rayon)
 {
+    float min = (L < H ? L : H)/2;
+    if(rayon < 0)
+        rayon = 0;
+    else if(rayon > min)
+        rayon = min;
+    
+    float conv = M_PI/180;
+    
     glBegin(GL_POLYGON);
-        glVertex2f(0, H-offset);
-        glVertex2f(0, offset);
-        glVertex2f(offset, 0);
-        glVertex2f(L-offset, 0);
-        glVertex2f(L, offset);
-        glVertex2f(L, H-offset);
-        glVertex2f(L-offset, H);
-        glVertex2f(offset, H);
+        for(unsigned int i=0; i<=90; i+=10)
+            glVertex2f(rayon*(1-cos(i*conv)), rayon*(1-sin(i*conv)));
+        for(unsigned int i=0; i<=90; i+=10)
+            glVertex2f(L - rayon*(1-sin(i*conv)), rayon*(1-cos(i*conv)));
+        for(unsigned int i=0; i<=90; i+=10)
+            glVertex2f(L - rayon*(1-cos(i*conv)), H-rayon*(1-sin(i*conv)));
+        for(unsigned int i=0; i<=90; i+=10)
+            glVertex2f(rayon*(1-sin(i*conv)), H-rayon*(1-cos(i*conv)));
     glEnd();
 }
 
-void InterfaceCombat::GL_Bouton(string texte, int R_txt, int V_txt, int B_txt, float L, float H, float offset)
+void InterfaceCombat::GL_Bouton(string texte, int R_txt, int V_txt, int B_txt, float L, float H, float rayon)
 {    
     float L_txt = (4.0/5)*L;
     
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
-        GL_Cadre(L, H, offset);
+        GL_Cadre(L, H, rayon);
         glColor3ub(R_txt, V_txt, B_txt);
         glTranslatef((1.0/10)*L, 0, 0);
         GL_LigneTexteLargeurMax(texte, L_txt, H);
@@ -169,8 +177,8 @@ void InterfaceCombat::GL_MenuEchap()
     glPushMatrix();
     
     glTranslatef(appL/2 - menuL/2, appH/2 - menuH/2, 0);    // Origine au point en bas à gauche du MenuEchap
-    glColor4ub(40, 40, 40, 200);
-    GL_Cadre(menuL, menuH, 15);
+    glColor4ub(20, 20, 20, 200);
+    GL_Cadre(menuL, menuH, appH/16.0);
     
     float obActL = (2.0/3)*menuL;
     float obActH = (1.5/10)*menuH;
@@ -212,18 +220,18 @@ void InterfaceCombat::GL_BarreInfos()
 {
     float barreL = appL/2.0;
     float barreH = barreL/9;
-    unsigned int offsetBarre = 10;
-    float zoneEcritureL = barreL - offsetBarre*2;
-    float zoneEcritureH = barreH - offsetBarre*2;
+    unsigned int rayonBarre = 10;
+    float zoneEcritureL = barreL - rayonBarre*2;
+    float zoneEcritureH = barreH - rayonBarre*2;
     
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
     
     glTranslatef(5, 5, 0);
     glColor4ub(225/factAssomb, 162/factAssomb, 0, 220);
-    GL_Cadre(barreL, barreH, offsetBarre);
+    GL_Cadre(barreL, barreH, rayonBarre);
     
-    glTranslatef(offsetBarre, offsetBarre, 0);
+    glTranslatef(rayonBarre, rayonBarre, 0);
     glColor3ub(0, 0, 0);
     
     float hautTxt = zoneEcritureH*(2.0/5);
@@ -247,17 +255,17 @@ void InterfaceCombat::GL_BarreInfos()
 void InterfaceCombat::GL_Chrono()
 {
     float tailleChrono = appL/12;
-    float offsetChrono = 10;
-    float tailleZoneEcriture = tailleChrono - offsetChrono*2;
+    float rayonChrono = 10;
+    float tailleZoneEcriture = tailleChrono - rayonChrono*2;
     
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
     
     glTranslatef(appL*(11.0/12) - 5, 5, 0);
     glColor4ub(0, 0, 0, 220);
-    GL_Cadre(tailleChrono, tailleChrono, offsetChrono);
+    GL_Cadre(tailleChrono, tailleChrono, rayonChrono);
     
-    glTranslatef(offsetChrono, offsetChrono, 0);
+    glTranslatef(rayonChrono, rayonChrono, 0);
     glColor3ub(255, 255, 255);
     GL_LigneTexteLargeurMax(txtChrono, tailleZoneEcriture, tailleZoneEcriture);
     
