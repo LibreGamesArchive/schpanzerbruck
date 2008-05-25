@@ -16,6 +16,7 @@ InterfaceCombat::InterfaceCombat(GestionnaireImages* _gestImages, unsigned int _
     mtrChoisies[0] = -1; mtrChoisies[1] = -1; mtrChoisies[2] = -1;
     factAssomb = 1;
     setInfosDsBarre();
+    txtChrono = "";
 }
 
 
@@ -243,6 +244,27 @@ void InterfaceCombat::GL_BarreInfos()
 }
 
 
+void InterfaceCombat::GL_Chrono()
+{
+    float tailleChrono = appL/12;
+    float offsetChrono = 10;
+    float tailleZoneEcriture = tailleChrono - offsetChrono*2;
+    
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
+    
+    glTranslatef(appL*(11.0/12) - 5, 5, 0);
+    glColor4ub(0, 0, 0, 220);
+    GL_Cadre(tailleChrono, tailleChrono, offsetChrono);
+    
+    glTranslatef(offsetChrono, offsetChrono, 0);
+    glColor3ub(255, 255, 255);
+    GL_LigneTexteLargeurMax(txtChrono, tailleZoneEcriture, tailleZoneEcriture);
+    
+    glPopMatrix();
+}
+
+
 void InterfaceCombat::GL_DessinPourSelection(unsigned int curseurX, unsigned int curseurY, bool _clic)
 {
     clic = _clic;
@@ -296,6 +318,8 @@ void InterfaceCombat::GL_Dessin()
     // On est ici en 2D, donc les menus doivent être affichés dans un ordre précis
     if(barreInfosON)
         GL_BarreInfos();
+    
+    GL_Chrono();
     
     if(menuEchapON)
         GL_MenuEchap();

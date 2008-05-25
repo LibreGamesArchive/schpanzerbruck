@@ -100,6 +100,11 @@ void MoteurCombat::setInfosDsBarre(string tuile, string element, string perso)
     gui->setInfosDsBarre(tuile, element, perso);
 }
 
+void MoteurCombat::setChrono(string temps)
+{
+    gui->txtChrono = temps;
+}
+
 
 void MoteurCombat::traiterSelectInterface(int* selec, bool clic, unsigned int& whatHappens)
 {
@@ -213,7 +218,7 @@ unsigned int MoteurCombat::traiterEvenements()
     glPushName(1);
     gui->GL_DessinPourSelection(curseurX, curseurY, clic);
     glPopName();
-
+    
     GLuint hits = glRenderMode(GL_RENDER);
     GLfloat plusPetitZ_min = 1.0;
     GLuint clicSur = 0;
