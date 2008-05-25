@@ -27,7 +27,7 @@ MoteurCombat::MoteurCombat(sf::RenderWindow* _app, GestionnaireImages* _gestImag
     camera->cible[1] = mapGraph->getLargeur()/2;
     camera->cible[2] = 0;
     
-    running = true;
+    whatHappens = RAS;
     elemsON = true;
 }
 
@@ -100,18 +100,18 @@ void MoteurCombat::traiterSelectInterface(int* selec, bool clic)
 {
     switch(selec[0])
     {
-        case SLC_MENU_ECHAP:
+        case IC::SLC_MENU_ECHAP:
             switch(selec[1])
             {
-                case SLC_CONTINUER:
+                case IC::SLC_CONTINUER:
                     if(clic)
                     {   gui->switchMenuEchap();
                         mapGraph->bloquer(true);
                     }
                     break;
-                case SLC_QUITTER:
+                case IC::SLC_QUITTER:
                     if(clic)
-                        running = false;
+                        whatHappens = QUITTER;
                     break;
                 default: break;
             }
@@ -121,19 +121,19 @@ void MoteurCombat::traiterSelectInterface(int* selec, bool clic)
     }
 }
 
-bool MoteurCombat::traiterEvenements()
+unsigned int MoteurCombat::traiterEvenements()
 {
     bool clic = false;
     sf::Event evt;
     
-    running = true;
+    whatHappens = RAS;
     
     while(app->GetEvent(evt))
     {
         switch(evt.Type)
         {
             case sf::Event::Closed:
-               running = false;
+               whatHappens = QUITTER;
                break;
             
             case sf::Event::KeyPressed:
@@ -259,7 +259,7 @@ bool MoteurCombat::traiterEvenements()
     {    mapGraph->pasDeSelection(); gui->pasDeSelection();    }
     
     
-    return running;
+    return whatHappens;
 }
 
 }

@@ -33,8 +33,11 @@ class ContexteClient:
         running = True
         while running:
             # GESTION DES EVENEMENTS :
-            running = self.MC.traiterEvenements()
+            whatHappens = self.MC.traiterEvenements()
             
             self.MC.afficher()
             
             print self.MC.getFPS()
+            
+            if whatHappens == self.MC.QUITTER:
+                running = False

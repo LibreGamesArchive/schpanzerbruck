@@ -11,4 +11,6 @@ typedef struct {
     ws::MoteurCombat* instc;
 } pyMoteurCombat;
 
+void pyMoteurCombat_initConsts();
+
 #endif

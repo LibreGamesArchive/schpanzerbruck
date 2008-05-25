@@ -22,6 +22,7 @@ using namespace std;
 
 namespace ws
 {
+    
 struct DonneesMap
 {
     unsigned int largeur;
@@ -89,6 +90,7 @@ public:
     void passerSelection(int* selection);
     void pasDeSelection();
 };
+
 }
 
 #endif

@@ -29,4 +29,6 @@ PyMODINIT_FUNC initws(void)
         return;
     Py_INCREF(&pyMoteurCombatType);
     PyModule_AddObject(WSModule, "MoteurCombat", (PyObject *)&pyMoteurCombatType);
+    
+    pyMoteurCombat_initConsts();
 }

@@ -10,6 +10,8 @@
 #include <SFML/Window.hpp>
 #include <GL/gl.h>
 
+#define IC  InterfaceCombat
+
 
 namespace ws
 {
@@ -35,7 +37,9 @@ private:
     Camera* camera;
     
     unsigned int vitesseDefil, bordureDefil;
-    bool running, elemsON;
+    bool elemsON;
+    
+    unsigned int whatHappens;
     
     void scrolling();
     
@@ -46,13 +50,17 @@ private:
     void traiterSelectInterface(int* selec, bool clic);
 
 public:
+    enum {
+        RAS, QUITTER, MAITRISES_CHOISIES, CASE_CHOISIE, CIBLE_CHOISIE, LISTE_MAITRISES_DEMANDEE, INFOS_DETAILLEES_DEMANDEES
+    };
+    
     ~MoteurCombat();
     
     void centrerCurseur();
     
     void afficher();
     
-    bool traiterEvenements();
+    unsigned int traiterEvenements();
     
     float getFPS();
     
