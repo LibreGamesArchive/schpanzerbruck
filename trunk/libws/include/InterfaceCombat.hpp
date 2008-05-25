@@ -8,6 +8,7 @@
 #include <GL/glu.h>
 
 #include <string>
+#include <math.h>
 
 using namespace std;
 
@@ -29,7 +30,7 @@ private:
     void GL_LigneTexteLargeurMax(string texte, float largeurTxtMax, float hauteurTxt, bool centrer=true, unsigned int numPoliceBmp=1);
     void GL_LigneTexteHauteurMax(string texte, float largeurTxt, float hauteurTxtMax, bool centrer=true, unsigned int numPoliceBmp=1);
     
-    void GL_Cadre(float L, float H, float offset=0);
+    void GL_Cadre(float L, float H, float rayon=0);
     
     void GL_Bouton(string texte, int R_txt, int V_txt, int B_txt, float L, float H, float offset=0);
     
