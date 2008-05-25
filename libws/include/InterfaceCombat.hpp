@@ -38,6 +38,8 @@ private:
     
     void GL_BarreInfos();
     
+    void GL_Chrono();
+    
     unsigned int factAssomb;
     string infosActDsBarre[3];
     
@@ -48,6 +50,7 @@ public:
     };
     
     int mtrChoisies[3];
+    string txtChrono;
     
     InterfaceCombat(GestionnaireImages* _gestImages, unsigned int _appL, unsigned int _appH);
     

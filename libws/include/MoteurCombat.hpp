@@ -66,6 +66,7 @@ public:
     int* maitrisesChoisies();
     
     void setInfosDsBarre(string tuile="", string element="", string perso="");
+    void setChrono(string temps="");
 };
 
 }

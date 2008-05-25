@@ -68,10 +68,20 @@ static PyObject* pyMoteurCombat_maitrisesChoisies(pyMoteurCombat* self, PyObject
 static PyObject* pyMoteurCombat_setInfosDsBarre(pyMoteurCombat* self, PyObject* args)
 {
     PyObject *tuile=NULL, *element=NULL, *perso=NULL;
-    if(! PyArg_ParseTuple(args, "OOO", &tuile, &element, &perso) )
+    if( !PyArg_ParseTuple(args, "OOO", &tuile, &element, &perso) )
         return NULL;
     
     self->instc->setInfosDsBarre(PyString_AsString(tuile), PyString_AsString(element), PyString_AsString(perso));
+    Py_RETURN_NONE;
+}
+
+static PyObject* pyMoteurCombat_setChrono(pyMoteurCombat* self, PyObject* args)
+{
+    PyObject *temps=NULL;
+    if( !PyArg_ParseTuple(args, "O", &temps) )
+        return NULL;
+    
+    self->instc->setChrono(PyString_AsString(temps));
     Py_RETURN_NONE;
 }
 
@@ -83,6 +93,7 @@ static PyMethodDef pyMoteurCombat_methods[] = {
     {"selectMapActuelle", (PyCFunction)pyMoteurCombat_selectMapActuelle, METH_NOARGS, "Renvoie la sélection actuellement faite sur la Map"},
     {"maitrisesChoisies", (PyCFunction)pyMoteurCombat_maitrisesChoisies, METH_NOARGS, "Renvoie la liste des 3 maîtrises actuellement choisies"},
     {"setInfosDsBarre", (PyCFunction)pyMoteurCombat_setInfosDsBarre, METH_VARARGS, "Met à jour les infos de la BarreInfos"},
+    {"setChrono", (PyCFunction)pyMoteurCombat_setChrono, METH_VARARGS, "Met à jour le chronomètre"},
     {NULL}
 };
 // FIN METHODES
