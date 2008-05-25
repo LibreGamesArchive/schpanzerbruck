@@ -3,7 +3,6 @@
 # Dernière version par charlie du 25/04/08
 # Correction mineure encodage UTF-8 par florian 01/05/08
 
-from PySFML import sf
 from xml.dom import minidom
 from utils import Container
 import maitrises, objequip
