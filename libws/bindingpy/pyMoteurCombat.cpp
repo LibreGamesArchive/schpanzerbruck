@@ -43,10 +43,8 @@ static PyObject* pyMoteurCombat_afficher(pyMoteurCombat* self, PyObject* args)
 
 static PyObject* pyMoteurCombat_traiterEvenements(pyMoteurCombat* self, PyObject* args)
 {
-    bool running = self->instc->traiterEvenements();
-    if (running)
-        Py_RETURN_TRUE;
-    Py_RETURN_FALSE;
+    unsigned int whatHappens = self->instc->traiterEvenements();
+    return Py_BuildValue("i", whatHappens);
 }
 
 static PyObject* pyMoteurCombat_getFPS(pyMoteurCombat* self, PyObject* args)
@@ -122,3 +120,39 @@ PyTypeObject pyMoteurCombatType = {
     pyMoteurCombat_new,                 /* tp_new */
 };
 // FIN DEFINITION DU TYPE
+
+
+// DEFINITION DES CONSTANTES
+void pyMoteurCombat_initConsts()
+{
+    PyObject *cst;
+    
+    cst = PyInt_FromLong(ws::MoteurCombat::RAS);
+    PyDict_SetItemString(pyMoteurCombatType.tp_dict, "RAS", cst);
+    Py_DECREF(cst);
+    
+    cst = PyInt_FromLong(ws::MoteurCombat::QUITTER);
+    PyDict_SetItemString(pyMoteurCombatType.tp_dict, "QUITTER", cst);
+    Py_DECREF(cst);
+    
+    cst = PyInt_FromLong(ws::MoteurCombat::MAITRISES_CHOISIES);
+    PyDict_SetItemString(pyMoteurCombatType.tp_dict, "MAITRISES_CHOISIES", cst);
+    Py_DECREF(cst);
+    
+    cst = PyInt_FromLong(ws::MoteurCombat::CASE_CHOISIE);
+    PyDict_SetItemString(pyMoteurCombatType.tp_dict, "CASE_CHOISIE", cst);
+    Py_DECREF(cst);
+    
+    cst = PyInt_FromLong(ws::MoteurCombat::CIBLE_CHOISIE);
+    PyDict_SetItemString(pyMoteurCombatType.tp_dict, "CIBLE_CHOISIE", cst);
+    Py_DECREF(cst);
+    
+    cst = PyInt_FromLong(ws::MoteurCombat::LISTE_MAITRISES_DEMANDEE);
+    PyDict_SetItemString(pyMoteurCombatType.tp_dict, "LISTE_MAITRISES_DEMANDEE", cst);
+    Py_DECREF(cst);
+    
+    cst = PyInt_FromLong(ws::MoteurCombat::INFOS_DETAILLEES_DEMANDEES);
+    PyDict_SetItemString(pyMoteurCombatType.tp_dict, "INFOS_DETAILLEES_DEMANDEES", cst);
+    Py_DECREF(cst);
+}
+// FIN DEFINITION DES CONSTANTES

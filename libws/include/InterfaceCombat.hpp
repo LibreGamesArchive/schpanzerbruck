@@ -11,10 +11,6 @@
 
 using namespace std;
 
-enum{   SLC_CONTINUER, SLC_QUITTER, SLC_MENU_ECHAP,
-        SLC_MENU_TRIANGLE, SLC_DEPLACEMENT, SLC_ACTION, SLC_FIN_DU_TOUR
-    };
-
 
 namespace ws
 {
@@ -39,6 +35,11 @@ private:
     void GL_MenuEchap();
     
 public:
+    enum {
+        SLC_CONTINUER, SLC_QUITTER, SLC_MENU_ECHAP,
+        SLC_MENU_TRIANGLE, SLC_DEPLACEMENT, SLC_ACTION, SLC_FIN_DU_TOUR
+    };
+    
     int mtrChoisies[3];
     
     InterfaceCombat(GestionnaireImages* _gestImages, unsigned int _appL, unsigned int _appH);
