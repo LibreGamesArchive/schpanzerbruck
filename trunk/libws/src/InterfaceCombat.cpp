@@ -162,7 +162,7 @@ void InterfaceCombat::GL_MenuEchapPourSelection()
             glTranslatef(0, (3.0/10)*menuH, 0);
             GL_Cadre(obActL, obActH, 10);
         glPopName();
-    glPopMatrix(); 
+    glPopMatrix();
     
     glPopMatrix();
 }
@@ -220,9 +220,10 @@ void InterfaceCombat::GL_BarreInfos()
 {
     float barreL = appL/2.0;
     float barreH = barreL/9;
-    unsigned int rayonBarre = 10;
-    float zoneEcritureL = barreL - rayonBarre*2;
-    float zoneEcritureH = barreH - rayonBarre*2;
+    float rayonBarre = 10;
+    float rayonA45Deg = rayonBarre*(sqrt(2.0)/2);
+    float zoneEcritureL = barreL - rayonA45Deg*2;
+    float zoneEcritureH = barreH - rayonA45Deg*2;
     
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
@@ -231,7 +232,7 @@ void InterfaceCombat::GL_BarreInfos()
     glColor4ub(225/factAssomb, 162/factAssomb, 0, 220);
     GL_Cadre(barreL, barreH, rayonBarre);
     
-    glTranslatef(rayonBarre, rayonBarre, 0);
+    glTranslatef(rayonA45Deg, rayonA45Deg, 0);
     glColor3ub(0, 0, 0);
     
     float hautTxt = zoneEcritureH*(2.0/5);
@@ -256,7 +257,8 @@ void InterfaceCombat::GL_Chrono()
 {
     float tailleChrono = appL/12;
     float rayonChrono = 10;
-    float tailleZoneEcriture = tailleChrono - rayonChrono*2;
+    float rayonA45Deg = rayonChrono*(sqrt(2.0)/2);
+    float tailleZoneEcriture = tailleChrono - rayonA45Deg*2;
     
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
@@ -265,7 +267,7 @@ void InterfaceCombat::GL_Chrono()
     glColor4ub(0, 0, 0, 220);
     GL_Cadre(tailleChrono, tailleChrono, rayonChrono);
     
-    glTranslatef(rayonChrono, rayonChrono, 0);
+    glTranslatef(rayonA45Deg, rayonA45Deg, 0);
     glColor3ub(255, 255, 255);
     GL_LigneTexteLargeurMax(txtChrono, tailleZoneEcriture, tailleZoneEcriture);
     
