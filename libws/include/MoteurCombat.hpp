@@ -64,6 +64,8 @@ public:
     
     int* selectMapActuelle();
     int* maitrisesChoisies();
+    
+    void setInfosDsBarre(string tuile="", string element="", string perso="");
 };
 
 }

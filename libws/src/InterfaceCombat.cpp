@@ -11,14 +11,19 @@ InterfaceCombat::InterfaceCombat(GestionnaireImages* _gestImages, unsigned int _
     gestImages = _gestImages;
     picked[0] = -1; picked[1] = -1;
     menuEchapON = false;
+    barreInfosON = false;
     clic = false;
     mtrChoisies[0] = -1; mtrChoisies[1] = -1; mtrChoisies[2] = -1;
+    factAssomb = 1;
+    setInfosDsBarre();
 }
 
 
 void InterfaceCombat::switchMenuEchap()
 {
     menuEchapON = !menuEchapON;
+    factAssomb = (factAssomb == 1 ? 5 : 1);
+    barreInfosON = !menuEchapON;
 }
 
 
@@ -56,6 +61,48 @@ void InterfaceCombat::GL_LigneTexte(string texte, float largeurTxt, float hauteu
     glDisable(GL_TEXTURE_2D);
 }
 
+void InterfaceCombat::GL_LigneTexteLargeurMax(string texte, float largeurTxtMax, float hauteurTxt, bool centrer, unsigned int numPoliceBmp)
+{
+    if(texte.length() == 0)
+        return;
+    
+    float largeurTxt = (hauteurTxt/2)*texte.length();
+    if(largeurTxt > largeurTxtMax)
+        largeurTxt = largeurTxtMax;
+    
+    if(centrer)
+    {   glMatrixMode(GL_MODELVIEW);
+        glPushMatrix();
+        glTranslatef(largeurTxtMax/2 - largeurTxt/2, 0, 0);
+    }
+    
+    GL_LigneTexte(texte, largeurTxt, hauteurTxt, numPoliceBmp);
+    
+    if(centrer)
+        glPopMatrix();
+}
+
+void InterfaceCombat::GL_LigneTexteHauteurMax(string texte, float largeurTxt, float hauteurTxtMax, bool centrer, unsigned int numPoliceBmp)
+{
+    if(texte.length() == 0)
+        return;
+    
+    float hauteurTxt = (largeurTxt/texte.length())*2;
+    if(hauteurTxt > hauteurTxtMax)
+        hauteurTxt = hauteurTxtMax;
+    
+    if(centrer)
+    {   glMatrixMode(GL_MODELVIEW);
+        glPushMatrix();
+        glTranslatef(0, hauteurTxtMax/2 - hauteurTxt/2, 0);
+    }
+    
+    GL_LigneTexte(texte, largeurTxt, hauteurTxt, numPoliceBmp);
+    
+    if(centrer)
+        glPopMatrix();
+}
+
 void InterfaceCombat::GL_Cadre(float L, float H, float offset)
 {
     glBegin(GL_POLYGON);
@@ -79,7 +126,7 @@ void InterfaceCombat::GL_Bouton(string texte, int R_txt, int V_txt, int B_txt, f
         GL_Cadre(L, H, offset);
         glColor3ub(R_txt, V_txt, B_txt);
         glTranslatef((1.0/10)*L, 0, 0);
-        GL_LigneTexte(texte, L_txt, H);
+        GL_LigneTexteLargeurMax(texte, L_txt, H);
     glPopMatrix();
 }
 
@@ -88,6 +135,7 @@ void InterfaceCombat::GL_MenuEchapPourSelection()
 {
     float menuL = appL/3;
     float menuH = (3.0/4)*menuL;
+    
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
     glTranslatef(appL/2 - menuL/2, appH/2 - menuH/2, 0);    // Origine au point en bas à gauche du MenuEchap
@@ -113,13 +161,14 @@ void InterfaceCombat::GL_MenuEchapPourSelection()
 
 void InterfaceCombat::GL_MenuEchap()
 {
-    float menuL = appL/3;
+    float menuL = appL/3.0;
     float menuH = (3.0/4)*menuL;
+    
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
     
-    glColor4ub(40, 40, 40, 200);
     glTranslatef(appL/2 - menuL/2, appH/2 - menuH/2, 0);    // Origine au point en bas à gauche du MenuEchap
+    glColor4ub(40, 40, 40, 200);
     GL_Cadre(menuL, menuH, 15);
     
     float obActL = (2.0/3)*menuL;
@@ -153,6 +202,42 @@ void InterfaceCombat::GL_MenuEchap()
         glColor3ub(255, 255, 255);
         GL_LigneTexte("MENU ECHAP", obActL, obActH);
     glPopMatrix();
+    
+    glPopMatrix();
+}
+
+
+void InterfaceCombat::GL_BarreInfos()
+{
+    float barreL = appL/2.0;
+    float barreH = barreL/9;
+    unsigned int offsetBarre = 10;
+    float zoneEcritureL = barreL - offsetBarre*2;
+    float zoneEcritureH = barreH - offsetBarre*2;
+    
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
+    
+    glTranslatef(5, 5, 0);
+    glColor4ub(225/factAssomb, 162/factAssomb, 0, 220);
+    GL_Cadre(barreL, barreH, offsetBarre);
+    
+    glTranslatef(offsetBarre, offsetBarre, 0);
+    glColor3ub(0, 0, 0);
+    
+    float hautTxt = zoneEcritureH*(2.0/5);
+    float largTxtMax = zoneEcritureL*(4.0/10);
+    
+    glPushMatrix();
+        // Infos TUILE
+        GL_LigneTexteLargeurMax(infosActDsBarre[0], largTxtMax, hautTxt, false);
+        
+        glTranslatef(largTxtMax + zoneEcritureL/10, 0, 0);       // Infos ELEMENT
+        GL_LigneTexteLargeurMax(infosActDsBarre[1], largTxtMax, hautTxt, false);
+    glPopMatrix();
+    
+    glTranslatef(0, hautTxt + zoneEcritureH/5, 0);    // Infos PERSO
+    GL_LigneTexteLargeurMax(infosActDsBarre[2], zoneEcritureL, hautTxt, false);
     
     glPopMatrix();
 }
@@ -209,6 +294,8 @@ void InterfaceCombat::GL_Dessin()
     glAlphaFunc(GL_GREATER, 0);
     
     // On est ici en 2D, donc les menus doivent être affichés dans un ordre précis
+    if(barreInfosON)
+        GL_BarreInfos();
     
     if(menuEchapON)
         GL_MenuEchap();
@@ -218,7 +305,7 @@ void InterfaceCombat::GL_Dessin()
 void InterfaceCombat::passerSelection(int* selection)
 {
     picked[0] = selection[0];
-    picked[1] = selection[1];    
+    picked[1] = selection[1];
     clic = false;
 }
 
@@ -227,6 +314,18 @@ void InterfaceCombat::pasDeSelection()
 {
     picked[0] = -1; picked[1] = -1;
     clic = false;
+}
+
+void InterfaceCombat::setInfosDsBarre(string tuile, string element, string perso)
+{
+    if(tuile == "" && element == "" && perso == "")
+        barreInfosON = false;
+    else
+        barreInfosON = true;
+    
+    infosActDsBarre[0] = tuile;
+    infosActDsBarre[1] = element;
+    infosActDsBarre[2] = perso;
 }
 
 }

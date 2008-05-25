@@ -18,7 +18,7 @@ namespace ws
 class InterfaceCombat
 {
 private:
-    bool menuEchapON, clic;
+    bool menuEchapON, barreInfosON, clic;
     
     unsigned int appL, appH;
     GestionnaireImages* gestImages;
@@ -26,6 +26,8 @@ private:
     int picked[2];
     
     void GL_LigneTexte(string texte, float largeurTxt, float hauteurTxt, unsigned int numPoliceBmp=1);
+    void GL_LigneTexteLargeurMax(string texte, float largeurTxtMax, float hauteurTxt, bool centrer=true, unsigned int numPoliceBmp=1);
+    void GL_LigneTexteHauteurMax(string texte, float largeurTxt, float hauteurTxtMax, bool centrer=true, unsigned int numPoliceBmp=1);
     
     void GL_Cadre(float L, float H, float offset=0);
     
@@ -33,6 +35,11 @@ private:
     
     void GL_MenuEchapPourSelection();
     void GL_MenuEchap();
+    
+    void GL_BarreInfos();
+    
+    unsigned int factAssomb;
+    string infosActDsBarre[3];
     
 public:
     enum {
@@ -51,6 +58,7 @@ public:
     
     void passerSelection(int* selection);
     void pasDeSelection();
+    void setInfosDsBarre(string tuile="", string element="", string perso="");
 };
 
 }

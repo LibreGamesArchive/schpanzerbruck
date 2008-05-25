@@ -70,6 +70,13 @@ class MapBase(dict):
                 raise Exception, "Hauteur et/ou largeur ne correspondent pas à la liste de nums pour les %s dans la map %s" % (i, map)
     
     
+    def infosSur(self, typeObj, numCase, nomInfo):
+        numObj = self[typeObj][numCase]
+        if numObj > 0:
+            return self.gestInfos[typeObj][numObj][nomInfo]
+        return ""
+    
+    
     def demarrerMoteurCombat(self, MJ):
         """Passe au MoteurJeu les arguments nécessaires au lancement du MoteurCombat"""
         

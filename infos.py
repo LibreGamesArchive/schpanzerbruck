@@ -19,7 +19,7 @@ class InfosImage(dict):
                 except:
                     self[attr] = defaut
         
-        assigner((str, "fichier", ""), (int, "nivpass", 0), (int, "etalement", 1), (str, "type", "aucun"), (int, "vie", -1))
+        assigner((str, "fichier", ""), (int, "nivpass", 0), (int, "etalement", 1), (str, "type", "aucun"), (str, "nom", ""), (int, "vie", -1))
 
 
 class GestionnaireInfos(dict):

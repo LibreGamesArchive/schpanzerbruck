@@ -65,6 +65,16 @@ static PyObject* pyMoteurCombat_maitrisesChoisies(pyMoteurCombat* self, PyObject
     return Py_BuildValue("(iii)", mtrChoisies[0], mtrChoisies[1], mtrChoisies[2]);
 }
 
+static PyObject* pyMoteurCombat_setInfosDsBarre(pyMoteurCombat* self, PyObject* args)
+{
+    PyObject *tuile=NULL, *element=NULL, *perso=NULL;
+    if(! PyArg_ParseTuple(args, "OOO", &tuile, &element, &perso) )
+        return NULL;
+    
+    self->instc->setInfosDsBarre(PyString_AsString(tuile), PyString_AsString(element), PyString_AsString(perso));
+    Py_RETURN_NONE;
+}
+
 static PyMethodDef pyMoteurCombat_methods[] = {
     {"centrerCurseur", (PyCFunction)pyMoteurCombat_centrerCurseur, METH_NOARGS, "Centre le curseur"},
     {"afficher", (PyCFunction)pyMoteurCombat_afficher, METH_NOARGS, "Met a jour l'affichage du jeu"},
@@ -72,6 +82,7 @@ static PyMethodDef pyMoteurCombat_methods[] = {
     {"getFPS", (PyCFunction)pyMoteurCombat_getFPS, METH_NOARGS, "Renvoie le FPS actuel"},
     {"selectMapActuelle", (PyCFunction)pyMoteurCombat_selectMapActuelle, METH_NOARGS, "Renvoie la sélection actuellement faite sur la Map"},
     {"maitrisesChoisies", (PyCFunction)pyMoteurCombat_maitrisesChoisies, METH_NOARGS, "Renvoie la liste des 3 maîtrises actuellement choisies"},
+    {"setInfosDsBarre", (PyCFunction)pyMoteurCombat_setInfosDsBarre, METH_VARARGS, "Met à jour les infos de la BarreInfos"},
     {NULL}
 };
 // FIN METHODES

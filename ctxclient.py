@@ -39,5 +39,10 @@ class ContexteClient:
             
             print self.MC.getFPS()
             
+            numCase, numObj = self.MC.selectMapActuelle()
+            
+            if numCase != -1:
+                self.MC.setInfosDsBarre(self.map.infosSur("tuiles", numCase, "nom"), self.map.infosSur("elements", numCase, "nom"), "")
+            
             if whatHappens == self.MC.QUITTER:
                 running = False
