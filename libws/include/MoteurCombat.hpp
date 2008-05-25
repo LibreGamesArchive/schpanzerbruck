@@ -39,15 +39,13 @@ private:
     unsigned int vitesseDefil, bordureDefil;
     bool elemsON;
     
-    unsigned int whatHappens;
-    
     void scrolling();
     
     friend class MoteurJeu;
     
     MoteurCombat(sf::RenderWindow* _app, GestionnaireImages* _gestImages, const DonneesMap& _DM, const Touches& _touches);
     
-    void traiterSelectInterface(int* selec, bool clic);
+    void traiterSelectInterface(int* selec, bool clic, unsigned int& whatHappens);
 
 public:
     enum {

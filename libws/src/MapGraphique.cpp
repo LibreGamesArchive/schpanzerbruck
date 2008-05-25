@@ -41,6 +41,7 @@ MapGraphique::MapGraphique(GestionnaireImages* _gestImages, const DonneesMap& _D
         }
     
     statut = INFOS_SEULEMENT;
+    noircir = false;
     
     inclinaisonElements = 1;
     
@@ -102,34 +103,6 @@ int MapGraphique::getLargeur()
     return largeur;
 }
 
-void MapGraphique::bloquer(bool autoriserInfos)
-{
-    if (autoriserInfos)
-        statut = INFOS_SEULEMENT;
-    else
-        statut = PAS_DE_SELECTION;
-}
-
-void MapGraphique::noircir()
-{
-    statut = NOIRCIR;
-}
-
-void MapGraphique::phaseDeplacement()
-{
-    statut = DEPLACEMENT;
-}
-
-void MapGraphique::phaseCiblage()
-{
-    statut = CIBLAGE;
-}
-
-int MapGraphique::getStatut()
-{
-    return statut;
-}
-
 void MapGraphique::lancerFX(FX* nouvFX)
 {
     FXActives.push_back(nouvFX);
@@ -139,7 +112,7 @@ void MapGraphique::GL_DessinPourSelection(float frameTime, const Camera& camera,
 {
     clic = _clic;
     
-    if (statut == NOIRCIR || statut == PAS_DE_SELECTION)
+    if (noircir || statut == PAS_DE_SELECTION)
         return;
     
     GLint viewport[4];
@@ -220,7 +193,7 @@ void MapGraphique::GL_Dessin(float frameTime, const Camera& camera, bool elemsON
     glAlphaFunc(GL_GREATER, 0);
     
     int factAssomb = 1;
-    if (statut == NOIRCIR)
+    if (noircir)
         factAssomb = 5;
     else
     {   list<FX*>::iterator it = FXActives.begin();

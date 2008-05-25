@@ -12,11 +12,6 @@
 #include <string>
 #include <iostream>
 
-#define PAS_DE_SELECTION    0
-#define NOIRCIR             1
-#define INFOS_SEULEMENT     2
-#define DEPLACEMENT         3
-#define CIBLAGE             4
 
 using namespace std;
 
@@ -54,7 +49,7 @@ private:
     unsigned int appL, appH;
     int **coordsCases;
 
-    unsigned int hauteur, largeur, statut, numTexBordure;
+    unsigned int hauteur, largeur, numTexBordure;
     float hauteurBordure;
     
     sf::Image* texBordure;
@@ -66,6 +61,12 @@ private:
 
 
 public:
+    enum {
+        PAS_DE_SELECTION, INFOS_SEULEMENT, DEPLACEMENT, CIBLAGE
+    };
+    
+    unsigned int statut;
+    bool noircir;
     int picked[2];
     float inclinaisonElements;
     
@@ -74,13 +75,6 @@ public:
     
     int getHauteur();
     int getLargeur();
-    
-    void bloquer(bool autoriserInfos=true);
-    void noircir();
-    void phaseDeplacement();
-    void phaseCiblage();
-    
-    int getStatut();
     
     void lancerFX(FX* nouvFX);
     

@@ -27,7 +27,6 @@ MoteurCombat::MoteurCombat(sf::RenderWindow* _app, GestionnaireImages* _gestImag
     camera->cible[1] = mapGraph->getLargeur()/2;
     camera->cible[2] = 0;
     
-    whatHappens = RAS;
     elemsON = true;
 }
 
@@ -96,7 +95,7 @@ int* MoteurCombat::maitrisesChoisies()
     return gui->mtrChoisies;
 }
 
-void MoteurCombat::traiterSelectInterface(int* selec, bool clic)
+void MoteurCombat::traiterSelectInterface(int* selec, bool clic, unsigned int& whatHappens)
 {
     switch(selec[0])
     {
@@ -106,7 +105,7 @@ void MoteurCombat::traiterSelectInterface(int* selec, bool clic)
                 case IC::SLC_CONTINUER:
                     if(clic)
                     {   gui->switchMenuEchap();
-                        mapGraph->bloquer(true);
+                        mapGraph->noircir = false;
                     }
                     break;
                 case IC::SLC_QUITTER:
@@ -126,7 +125,7 @@ unsigned int MoteurCombat::traiterEvenements()
     bool clic = false;
     sf::Event evt;
     
-    whatHappens = RAS;
+    unsigned int whatHappens = RAS;
     
     while(app->GetEvent(evt))
     {
@@ -140,10 +139,7 @@ unsigned int MoteurCombat::traiterEvenements()
                 switch(evt.Key.Code)
                 {
                     case sf::Key::Escape:
-                        if(mapGraph->getStatut() == NOIRCIR)
-                            mapGraph->bloquer(true);
-                        else
-                            mapGraph->noircir();
+                        mapGraph->noircir = !mapGraph->noircir;
                         gui->switchMenuEchap();
                         break;
                     
@@ -163,7 +159,7 @@ unsigned int MoteurCombat::traiterEvenements()
                 break;
             
             case sf::Event::MouseWheelMoved:  // ZOOM de la Map avec la molette de la souris
-                if (mapGraph->getStatut() == NOIRCIR)
+                if (mapGraph->noircir)
                     break;
                 camera->pos[2] -= evt.MouseWheel.Delta;
                 if (camera->pos[2] < 3)
@@ -181,7 +177,7 @@ unsigned int MoteurCombat::traiterEvenements()
     curseurX = input.GetMouseX();
     curseurY = input.GetMouseY();
     
-    if (mapGraph->getStatut() != NOIRCIR)
+    if (!mapGraph->noircir)
     {
         // ZOOM de la Map avec le clavier :
         if (input.IsKeyDown(touches.zoomAvant) and camera->pos[2] > 3)
@@ -243,7 +239,7 @@ unsigned int MoteurCombat::traiterEvenements()
                     ptr++;
         }
         
-        if (clicSur == 0)   // CLIC SUR LA MAP
+        if(clicSur == 0)   // CLIC SUR LA MAP
         {
             mapGraph->passerSelection(selection);
             gui->pasDeSelection();
@@ -252,7 +248,7 @@ unsigned int MoteurCombat::traiterEvenements()
         {
             mapGraph->pasDeSelection();
             gui->passerSelection(selection);
-            traiterSelectInterface(selection, clic);
+            traiterSelectInterface(selection, clic, whatHappens);
         }
     }
     else
