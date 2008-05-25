@@ -5,6 +5,10 @@
 #include <structmember.h>
 #include <MoteurCombat.hpp>
 
+#include <string>
+
+using namespace std;
+
 
 typedef struct {
     PyObject_HEAD

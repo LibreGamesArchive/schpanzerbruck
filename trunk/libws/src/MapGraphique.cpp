@@ -192,7 +192,7 @@ void MapGraphique::GL_Dessin(float frameTime, const Camera& camera, bool elemsON
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glAlphaFunc(GL_GREATER, 0);
     
-    int factAssomb = 1;
+    unsigned int factAssomb = 1;
     if (noircir)
         factAssomb = 5;
     else
@@ -210,7 +210,7 @@ void MapGraphique::GL_Dessin(float frameTime, const Camera& camera, bool elemsON
         }
     }
     
-    int nvGris = 255/factAssomb;
+    unsigned int nvGris = 255/factAssomb;
     glColor3ub(nvGris, nvGris, nvGris);
 
     bool selec = false;

@@ -95,6 +95,12 @@ int* MoteurCombat::maitrisesChoisies()
     return gui->mtrChoisies;
 }
 
+void MoteurCombat::setInfosDsBarre(string tuile, string element, string perso)
+{
+    gui->setInfosDsBarre(tuile, element, perso);
+}
+
+
 void MoteurCombat::traiterSelectInterface(int* selec, bool clic, unsigned int& whatHappens)
 {
     switch(selec[0])
@@ -249,10 +255,11 @@ unsigned int MoteurCombat::traiterEvenements()
             mapGraph->pasDeSelection();
             gui->passerSelection(selection);
             traiterSelectInterface(selection, clic, whatHappens);
+            gui->setInfosDsBarre(); // Vide la barre d'infos, vu que le curseur n'est pas sur la map
         }
     }
     else
-    {    mapGraph->pasDeSelection(); gui->pasDeSelection();    }
+    {    mapGraph->pasDeSelection(); gui->pasDeSelection(); gui->setInfosDsBarre();    }
     
     
     return whatHappens;

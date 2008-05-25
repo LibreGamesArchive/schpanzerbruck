@@ -2,34 +2,34 @@
 
 <tuiles>
     <!-- Tuiles de plaine -->
-    <obj num="1" fichier="plaine01.png" nivpass="2"/>
-    <obj num="2" fichier="cheminplaine01.png" nivpass="2"/>
-    <obj num="3" fichier="cheminplaine02.png" nivpass="2"/>
-    <obj num="4" fichier="cheminplaine03.png" nivpass="2"/>
-    <obj num="5" fichier="cheminplaine04.png" nivpass="2"/>
-    <obj num="6" fichier="cheminplaine05.png" nivpass="2"/>
-    <obj num="7" fichier="cheminplaine06.png" nivpass="2"/>
-    <obj num="8" fichier="cheminplaine07.png" nivpass="2"/>
-    <obj num="9" fichier="cheminplaine08.png" nivpass="2"/>
-    <obj num="A" fichier="cheminplaine09.png" nivpass="2"/>
-    <obj num="B" fichier="cheminplaine10.png" nivpass="2"/>
-    <obj num="C" fichier="cheminplaine11.png" nivpass="2"/>
+    <obj num="1" fichier="plaine01.png" nom="Plaine" nivpass="2"/>
+    <obj num="2" fichier="cheminplaine01.png" nom="Chemin" nivpass="2"/>
+    <obj num="3" fichier="cheminplaine02.png" nom="Chemin" nivpass="2"/>
+    <obj num="4" fichier="cheminplaine03.png" nom="Chemin" nivpass="2"/>
+    <obj num="5" fichier="cheminplaine04.png" nom="Chemin" nivpass="2"/>
+    <obj num="6" fichier="cheminplaine05.png" nom="Chemin" nivpass="2"/>
+    <obj num="7" fichier="cheminplaine06.png" nom="Chemin" nivpass="2"/>
+    <obj num="8" fichier="cheminplaine07.png" nom="Chemin" nivpass="2"/>
+    <obj num="9" fichier="cheminplaine08.png" nom="Chemin" nivpass="2"/>
+    <obj num="A" fichier="cheminplaine09.png" nom="Chemin" nivpass="2"/>
+    <obj num="B" fichier="cheminplaine10.png" nom="Chemin" nivpass="2"/>
+    <obj num="C" fichier="cheminplaine11.png" nom="Chemin" nivpass="2"/>
 
     <!-- Tuiles de neige -->
-    <obj num="11" fichier="neige01.png" nivpass="2"/>
-    <obj num="12" fichier="cheminneige01.png" nivpass="2"/>
-    <obj num="13" fichier="cheminneige02.png" nivpass="2"/>
-    <obj num="14" fichier="cheminneige03.png" nivpass="2"/>
-    <obj num="15" fichier="cheminneige04.png" nivpass="2"/>
-    <obj num="16" fichier="cheminneige05.png" nivpass="2"/>
-    <obj num="17" fichier="cheminneige06.png" nivpass="2"/>
-    <obj num="18" fichier="cheminneige07.png" nivpass="2"/>
-    <obj num="19" fichier="cheminneige08.png" nivpass="2"/>
-    <obj num="1A" fichier="cheminneige09.png" nivpass="2"/>
-    <obj num="1B" fichier="cheminneige10.png" nivpass="2"/>
-    <obj num="1C" fichier="cheminneige11.png" nivpass="2"/>
+    <obj num="11" fichier="neige01.png" nom="Plaine sous la neige" nivpass="2"/>
+    <obj num="12" fichier="cheminneige01.png" nom="Chemin sous la neige" nivpass="2"/>
+    <obj num="13" fichier="cheminneige02.png" nom="Chemin sous la neige" nivpass="2"/>
+    <obj num="14" fichier="cheminneige03.png" nom="Chemin sous la neige" nivpass="2"/>
+    <obj num="15" fichier="cheminneige04.png" nom="Chemin sous la neige" nivpass="2"/>
+    <obj num="16" fichier="cheminneige05.png" nom="Chemin sous la neige" nivpass="2"/>
+    <obj num="17" fichier="cheminneige06.png" nom="Chemin sous la neige" nivpass="2"/>
+    <obj num="18" fichier="cheminneige07.png" nom="Chemin sous la neige" nivpass="2"/>
+    <obj num="19" fichier="cheminneige08.png" nom="Chemin sous la neige" nivpass="2"/>
+    <obj num="1A" fichier="cheminneige09.png" nom="Chemin sous la neige" nivpass="2"/>
+    <obj num="1B" fichier="cheminneige10.png" nom="Chemin sous la neige" nivpass="2"/>
+    <obj num="1C" fichier="cheminneige11.png" nom="Chemin sous la neige" nivpass="2"/>
     
     <!-- Tuile de terre -->
-    <obj num="21" fichier="terre01.png" nivpass="2"/>
+    <obj num="21" fichier="terre01.png" nom="Terre" nivpass="2"/>
 
 </tuiles>
