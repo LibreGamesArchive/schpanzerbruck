@@ -4,7 +4,7 @@ import comlan
 from threading import Thread
 
 
-class ContexteServeur(Thread):
+class CoreServeur(Thread):
     """La classe suprême supervisant un combat (côté serveur)
     Fait tous les calculs nécessaires au déroulement du jeu, et envoie via les ComsServeurs les résultats à tous les ComsClients,
     il ne contient donc AUCUNE instruction réseau autre que la création de sockets"""
@@ -33,7 +33,7 @@ class ContexteServeur(Thread):
     
     def tourPersoSuivant(self):
         """Lorsque le le ComServeur actuel a intercepté un signal de fin de tour,
-        le ContexteServeur actualise la liste des persos, renvoie l'info,
+        le CoreServeur actualise la liste des persos, renvoie l'info,
         et signale au joueur suivant que c'est son tour de jouer"""
         
         self.persosAyantJoue.append(self.persosRestants.pop(0))

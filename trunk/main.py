@@ -28,7 +28,7 @@ config=Config.getInstance()
 config.chargerConfig(os.path.join(chemins.SAUVEGARDES, "schpbr.cfg"))
 
 
-import ctxclient
+import coreclient
 import utils
 import parser
 
@@ -70,7 +70,7 @@ else:
 # Fin parsage
 
 
-CTX = ctxclient.ContexteClient(MJ, carte)
+CTX = coreclient.CoreClient(MJ, carte)
 CTX.lancerBoucle()
 
 config.sauverConfig(os.path.join(chemins.SAUVEGARDES, "schpbr.cfg"))

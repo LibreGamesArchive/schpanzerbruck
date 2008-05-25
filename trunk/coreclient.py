@@ -5,9 +5,9 @@ from mapbase import MapBase
 import infos, constantes
 from config import Config
 
-config=Config.getInstance()
+config = Config.getInstance()
 
-class ContexteClient:
+class CoreClient:
     """La classe supervisant un combat (côté client)"""
     
     def __init__(self, moteurJeuWS, fichierMap, touches = config.touches):
