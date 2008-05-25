@@ -28,11 +28,11 @@ class BaseComReseau(BaseCom, Thread):
     """Communicateur: La classe de base pour la communication client/serveur
     C'est un Thread, de manière à pouvoir recevoir les infos sans bloquer"""
     
-    def __init__(self, socket, contexte):
+    def __init__(self, socket, core):
         BaseCom.__init__(self)
         Thread.__init__(self, name=self.__class__.__name__)
         self.socket = socket
-        self.contexte = contexte
+        self.core = core
 
 
 
@@ -41,8 +41,8 @@ class ComClient(BaseComReseau, list):
     list: Un groupe de joueurs jouant sur le même PC
     (Peut bien sûr ne contenir qu'un seul joueur)"""
     
-    def __init__(self, socket, joueurs, contexte):
-        BaseComReseau.__init__(self, socket, contexte)
+    def __init__(self, socket, joueurs, core):
+        BaseComReseau.__init__(self, socket, core)
         list.__init__(self, joueurs)
         self.__numJoueurActuel = -1   # -1 si ce n'est au tour d'aucun des joueurs du groupe de jouer, sinon égal au num du joueur dans le groupe
     
@@ -64,8 +64,8 @@ class ComClient(BaseComReseau, list):
 class ComServeur(BaseComReseau):
     """Contient la socket pour communiquer côté serveur avec un ComClient"""
     
-    def __init__(self, socket, contexte):
-        BaseComReseau.__init__(self, socket, contexte)
+    def __init__(self, socket, core):
+        BaseComReseau.__init__(self, socket, core)
         self.nombreJoueurs = 0    # Nombre de joueurs sur le même PC client
     
     
@@ -84,22 +84,22 @@ class ComServeur(BaseComReseau):
 
 class ComLocal(BaseCom, list):
     """Permet de communiquer avec les joueurs se trouvant sur le même PC que le serveur
-    Le ContexteServeur l'utilise de la même manière qu'il utilise le ComServeur"""
+    Le coreServeur l'utilise de la même manière qu'il utilise le ComServeur"""
     
-    def __init__(self, joueurs, ctxClient, ctxServeur):
+    def __init__(self, joueurs, coreClient, coreServeur):
         BaseCom.__init__(self)
         list.__init__(self, joueurs)
-        self.ctxClient = ctxClient
-        self.ctxServeur = ctxServeur
+        self.coreClient = coreClient
+        self.coreServeur = coreServeur
 
 
 
 class ComConnexions(BaseComReseau):
     """Gère les connexions des nouveaux ComClients en leur attribuant un nouveau ComServeur"""
     
-    def __init__(self, contexte):
+    def __init__(self, core):
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)    # La socket locale du serveur
-        BaseComReseau.__init__(self, sock, contexte)
+        BaseComReseau.__init__(self, sock, core)
         
         try:
             self.socket.bind(reseau.IP_PORT_SERVEUR)
@@ -114,8 +114,8 @@ class ComConnexions(BaseComReseau):
                 socketClient, IP_PortClient = self.socket.accept()
                 print "Client %s connecté au port %s" % IP_PortClient
                 
-                nouveauCom = ComServeur(socketClient, self.contexte)
-                self.contexte.coms.append(nouveauCom)
+                nouveauCom = ComServeur(socketClient, self.core)
+                self.core.coms.append(nouveauCom)
                 nouveauCom.start()
         finally:
             self.socket.close()
