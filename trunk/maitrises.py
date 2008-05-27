@@ -8,7 +8,7 @@ class Maitrise:
     """Décrit une maitrise"""
 
     def __init__(self, nom, nomComplet, antagonismes, FCP, FCM, AGI, portee):
-        self.nom = nom				# Nom courant utilisé pour la comparaison
+        self.nom = nom				        # Nom courant utilisé pour la comparaison
         self.nomComplet = nomComplet		# Nom complet, utilisé pour les crétins qui vont jouer à ce jeu stupide
         self.antagonismes = antagonismes	# Liste des maitrises qui ne peuvent pas etre utilisés ensemble
         self.FCP = FCP
@@ -16,7 +16,7 @@ class Maitrise:
 	self.AGI = AGI
         self.portee = portee
     
-    def __calculDegats(grade):
+    def __calculDegats(self, grade):
         
         if grade == "E":
             ret = randrange(10)
@@ -31,19 +31,19 @@ class Maitrise:
         
         return ret / 100.0		# Adapté à l'algorithme de combat : chaque stat est sur une base 100, donc modificateur compris entre 0 et 1
     
-    def __calculFCP(grade):
+    def __calculFCP(self, grade):
         return (self.FCP * self.__calculDegats(grade))
 
-    def __calculFCM(grade):
+    def __calculFCM(self, grade):
         return (self.FCM * self.__calculDegats(grade))
         
-    def __calculAGI(grade):
+    def __calculAGI(self, grade):
         return (self.AGI * self.__calculDegats(grade))
 
-    def __calculPortee(grade):
+    def __calculPortee(self, grade):
         return (self.portee)
 
-    def retourneStat():
+    def retourneStat(self):
         return (self.__calculFCP(),self.__calculFCM(),self.__calculAGI(),self.__calculPortee())
 
 
