@@ -105,6 +105,18 @@ void MoteurCombat::setChrono(string temps)
     gui->txtChrono = temps;
 }
 
+void MoteurCombat::setInfosPersoActuel(string nom, float VIE, float FTG)
+{
+    gui->infosPersoActuel.nom = nom;
+    gui->infosPersoActuel.VIE = VIE;
+    gui->infosPersoActuel.FTG = FTG;
+}
+
+void MoteurCombat::setMaitrisesAffichees(vector<string> listeMtr)
+{
+    gui->mtrAffichees = listeMtr;
+}
+
 
 void MoteurCombat::traiterSelectInterface(int* selec, bool clic, unsigned int& whatHappens)
 {
@@ -222,9 +234,10 @@ unsigned int MoteurCombat::traiterEvenements()
     GLuint hits = glRenderMode(GL_RENDER);
     GLfloat plusPetitZ_min = 1.0;
     GLuint clicSur = 0;
-    int selection[2];
+    int selection[3];
     selection[0] = -1;
     selection[1] = -1;
+    selection[2] = -1;
     
     if (hits > 0)
     {
@@ -236,7 +249,7 @@ unsigned int MoteurCombat::traiterEvenements()
             GLuint nbrNames = *ptr; ptr++;
             z_min = (GLfloat)(*ptr)/0xffffffff; ptr++;
             /*z_max=(GLfloat)(*ptr)/0xffffffff;*/ ptr++;
-            if (z_min < plusPetitZ_min)
+            if (z_min <= plusPetitZ_min)
             {
                 clicSur = *ptr; ptr++;   // Le premier nom est 0 ou 1 (map ou interface)
                 for(GLuint j=0; j<nbrNames-1; j++)
@@ -265,7 +278,7 @@ unsigned int MoteurCombat::traiterEvenements()
     }
     else
     {    mapGraph->pasDeSelection(); gui->pasDeSelection(); gui->setInfosDsBarre();    }
-    
+
     
     return whatHappens;
 }

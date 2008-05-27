@@ -5,6 +5,7 @@
 #include <structmember.h>
 #include <MoteurCombat.hpp>
 
+#include <vector>
 #include <string>
 
 using namespace std;

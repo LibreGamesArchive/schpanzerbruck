@@ -44,5 +44,9 @@ class CoreClient:
             
             self.MC.setChrono(str(int(self.MC.getFPS())))
             
+            self.MC.setInfosPersoActuel("Kadok", 20, 40)
+            
+            self.MC.setMaitrisesAffichees(["Poulette", "Gneuh", "Pouik", "AKadok", "Adsf", "fggfd", "dsfdsfsd", "rgfere", "gffrgd", "gftgt", "hfgbfgh", "gdhfrze", "dfgfdgg", "dsfdsfsd", "rgfere", "gffrgd", "gftgt", "hfgbfgh", "gdhfrze", "dfgfdgg"])
+            
             if whatHappens == self.MC.QUITTER:
                 running = False

@@ -6,11 +6,14 @@
 #include "InterfaceCombat.hpp"
 #include "GestionnaireImages.hpp"
 
+#include <list>
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
 #include <GL/gl.h>
 
 #define IC  InterfaceCombat
+
+using namespace std;
 
 
 namespace ws
@@ -67,6 +70,8 @@ public:
     
     void setInfosDsBarre(string tuile="", string element="", string perso="");
     void setChrono(string temps="");
+    void setInfosPersoActuel(string nom, float VIE, float FTG);
+    void setMaitrisesAffichees(vector<string> listeMtr);
 };
 
 }

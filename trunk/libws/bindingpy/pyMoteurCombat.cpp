@@ -77,11 +77,35 @@ static PyObject* pyMoteurCombat_setInfosDsBarre(pyMoteurCombat* self, PyObject* 
 
 static PyObject* pyMoteurCombat_setChrono(pyMoteurCombat* self, PyObject* args)
 {
-    PyObject *temps=NULL;
+    PyObject* temps=NULL;
     if( !PyArg_ParseTuple(args, "O", &temps) )
         return NULL;
     
     self->instc->setChrono(PyString_AsString(temps));
+    Py_RETURN_NONE;
+}
+
+static PyObject* pyMoteurCombat_setInfosPersoActuel(pyMoteurCombat* self, PyObject* args)
+{
+    PyObject* nomPerso=NULL;
+    float VIE = 0, FTG = 0;
+    if( !PyArg_ParseTuple(args, "Off", &nomPerso, &VIE, &FTG) )
+        return NULL;
+    
+    self->instc->setInfosPersoActuel(PyString_AsString(nomPerso), VIE, FTG);
+    Py_RETURN_NONE;
+}
+
+static PyObject* pyMoteurCombat_setMaitrisesAffichees(pyMoteurCombat* self, PyObject* args)
+{
+    PyObject* pyListeMtr;
+    if( !PyArg_ParseTuple(args, "O", &pyListeMtr) )
+        return NULL;
+    
+    vector<string> listeMtr;
+    for(int i=0; i<PyList_Size(pyListeMtr); i++)
+        listeMtr.push_back(PyString_AsString(PyList_GetItem(pyListeMtr, i)));
+    self->instc->setMaitrisesAffichees(listeMtr);
     Py_RETURN_NONE;
 }
 
@@ -94,6 +118,8 @@ static PyMethodDef pyMoteurCombat_methods[] = {
     {"maitrisesChoisies", (PyCFunction)pyMoteurCombat_maitrisesChoisies, METH_NOARGS, "Renvoie la liste des 3 maîtrises actuellement choisies"},
     {"setInfosDsBarre", (PyCFunction)pyMoteurCombat_setInfosDsBarre, METH_VARARGS, "Met à jour les infos de la BarreInfos"},
     {"setChrono", (PyCFunction)pyMoteurCombat_setChrono, METH_VARARGS, "Met à jour le chronomètre"},
+    {"setInfosPersoActuel", (PyCFunction)pyMoteurCombat_setInfosPersoActuel, METH_VARARGS, "Met à jour les infos succintes sur le perso en train de jouer"},
+    {"setMaitrisesAffichees", (PyCFunction)pyMoteurCombat_setMaitrisesAffichees, METH_VARARGS, "Met à jour la liste des maîtrises affichées et donc sélectionnables"},
     {NULL}
 };
 // FIN METHODES
