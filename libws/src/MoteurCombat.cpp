@@ -61,6 +61,18 @@ void MoteurCombat::scrolling()
         }
 }
 
+void MoteurCombat::zoom(float delta)
+{
+    if (delta != 0 && !mapGraph->noircir)
+    {
+        camera->pos[2] -= delta;
+        if (camera->pos[2] < 3)
+            camera->pos[2] = 3;
+        if (camera->pos[2] > 12)
+            camera->pos[2] = 12;
+    }
+}
+
 void MoteurCombat::centrerCurseur()
 {
     // Met le curseur au centre de l'écran (fixe le bug de scrolling)
@@ -120,7 +132,7 @@ void MoteurCombat::setMaitrisesAffichees(vector<string> listeMtr)
 }
 
 
-void MoteurCombat::traiterSelectInterface(int* selec, bool clic, unsigned int& whatHappens)
+void MoteurCombat::traiterSelectInterface(int* selec, bool clic, float delta, unsigned int& whatHappens)
 {
     switch(selec[0])
     {
@@ -165,6 +177,10 @@ void MoteurCombat::traiterSelectInterface(int* selec, bool clic, unsigned int& w
                             }
                         }
                     }
+                    if(delta > 0 && gui->numPremMtrAffichee > 0)
+                        gui->numPremMtrAffichee--;
+                    else if(delta < 0 && gui->numPremMtrAffichee <= gui->mtrAffichees.size()-16)
+                        gui->numPremMtrAffichee++;
                     break;
                 
                 case IC::SLC_VALIDER_MAITRISES:
@@ -188,6 +204,7 @@ unsigned int MoteurCombat::traiterEvenements()
 {
     bool clic = false;
     sf::Event evt;
+    float delta = 0;    // Pour la rotation de la molette
     
     unsigned int whatHappens = RAS;
     
@@ -223,13 +240,7 @@ unsigned int MoteurCombat::traiterEvenements()
                 break;
             
             case sf::Event::MouseWheelMoved:  // ZOOM de la Map avec la molette de la souris
-                if (mapGraph->noircir)
-                    break;
-                camera->pos[2] -= evt.MouseWheel.Delta;
-                if (camera->pos[2] < 3)
-                    camera->pos[2] = 3;
-                if (camera->pos[2] > 12)
-                    camera->pos[2] = 12;
+                delta = evt.MouseWheel.Delta;
                 break;
             
             default: break;
@@ -274,7 +285,7 @@ unsigned int MoteurCombat::traiterEvenements()
     
     GLuint hits = glRenderMode(GL_RENDER);
     GLfloat plusPetitZ_min = 1.0;
-    GLuint clicSur = 0;
+    GLuint curseurSur = 0;
     int selection[3];
     selection[0] = -1;
     selection[1] = -1;
@@ -292,7 +303,7 @@ unsigned int MoteurCombat::traiterEvenements()
             /*z_max=(GLfloat)(*ptr)/0xffffffff;*/ ptr++;
             if (z_min <= plusPetitZ_min)
             {
-                clicSur = *ptr; ptr++;   // Le premier nom est 0 ou 1 (map ou interface)
+                curseurSur = *ptr; ptr++;   // Le premier nom est 0 ou 1 (map ou interface)
                 for(GLuint j=0; j<nbrNames-1; j++)
                 {
                     selection[j] = *ptr; ptr++;
@@ -304,22 +315,26 @@ unsigned int MoteurCombat::traiterEvenements()
                     ptr++;
         }
         
-        if(clicSur == 0)   // CLIC SUR LA MAP
+        if(curseurSur == 0)   // CURSEUR SUR LA MAP
         {
             mapGraph->passerSelection(selection);
             gui->pasDeSelection();
+            
+            zoom(delta);
         }
         else    // CLIC SUR L'INTERFACE
         {
             mapGraph->pasDeSelection();
             gui->passerSelection(selection);
-            traiterSelectInterface(selection, clic, whatHappens);
+            traiterSelectInterface(selection, clic, delta, whatHappens);
             gui->setInfosDsBarre(); // Vide la barre d'infos, vu que le curseur n'est pas sur la map
         }
     }
     else
-    {    mapGraph->pasDeSelection(); gui->pasDeSelection(); gui->setInfosDsBarre();    }
-
+    {   mapGraph->pasDeSelection(); gui->pasDeSelection(); gui->setInfosDsBarre();
+        
+        zoom(delta);
+    }
     
     return whatHappens;
 }

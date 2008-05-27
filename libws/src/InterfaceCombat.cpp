@@ -442,7 +442,7 @@ void InterfaceCombat::GL_FenetreMaitrises()
         if (picked[1] == SLC_FERMER_MAITRISES)
         {
             if (clic)
-                glColor3ub(255, 204, 0);
+                glColor3ub(255/factAssomb, 204/factAssomb, 0);
             GL_Bouton("FERMER", 255/factAssomb, 150/factAssomb, 0, zoneEcritureL/3, btnsH, rayonSommets);
         }
         else
@@ -454,16 +454,16 @@ void InterfaceCombat::GL_FenetreMaitrises()
         unsigned int nbr = nbrMaitrisesChoisies();
         sprintf(ratio, "%d/3", nbr);
         if(nbr == 3)
-            glColor3ub(0, 0, 255);
+            glColor3ub(80/factAssomb, 0, 255/factAssomb);
         else
-            glColor3ub(255, 255, 255);
+            glColor3ub(255/factAssomb, 255/factAssomb, 255/factAssomb);
         GL_LigneTexteLargeurMax(ratio, zoneEcritureL/3, btnsH);
         
         glTranslatef(zoneEcritureL/3, 0, 0);
         glColor3ub(0, 205/factAssomb, 50/factAssomb);
         if (picked[1] == SLC_VALIDER_MAITRISES)
         {   if (clic)
-                glColor3ub(255, 204, 0);
+                glColor3ub(255/factAssomb, 204/factAssomb, 0);
             GL_Bouton("VALIDER", 255/factAssomb, 150/factAssomb, 0, zoneEcritureL/3, btnsH, rayonSommets);
         }
         else
@@ -478,12 +478,12 @@ void InterfaceCombat::GL_FenetreMaitrises()
         {
             glTranslatef(0, -txtH, 0);
             if (picked[2] == static_cast<int>(i))
-                glColor3ub(255, 255, 0);
+                glColor3ub(255/factAssomb, 255/factAssomb, 0);
             else
             {   if(cetteMtrEstChoisie(i))
-                    glColor3ub(0, 255, 0);
+                    glColor3ub(0, 255/factAssomb, 0);
                 else
-                    glColor3ub(255, 255, 255);
+                    glColor3ub(255/factAssomb, 255/factAssomb, 255/factAssomb);
             }
             GL_LigneTexteLargeurMax(mtrAffichees[i], zoneAffMaitrisesL, txtH, false);
         }
