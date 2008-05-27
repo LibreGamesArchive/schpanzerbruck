@@ -7,6 +7,7 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
 
+#include <iostream>
 #include <vector>
 #include <string>
 #include <math.h>
@@ -53,10 +54,11 @@ private:
     void GL_FenetreMaitrisesPourSelection();
     void GL_FenetreMaitrises();
     
+    bool cetteMtrEstChoisie(int numMtr);
+    unsigned int nbrMaitrisesChoisies();
+    
     unsigned int factAssomb;
     string infosActDsBarre[3];
-    
-    unsigned int numPremMtrAffichee;
     
 public:
     enum {
@@ -66,6 +68,7 @@ public:
     };
     
     int mtrChoisies[3];
+    unsigned int numPremMtrAffichee;
     vector<string> mtrAffichees;
     string txtChrono;
     InfosSuccintesSurPerso infosPersoActuel;
