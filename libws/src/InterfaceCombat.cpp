@@ -454,7 +454,7 @@ void InterfaceCombat::GL_FenetreMaitrises()
         unsigned int nbr = nbrMaitrisesChoisies();
         sprintf(ratio, "%d/3", nbr);
         if(nbr == 3)
-            glColor3ub(80/factAssomb, 0, 255/factAssomb);
+            glColor3ub(255/factAssomb, 170/factAssomb, 0);
         else
             glColor3ub(255/factAssomb, 255/factAssomb, 255/factAssomb);
         GL_LigneTexteLargeurMax(ratio, zoneEcritureL/3, btnsH);
@@ -477,11 +477,16 @@ void InterfaceCombat::GL_FenetreMaitrises()
         for(unsigned int i=numPremMtrAffichee; i<mtrAffichees.size() && i<(numPremMtrAffichee + 15); i++)
         {
             glTranslatef(0, -txtH, 0);
-            if (picked[2] == static_cast<int>(i))
-                glColor3ub(255/factAssomb, 255/factAssomb, 0);
+            if(picked[2] == static_cast<int>(i))
+            {
+                if(cetteMtrEstChoisie(i))
+                    glColor3ub(255/factAssomb, 0, 0);
+                else
+                    glColor3ub(0, 255/factAssomb, 0);
+            }
             else
             {   if(cetteMtrEstChoisie(i))
-                    glColor3ub(0, 255/factAssomb, 0);
+                    glColor3ub(255/factAssomb, 170/factAssomb, 0);
                 else
                     glColor3ub(255/factAssomb, 255/factAssomb, 255/factAssomb);
             }
