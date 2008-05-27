@@ -13,7 +13,7 @@ class Maitrise:
         self.antagonismes = antagonismes	# Liste des maitrises qui ne peuvent pas etre utilisés ensemble
         self.FCP = FCP
         self.FCM = FCM
-	self.AGI = AGI
+	    self.AGI = AGI
         self.portee = portee
     
     def __calculDegats(self, grade):

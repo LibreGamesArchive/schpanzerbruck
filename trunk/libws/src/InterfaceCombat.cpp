@@ -12,7 +12,7 @@ InterfaceCombat::InterfaceCombat(GestionnaireImages* _gestImages, unsigned int _
     picked[0] = -1; picked[1] = -1; picked[2] = -1;
     menuEchapON = false;
     barreInfosON = false;
-    fenetreMaitrisesON = true;
+    fenetreMaitrisesON = false;
     clic = false;
     mtrChoisies[0] = -1; mtrChoisies[1] = -1; mtrChoisies[2] = -1;
     factAssomb = 1;
