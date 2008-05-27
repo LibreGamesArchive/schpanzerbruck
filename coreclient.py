@@ -30,6 +30,8 @@ class CoreClient:
         # Met le curseur au centre de l'écran (fixe le bug de scrolling)
         self.MC.centrerCurseur()
         
+        unset = True
+        
         running = True
         while running:
             # GESTION DES EVENEMENTS :
@@ -46,7 +48,9 @@ class CoreClient:
             
             self.MC.setInfosPersoActuel("Kadok", 20, 40)
             
-            self.MC.setMaitrisesAffichees(["Poulette", "Gneuh", "Pouik", "AKadok", "Adsf", "fggfd", "dsfdsfsd", "rgfere", "gffrgd", "gftgt", "hfgbfgh", "gdhfrze", "dfgfdgg", "dsfdsfsd", "rgfere", "gffrgd", "gftgt", "hfgbfgh", "gdhfrze", "dfgfdgg"])
+            if unset:
+                self.MC.setMaitrisesAffichees(["Poulette", "Gneuh", "Pouik", "AKadok", "Adsf", "fggfd", "dsfdsfsd", "rgfere", "gffrgd", "gftgt", "hfgbfgh", "gdhfrze", "dfgfdgg", "dsfdsfsd", "rgfere", "gffrgd", "gftgt", "hfgbfgh", "gdhfrze", "dfgfdgg"])
+                unset = False
             
             if whatHappens == self.MC.QUITTER:
                 running = False

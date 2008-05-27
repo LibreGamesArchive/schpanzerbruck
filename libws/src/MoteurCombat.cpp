@@ -115,6 +115,8 @@ void MoteurCombat::setInfosPersoActuel(string nom, float VIE, float FTG)
 void MoteurCombat::setMaitrisesAffichees(vector<string> listeMtr)
 {
     gui->mtrAffichees = listeMtr;
+    gui->mtrChoisies[0] = -1; gui->mtrChoisies[1] = -1; gui->mtrChoisies[2] = -1;
+    gui->numPremMtrAffichee = 0;
 }
 
 
@@ -131,10 +133,49 @@ void MoteurCombat::traiterSelectInterface(int* selec, bool clic, unsigned int& w
                         mapGraph->noircir = false;
                     }
                     break;
+                
                 case IC::SLC_QUITTER:
                     if(clic)
                         whatHappens = QUITTER;
                     break;
+                
+                default: break;
+            }
+            break;
+        
+        case IC::SLC_FENETRE_MAITRISES:
+            switch(selec[1])
+            {
+                case IC::SLC_LISTE_MAITRISES:
+                    if(clic)
+                    {   bool suppr = false;
+                        for(unsigned int i=0; i<3; i++)
+                        {   if(gui->mtrChoisies[i] == selec[2])
+                            {   gui->mtrChoisies[i] = -1;
+                                suppr = true;
+                                break;
+                            }
+                        }
+                        if(!suppr)
+                        {   for(unsigned int i=0; i<3; i++)
+                            {   if(gui->mtrChoisies[i] == -1)
+                                {   gui->mtrChoisies[i] = selec[2];
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    break;
+                
+                case IC::SLC_VALIDER_MAITRISES:
+                    if(clic)
+                        whatHappens = MAITRISES_CHOISIES;
+                
+                case IC::SLC_FERMER_MAITRISES:
+                    if(clic)
+                        gui->switchFenetreMaitrises();
+                    break;
+                
                 default: break;
             }
             break;

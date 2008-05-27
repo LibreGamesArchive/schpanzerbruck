@@ -356,6 +356,7 @@ void InterfaceCombat::GL_FenetreMaitrisesPourSelection()
     float zoneEcritureL = cadreL - decalA45Deg*2;
     float zoneEcritureH = cadreH - decalA45Deg*2;
     float txtH = zoneEcritureH/20;
+    float btnsH = txtH*1.5;
     float zoneAffMaitrisesH = zoneEcritureH - txtH*4;
     float zoneAffMaitrisesL = zoneEcritureL - decalA45Deg*2;
     
@@ -369,12 +370,12 @@ void InterfaceCombat::GL_FenetreMaitrisesPourSelection()
     
     glPushMatrix();
         glPushName(SLC_FERMER_MAITRISES);
-            GL_Cadre(zoneEcritureL/3, txtH*1.5, rayonSommets);
+            GL_Cadre(zoneEcritureL/3, btnsH, rayonSommets);
         glPopName();
         
         glPushName(SLC_VALIDER_MAITRISES);
             glTranslatef(zoneEcritureL*(2.0/3), 0, 0);
-            GL_Cadre(zoneEcritureL/3, txtH*1.5, rayonSommets);
+            GL_Cadre(zoneEcritureL/3, btnsH, rayonSommets);
         glPopName();
         
         glPushName(SLC_LISTE_MAITRISES);
@@ -394,6 +395,26 @@ void InterfaceCombat::GL_FenetreMaitrisesPourSelection()
 }
 
 
+bool InterfaceCombat::cetteMtrEstChoisie(int numMtr)
+{
+    for(unsigned int i=0; i<3; i++)
+        if(mtrChoisies[i] == numMtr)
+            return true;
+    
+    return false;
+}
+
+unsigned int InterfaceCombat::nbrMaitrisesChoisies()
+{
+    unsigned int nbr = 0;
+    for(unsigned int i=0; i<3; i++)
+        if(mtrChoisies[i] != -1)
+            nbr++;
+    
+    return nbr;
+}
+
+
 void InterfaceCombat::GL_FenetreMaitrises()
 {
     float cadreH = appH*(2.0/3);
@@ -403,6 +424,7 @@ void InterfaceCombat::GL_FenetreMaitrises()
     float zoneEcritureL = cadreL - decalA45Deg*2;
     float zoneEcritureH = cadreH - decalA45Deg*2;
     float txtH = zoneEcritureH/20;
+    float btnsH = txtH*1.5;
     float zoneAffMaitrisesH = zoneEcritureH - txtH*4;
     float zoneAffMaitrisesL = zoneEcritureL - decalA45Deg*2;
     
@@ -421,20 +443,31 @@ void InterfaceCombat::GL_FenetreMaitrises()
         {
             if (clic)
                 glColor3ub(255, 204, 0);
-            GL_Bouton("FERMER", 255/factAssomb, 150/factAssomb, 0, zoneEcritureL/3, txtH*1.5, rayonSommets);
+            GL_Bouton("FERMER", 255/factAssomb, 150/factAssomb, 0, zoneEcritureL/3, btnsH, rayonSommets);
         }
         else
-            GL_Bouton("FERMER", 255/factAssomb, 255/factAssomb, 255/factAssomb, zoneEcritureL/3, txtH*1.5, rayonSommets);
+            GL_Bouton("FERMER", 255/factAssomb, 255/factAssomb, 255/factAssomb, zoneEcritureL/3, btnsH, rayonSommets);
         
-        glTranslatef(zoneEcritureL*(2.0/3), 0, 0);
+        // Nbr maitrises choisies/3:
+        glTranslatef(zoneEcritureL/3, 0, 0);
+        char ratio[5];
+        unsigned int nbr = nbrMaitrisesChoisies();
+        sprintf(ratio, "%d/3", nbr);
+        if(nbr == 3)
+            glColor3ub(0, 0, 255);
+        else
+            glColor3ub(255, 255, 255);
+        GL_LigneTexteLargeurMax(ratio, zoneEcritureL/3, btnsH);
+        
+        glTranslatef(zoneEcritureL/3, 0, 0);
         glColor3ub(0, 205/factAssomb, 50/factAssomb);
         if (picked[1] == SLC_VALIDER_MAITRISES)
         {   if (clic)
                 glColor3ub(255, 204, 0);
-            GL_Bouton("VALIDER", 255/factAssomb, 150/factAssomb, 0, zoneEcritureL/3, txtH*1.5, rayonSommets);
+            GL_Bouton("VALIDER", 255/factAssomb, 150/factAssomb, 0, zoneEcritureL/3, btnsH, rayonSommets);
         }
         else
-            GL_Bouton("VALIDER", 255/factAssomb, 255/factAssomb, 255/factAssomb, zoneEcritureL/3, txtH*1.5, rayonSommets);
+            GL_Bouton("VALIDER", 255/factAssomb, 255/factAssomb, 255/factAssomb, zoneEcritureL/3, btnsH, rayonSommets);
         
         glTranslatef(-zoneEcritureL*(2.0/3), txtH*2, 0);
         glColor3ub(0, 0, 0);
@@ -444,18 +477,22 @@ void InterfaceCombat::GL_FenetreMaitrises()
         for(unsigned int i=numPremMtrAffichee; i<mtrAffichees.size() && i<(numPremMtrAffichee + 15); i++)
         {
             glTranslatef(0, -txtH, 0);
-            if (picked[2] == i)
+            if (picked[2] == static_cast<int>(i))
                 glColor3ub(255, 255, 0);
             else
-                glColor3ub(255, 255, 255);
+            {   if(cetteMtrEstChoisie(i))
+                    glColor3ub(0, 255, 0);
+                else
+                    glColor3ub(255, 255, 255);
+            }
             GL_LigneTexteLargeurMax(mtrAffichees[i], zoneAffMaitrisesL, txtH, false);
         }
     glPopMatrix();
     
     // TITRE:
-    glTranslatef(0, zoneEcritureH-txtH*1.5, 0);
+    glTranslatef(0, zoneEcritureH-btnsH, 0);
     glColor3ub(255/factAssomb, 255/factAssomb, 255/factAssomb);
-    GL_LigneTexteLargeurMax("Choix des Maitrises", zoneEcritureL, txtH*1.5);
+    GL_LigneTexteLargeurMax("Choix des Maitrises", zoneEcritureL, btnsH);
     
     glPopMatrix();
 }
