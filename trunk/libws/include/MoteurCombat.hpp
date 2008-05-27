@@ -7,6 +7,7 @@
 #include "GestionnaireImages.hpp"
 
 #include <list>
+#include <iostream>
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
 #include <GL/gl.h>
@@ -43,12 +44,13 @@ private:
     bool elemsON;
     
     void scrolling();
+    void zoom(float delta);
     
     friend class MoteurJeu;
     
     MoteurCombat(sf::RenderWindow* _app, GestionnaireImages* _gestImages, const DonneesMap& _DM, const Touches& _touches);
     
-    void traiterSelectInterface(int* selec, bool clic, unsigned int& whatHappens);
+    void traiterSelectInterface(int* selec, bool clic, float delta, unsigned int& whatHappens);
 
 public:
     enum {
