@@ -7,6 +7,7 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
 
+#include <vector>
 #include <string>
 #include <math.h>
 
@@ -16,15 +17,21 @@ using namespace std;
 namespace ws
 {
 
+struct InfosSuccintesSurPerso
+{
+    string nom;
+    float VIE, FTG;
+};
+
 class InterfaceCombat
 {
 private:
-    bool menuEchapON, barreInfosON, clic;
+    bool menuEchapON, barreInfosON, fenetreMaitrisesON, clic;
     
     unsigned int appL, appH;
     GestionnaireImages* gestImages;
     
-    int picked[2];
+    int picked[3];
     
     void GL_LigneTexte(string texte, float largeurTxt, float hauteurTxt, unsigned int numPoliceBmp=1);
     void GL_LigneTexteLargeurMax(string texte, float largeurTxtMax, float hauteurTxt, bool centrer=true, unsigned int numPoliceBmp=1);
@@ -41,21 +48,32 @@ private:
     
     void GL_Chrono();
     
+    void GL_CadrePersoActuel();
+    
+    void GL_FenetreMaitrisesPourSelection();
+    void GL_FenetreMaitrises();
+    
     unsigned int factAssomb;
     string infosActDsBarre[3];
     
+    unsigned int numPremMtrAffichee;
+    
 public:
     enum {
-        SLC_CONTINUER, SLC_QUITTER, SLC_MENU_ECHAP,
-        SLC_MENU_TRIANGLE, SLC_DEPLACEMENT, SLC_ACTION, SLC_FIN_DU_TOUR
+        SLC_MENU_ECHAP, SLC_CONTINUER, SLC_QUITTER,
+        SLC_MENU_TRIANGLE, SLC_DEPLACEMENT, SLC_ACTION, SLC_FIN_DU_TOUR,
+        SLC_FENETRE_MAITRISES, SLC_FERMER_MAITRISES, SLC_VALIDER_MAITRISES, SLC_LISTE_MAITRISES
     };
     
     int mtrChoisies[3];
+    vector<string> mtrAffichees;
     string txtChrono;
+    InfosSuccintesSurPerso infosPersoActuel;
     
     InterfaceCombat(GestionnaireImages* _gestImages, unsigned int _appL, unsigned int _appH);
     
     void switchMenuEchap();
+    void switchFenetreMaitrises();
     
     void GL_DessinPourSelection(unsigned int curseurX, unsigned int curseurY, bool _clic=false);
     void GL_Dessin();
