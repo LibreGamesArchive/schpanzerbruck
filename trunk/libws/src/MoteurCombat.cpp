@@ -102,9 +102,13 @@ int* MoteurCombat::selectMapActuelle()
     return mapGraph->picked;
 }
 
-int* MoteurCombat::maitrisesChoisies()
+void MoteurCombat::maitrisesChoisies(int* mtrChoisies, int* gradesChoisis)
 {
-    return gui->mtrChoisies;
+    for(unsigned int i=0; i<3; i++)
+    {
+        mtrChoisies[i] = gui->mtrChoisies[i];
+        gradesChoisis[i] = gui->gradesChoisis[i];
+    }
 }
 
 void MoteurCombat::setInfosDsBarre(string tuile, string element, string perso)
@@ -112,9 +116,9 @@ void MoteurCombat::setInfosDsBarre(string tuile, string element, string perso)
     gui->setInfosDsBarre(tuile, element, perso);
 }
 
-void MoteurCombat::setChrono(string temps)
+void MoteurCombat::setChrono(float temps)
 {
-    gui->txtChrono = temps;
+    gui->valChrono = temps;
 }
 
 void MoteurCombat::setInfosPersoActuel(string nom, float VIE, float FTG)
@@ -124,10 +128,15 @@ void MoteurCombat::setInfosPersoActuel(string nom, float VIE, float FTG)
     gui->infosPersoActuel.FTG = FTG;
 }
 
-void MoteurCombat::setMaitrisesAffichees(vector<string> listeMtr)
+void MoteurCombat::setMaitrisesAffichees(vector<string> listeMtr, vector<int> listeGrades)
 {
     gui->mtrAffichees = listeMtr;
-    gui->mtrChoisies[0] = -1; gui->mtrChoisies[1] = -1; gui->mtrChoisies[2] = -1;
+    gui->gradesMtrAffichees = listeGrades;
+    for(unsigned int i=0; i<3; i++)
+    {
+        gui->mtrChoisies[i] = -1;
+        gui->gradesChoisis[i] = -1;
+    }
     gui->numPremMtrAffichee = 0;
 }
 
@@ -160,18 +169,26 @@ void MoteurCombat::traiterSelectInterface(int* selec, bool clic, float delta, un
             {
                 case IC::SLC_LISTE_MAITRISES:
                     if(clic)
-                    {   bool suppr = false;
-                        for(unsigned int i=0; i<3; i++)
-                        {   if(gui->mtrChoisies[i] == selec[2])
-                            {   gui->mtrChoisies[i] = -1;
-                                suppr = true;
-                                break;
+                    {
+                        int numMtrDsChoix = gui->numMtrDsChoix(selec[2]);
+                        if(numMtrDsChoix != -1)     // Si la maitrise a déjà été choisie
+                        {
+                            if(selec[3] == IC::SLC_MAITRISE)    // Si on a cliqué sur le nom de la maitrise, on la dé-choisit
+                            {   gui->mtrChoisies[numMtrDsChoix] = -1;
+                                gui->gradesChoisis[numMtrDsChoix] = -1;
                             }
+                            else    // Si on a cliqué sur un grade
+                                gui->gradesChoisis[numMtrDsChoix] = selec[3];
                         }
-                        if(!suppr)
-                        {   for(unsigned int i=0; i<3; i++)
+                        else
+                        {
+                            for(unsigned int i=0; i<3; i++)     // On trouve si possible une place vide pour ajouter la maitrise choisie
                             {   if(gui->mtrChoisies[i] == -1)
                                 {   gui->mtrChoisies[i] = selec[2];
+                                    if(selec[3] == IC::SLC_MAITRISE)    // Si l'on a pas spécifié de grade, on met le grade le plus fort
+                                        gui->gradesChoisis[i] = gui->gradesMtrAffichees[selec[2]];
+                                    else
+                                        gui->gradesChoisis[i] = selec[3];
                                     break;
                                 }
                             }
@@ -179,7 +196,7 @@ void MoteurCombat::traiterSelectInterface(int* selec, bool clic, float delta, un
                     }
                     if(delta > 0 && gui->numPremMtrAffichee > 0)
                         gui->numPremMtrAffichee--;
-                    else if(delta < 0 && gui->numPremMtrAffichee <= gui->mtrAffichees.size()-16)
+                    else if(delta < 0 && gui->numPremMtrAffichee + 16 <= gui->mtrAffichees.size())
                         gui->numPremMtrAffichee++;
                     break;
                 
@@ -261,10 +278,7 @@ unsigned int MoteurCombat::traiterEvenements()
             if (input.IsKeyDown(touches.zoomArriere) and camera->pos[2] < 12)
                 camera->pos[2] += 10*app->GetFrameTime();
         
-        if (input.IsKeyDown(sf::Key::A))
-            elemsON = false;
-        else
-            elemsON = true;
+        elemsON = !input.IsKeyDown(sf::Key::A);
         
         scrolling();
     }
@@ -286,10 +300,11 @@ unsigned int MoteurCombat::traiterEvenements()
     GLuint hits = glRenderMode(GL_RENDER);
     GLfloat plusPetitZ_min = 1.0;
     GLuint curseurSur = 0;
-    int selection[3];
+    int selection[4];
     selection[0] = -1;
     selection[1] = -1;
     selection[2] = -1;
+    selection[3] = -1;
     
     if (hits > 0)
     {

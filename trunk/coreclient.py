@@ -44,13 +44,15 @@ class CoreClient:
             if numCase != -1:
                 self.MC.setInfosDsBarre(self.map.infosSur("tuiles", numCase, "nom"), self.map.infosSur("elements", numCase, "nom"), "")
             
-            self.MC.setChrono(str(int(self.MC.getFPS())))
+            self.MC.setChrono(self.MC.getFPS())
             
             self.MC.setInfosPersoActuel("Kadok", 20.76, 40)
             
             if unset:
-                self.MC.setMaitrisesAffichees(["Poulette", "Gneuh", "Pouik", "AKadok", "Adsf", "fggfd", "dsfdsfsd", "rgfere", "gffrgd", "gftgt", "hfgbfgh", "gdhfrze", "dfgfdgg", "dsfdsfsd", "rgfere", "gffrgd", "gftgt", "hfgbfgh", "gdhfrze", "dfgfdgg"])
+                self.MC.setMaitrisesAffichees([("Poulette",self.MC.GRADE_D), ("Gneuh",0), ("Pouik",3), ("Poulette",0), ("Gneuh",0), ("Pouik",0), ("Poulette",0), ("Gneuh",0), ("Pouik",0), ("Poulette",0), ("Gneuh",0), ("Pouik",0), ("Poulette",0), ("Gneuh",0), ("Pouik",0), ("Poulette",0), ("Gneuh",0), ("Pouik",0), ("Poulette",0), ("Gneuh",0), ("Pouik",0), ("Poulette",0), ("Gneuh",0), ("Pouik",0)])
                 unset = False
+            
+            print self.MC.maitrisesChoisies()
             
             if whatHappens == self.MC.QUITTER:
                 running = False
