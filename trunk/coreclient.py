@@ -52,7 +52,7 @@ class CoreClient:
                 self.MC.setMaitrisesAffichees([("Poulette",self.MC.GRADE_D), ("Gneuh",0), ("Pouik",3), ("Poulette",0), ("Gneuh",0), ("Pouik",0), ("Poulette",0), ("Gneuh",0), ("Pouik",0), ("Poulette",0), ("Gneuh",0), ("Pouik",0), ("Poulette",0), ("Gneuh",0), ("Pouik",0), ("Poulette",0), ("Gneuh",0), ("Pouik",0), ("Poulette",0), ("Gneuh",0), ("Pouik",0), ("Poulette",0), ("Gneuh",0), ("Pouik",0)])
                 unset = False
             
-            print self.MC.maitrisesChoisies()
+            #self.MC.maitrisesChoisies()    #Pour récupérer les 3 tuples (num_maitrise, grade) choisis
             
             if whatHappens == self.MC.QUITTER:
                 running = False

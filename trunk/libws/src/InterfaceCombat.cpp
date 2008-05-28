@@ -407,7 +407,7 @@ void InterfaceCombat::GL_FenetreMaitrisesPourSelection()
                         {
                             glTranslatef(-gradeL*2, 0, 0);
                             glPushName(j);
-                                GL_Cadre(gradeL, txtH);
+                                GL_Cadre(gradeL*2, txtH);
                             glPopName();
                         }
                     glPopMatrix();
@@ -527,14 +527,27 @@ void InterfaceCombat::GL_FenetreMaitrises()
                 for(int j=0; j<=gradesMtrAffichees[i]; j++)     // j itère sur les grades (0:E ... 4:A)
                 {
                     glColor3ub(255/factAssomb, 255/factAssomb, 255/factAssomb);
-                    if(curseurSurMtr)
-                    {   glColor3ub(0, 255/factAssomb, 0);
-                        if(mtrChoisieEn != -1 && gradesChoisis[mtrChoisieEn] == j)
-                            glColor3ub(255/factAssomb, 0, 0);
+                    if(curseurSurMtr)   // Si la maitrise actuelle est sélectionnée
+                    {
+                        if(mtrChoisieEn != -1)   // Si la maitrise actuelle est choisie
+                        {
+                            if(gradesChoisis[mtrChoisieEn] == j)    // Si le grade actuel est choisi
+                            {
+                                glColor3ub(255/factAssomb, 170/factAssomb, 0);
+                                if(picked[3] == j)  // Si le grade actuel est en plus sélectionné
+                                    glColor3ub(255/factAssomb, 0, 0);
+                            }
+                            else if(picked[3] == j)  // Si le grade actuel n'est que sélectionné
+                                glColor3ub(0, 255/factAssomb, 0);
+                        }
+                        else
+                            if(picked[3] == j)  // Si le grade actuel est sélectionné
+                                glColor3ub(0, 255/factAssomb, 0);
                     }
                     else
-                        if(mtrChoisieEn != -1 && gradesChoisis[mtrChoisieEn] == j)
+                        if(mtrChoisieEn != -1 && gradesChoisis[mtrChoisieEn] == j)  // Si le grade actuel est choisi
                             glColor3ub(255/factAssomb, 170/factAssomb, 0);
+                    
                     glTranslatef(-gradeL*2, 0, 0);
                     sprintf(gradeAct, "%c", 'E'-j);
                     GL_LigneTexte(gradeAct, gradeL, txtH);
