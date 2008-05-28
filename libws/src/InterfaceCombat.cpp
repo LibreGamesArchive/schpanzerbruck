@@ -9,15 +9,20 @@ InterfaceCombat::InterfaceCombat(GestionnaireImages* _gestImages, unsigned int _
     appL = _appL;
     appH = _appH;
     gestImages = _gestImages;
-    picked[0] = -1; picked[1] = -1; picked[2] = -1;
+    for(unsigned int i=0; i<4; i++)
+        picked[i] = -1;
     menuEchapON = false;
     barreInfosON = false;
-    fenetreMaitrisesON = false;
+    fenetreMaitrisesON = true;
     clic = false;
-    mtrChoisies[0] = -1; mtrChoisies[1] = -1; mtrChoisies[2] = -1;
+    for(unsigned int i=0; i<3; i++)
+    {
+        mtrChoisies[i] = -1;
+        gradesChoisis[i] = -1;
+    }
     factAssomb = 1;
     setInfosDsBarre();
-    txtChrono = "";
+    valChrono = 0;
     infosPersoActuel.nom = "";
     infosPersoActuel.VIE = 0;
     infosPersoActuel.FTG = 0;
@@ -288,8 +293,14 @@ void InterfaceCombat::GL_Chrono()
     glColor4ub(0, 0, 0, 220);
     GL_Cadre(tailleChrono, tailleChrono, rayonSommets);
     
+    char txtChrono[10];
+    sprintf(txtChrono, "%.0f", valChrono);
+    
     glTranslatef(decalA45Deg, decalA45Deg, 0);
-    glColor3ub(255, 255, 255);
+    if(valChrono <= 5)
+        glColor3ub(255, 0, 0);
+    else
+        glColor3ub(255, 255, 255);
     GL_LigneTexteLargeurMax(txtChrono, tailleZoneEcriture, tailleZoneEcriture);
     
     glPopMatrix();
@@ -357,6 +368,7 @@ void InterfaceCombat::GL_FenetreMaitrisesPourSelection()
     float zoneEcritureH = cadreH - decalA45Deg*2;
     float txtH = zoneEcritureH/20;
     float btnsH = txtH*1.5;
+    float gradeL = txtH/2;
     float zoneAffMaitrisesH = zoneEcritureH - txtH*4;
     float zoneAffMaitrisesL = zoneEcritureL - decalA45Deg*2;
     
@@ -385,7 +397,20 @@ void InterfaceCombat::GL_FenetreMaitrisesPourSelection()
             {
                 glPushName(i);
                     glTranslatef(0, -txtH, 0);
-                    GL_Cadre(zoneAffMaitrisesL, txtH);
+                    glPushName(SLC_MAITRISE);
+                        GL_Cadre(zoneAffMaitrisesL, txtH);
+                    glPopName();
+                    
+                    glPushMatrix();
+                        glTranslatef(zoneAffMaitrisesL + gradeL, 0, 0);
+                        for(int j=0; j<=gradesMtrAffichees[i]; j++)     // j itère sur les grades (0:E ... 4:A)
+                        {
+                            glTranslatef(-gradeL*2, 0, 0);
+                            glPushName(j);
+                                GL_Cadre(gradeL, txtH);
+                            glPopName();
+                        }
+                    glPopMatrix();
                 glPopName();
             }
         glPopName();
@@ -395,13 +420,13 @@ void InterfaceCombat::GL_FenetreMaitrisesPourSelection()
 }
 
 
-bool InterfaceCombat::cetteMtrEstChoisie(int numMtr)
+int InterfaceCombat::numMtrDsChoix(int numMtr)
 {
     for(unsigned int i=0; i<3; i++)
         if(mtrChoisies[i] == numMtr)
-            return true;
+            return i;
     
-    return false;
+    return -1;
 }
 
 unsigned int InterfaceCombat::nbrMaitrisesChoisies()
@@ -425,6 +450,7 @@ void InterfaceCombat::GL_FenetreMaitrises()
     float zoneEcritureH = cadreH - decalA45Deg*2;
     float txtH = zoneEcritureH/20;
     float btnsH = txtH*1.5;
+    float gradeL = txtH/2;
     float zoneAffMaitrisesH = zoneEcritureH - txtH*4;
     float zoneAffMaitrisesL = zoneEcritureL - decalA45Deg*2;
     
@@ -474,23 +500,46 @@ void InterfaceCombat::GL_FenetreMaitrises()
         GL_Cadre(zoneEcritureL, zoneAffMaitrisesH, rayonSommets);
         glTranslatef(decalA45Deg, zoneAffMaitrisesH - decalA45Deg, 0);
         
+        char gradeAct[5];
+        
         for(unsigned int i=numPremMtrAffichee; i<mtrAffichees.size() && i<(numPremMtrAffichee + 15); i++)
         {
             glTranslatef(0, -txtH, 0);
+            bool curseurSurMtr = false;
+            int mtrChoisieEn = numMtrDsChoix(i);
             if(picked[2] == static_cast<int>(i))
-            {
-                if(cetteMtrEstChoisie(i))
+                curseurSurMtr = true;
+            
+            glColor3ub(255/factAssomb, 255/factAssomb, 255/factAssomb);
+            if(curseurSurMtr)
+            {   glColor3ub(0, 255/factAssomb, 0);
+                if(mtrChoisieEn != -1)
                     glColor3ub(255/factAssomb, 0, 0);
-                else
-                    glColor3ub(0, 255/factAssomb, 0);
             }
             else
-            {   if(cetteMtrEstChoisie(i))
+                if(mtrChoisieEn != -1)
                     glColor3ub(255/factAssomb, 170/factAssomb, 0);
-                else
+            
+            GL_LigneTexteLargeurMax(mtrAffichees[i], zoneAffMaitrisesL - gradeL*9, txtH, false);
+            
+            glPushMatrix();
+                glTranslatef(zoneAffMaitrisesL + gradeL, 0, 0);
+                for(int j=0; j<=gradesMtrAffichees[i]; j++)     // j itère sur les grades (0:E ... 4:A)
+                {
                     glColor3ub(255/factAssomb, 255/factAssomb, 255/factAssomb);
-            }
-            GL_LigneTexteLargeurMax(mtrAffichees[i], zoneAffMaitrisesL, txtH, false);
+                    if(curseurSurMtr)
+                    {   glColor3ub(0, 255/factAssomb, 0);
+                        if(mtrChoisieEn != -1 && gradesChoisis[mtrChoisieEn] == j)
+                            glColor3ub(255/factAssomb, 0, 0);
+                    }
+                    else
+                        if(mtrChoisieEn != -1 && gradesChoisis[mtrChoisieEn] == j)
+                            glColor3ub(255/factAssomb, 170/factAssomb, 0);
+                    glTranslatef(-gradeL*2, 0, 0);
+                    sprintf(gradeAct, "%c", 'E'-j);
+                    GL_LigneTexte(gradeAct, gradeL, txtH);
+                }
+            glPopMatrix();
         }
     glPopMatrix();
     
@@ -580,13 +629,14 @@ void InterfaceCombat::passerSelection(int* selection)
     picked[0] = selection[0];
     picked[1] = selection[1];
     picked[2] = selection[2];   // Sert uniquement pour les maitrises : indique le numéro de la maitrise choisie
+    picked[3] = selection[3];   // Idem: sert à indiquer si c'est la maitrise ou un grade qui est choisi
     clic = false;
 }
 
 
 void InterfaceCombat::pasDeSelection()
 {
-    picked[0] = -1; picked[1] = -1;
+    picked[0] = -1; picked[1] = -1; picked[2] = -1; picked[3] = -1;
     clic = false;
 }
 

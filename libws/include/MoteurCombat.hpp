@@ -54,7 +54,9 @@ private:
 
 public:
     enum {
-        RAS, QUITTER, MAITRISES_CHOISIES, CASE_CHOISIE, CIBLE_CHOISIE, LISTE_MAITRISES_DEMANDEE, INFOS_DETAILLEES_DEMANDEES
+        GRADE_E, GRADE_D, GRADE_C, GRADE_B, GRADE_A,
+        RAS, QUITTER, MAITRISES_CHOISIES, CASE_CHOISIE, CIBLE_CHOISIE, LISTE_MAITRISES_DEMANDEE,
+        INFOS_DETAILLEES_DEMANDEES
     };
     
     ~MoteurCombat();
@@ -68,12 +70,12 @@ public:
     float getFPS();
     
     int* selectMapActuelle();
-    int* maitrisesChoisies();
+    void maitrisesChoisies(int* mtrChoisies, int* gradesChoisis);
     
     void setInfosDsBarre(string tuile="", string element="", string perso="");
-    void setChrono(string temps="");
+    void setChrono(float temps=0);
     void setInfosPersoActuel(string nom, float VIE, float FTG);
-    void setMaitrisesAffichees(vector<string> listeMtr);
+    void setMaitrisesAffichees(vector<string> listeMtr, vector<int> listeGrades);
 };
 
 }

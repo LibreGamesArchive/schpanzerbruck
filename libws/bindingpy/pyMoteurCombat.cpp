@@ -61,8 +61,9 @@ static PyObject* pyMoteurCombat_selectMapActuelle(pyMoteurCombat* self, PyObject
 
 static PyObject* pyMoteurCombat_maitrisesChoisies(pyMoteurCombat* self, PyObject* args)
 {
-    int* mtrChoisies = self->instc->maitrisesChoisies();
-    return Py_BuildValue("(iii)", mtrChoisies[0], mtrChoisies[1], mtrChoisies[2]);
+    int mtrChoisies[3], gradesChoisis[3];
+    self->instc->maitrisesChoisies(mtrChoisies, gradesChoisis);
+    return Py_BuildValue("[(ii)(ii)(ii)]", mtrChoisies[0], gradesChoisis[0], mtrChoisies[1], gradesChoisis[1], mtrChoisies[2], gradesChoisis[2]);
 }
 
 static PyObject* pyMoteurCombat_setInfosDsBarre(pyMoteurCombat* self, PyObject* args)
@@ -77,11 +78,11 @@ static PyObject* pyMoteurCombat_setInfosDsBarre(pyMoteurCombat* self, PyObject* 
 
 static PyObject* pyMoteurCombat_setChrono(pyMoteurCombat* self, PyObject* args)
 {
-    PyObject* temps=NULL;
-    if( !PyArg_ParseTuple(args, "O", &temps) )
+    float temps;
+    if( !PyArg_ParseTuple(args, "f", &temps) )
         return NULL;
     
-    self->instc->setChrono(PyString_AsString(temps));
+    self->instc->setChrono(temps);
     Py_RETURN_NONE;
 }
 
@@ -103,9 +104,16 @@ static PyObject* pyMoteurCombat_setMaitrisesAffichees(pyMoteurCombat* self, PyOb
         return NULL;
     
     vector<string> listeMtr;
+    vector<int> listeGrades;
     for(int i=0; i<PyList_Size(pyListeMtr); i++)
-        listeMtr.push_back(PyString_AsString(PyList_GetItem(pyListeMtr, i)));
-    self->instc->setMaitrisesAffichees(listeMtr);
+    {
+        PyObject* nomMaitrise; int gradeMaitrise;
+        if( !PyArg_ParseTuple(PyList_GetItem(pyListeMtr, i), "Oi", &nomMaitrise, &gradeMaitrise) )
+            return NULL;
+        listeMtr.push_back(PyString_AsString(nomMaitrise));
+        listeGrades.push_back(gradeMaitrise);
+    }
+    self->instc->setMaitrisesAffichees(listeMtr, listeGrades);
     Py_RETURN_NONE;
 }
 
@@ -201,6 +209,26 @@ void pyMoteurCombat_initConsts()
     
     cst = PyInt_FromLong(ws::MoteurCombat::INFOS_DETAILLEES_DEMANDEES);
     PyDict_SetItemString(pyMoteurCombatType.tp_dict, "INFOS_DETAILLEES_DEMANDEES", cst);
+    Py_DECREF(cst);
+    
+    cst = PyInt_FromLong(ws::MoteurCombat::GRADE_E);
+    PyDict_SetItemString(pyMoteurCombatType.tp_dict, "GRADE_E", cst);
+    Py_DECREF(cst);
+    
+    cst = PyInt_FromLong(ws::MoteurCombat::GRADE_D);
+    PyDict_SetItemString(pyMoteurCombatType.tp_dict, "GRADE_D", cst);
+    Py_DECREF(cst);
+    
+    cst = PyInt_FromLong(ws::MoteurCombat::GRADE_C);
+    PyDict_SetItemString(pyMoteurCombatType.tp_dict, "GRADE_C", cst);
+    Py_DECREF(cst);
+    
+    cst = PyInt_FromLong(ws::MoteurCombat::GRADE_B);
+    PyDict_SetItemString(pyMoteurCombatType.tp_dict, "GRADE_B", cst);
+    Py_DECREF(cst);
+    
+    cst = PyInt_FromLong(ws::MoteurCombat::GRADE_A);
+    PyDict_SetItemString(pyMoteurCombatType.tp_dict, "GRADE_A", cst);
     Py_DECREF(cst);
 }
 // FIN DEFINITION DES CONSTANTES

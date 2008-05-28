@@ -32,7 +32,7 @@ private:
     unsigned int appL, appH;
     GestionnaireImages* gestImages;
     
-    int picked[3];
+    int picked[4];
     
     void GL_LigneTexte(string texte, float largeurTxt, float hauteurTxt, unsigned int numPoliceBmp=1);
     void GL_LigneTexteLargeurMax(string texte, float largeurTxtMax, float hauteurTxt, bool centrer=true, unsigned int numPoliceBmp=1);
@@ -54,7 +54,6 @@ private:
     void GL_FenetreMaitrisesPourSelection();
     void GL_FenetreMaitrises();
     
-    bool cetteMtrEstChoisie(int numMtr);
     unsigned int nbrMaitrisesChoisies();
     
     unsigned int factAssomb;
@@ -62,15 +61,18 @@ private:
     
 public:
     enum {
+        SLC_GRADE_E, SLC_GRADE_D, SLC_GRADE_C, SLC_GRADE_B, SLC_GRADE_A,
         SLC_MENU_ECHAP, SLC_CONTINUER, SLC_QUITTER,
         SLC_MENU_TRIANGLE, SLC_DEPLACEMENT, SLC_ACTION, SLC_FIN_DU_TOUR,
-        SLC_FENETRE_MAITRISES, SLC_FERMER_MAITRISES, SLC_VALIDER_MAITRISES, SLC_LISTE_MAITRISES
+        SLC_FENETRE_MAITRISES, SLC_FERMER_MAITRISES, SLC_VALIDER_MAITRISES, SLC_LISTE_MAITRISES, SLC_MAITRISE
     };
     
     int mtrChoisies[3];
+    int gradesChoisis[3];
     unsigned int numPremMtrAffichee;
     vector<string> mtrAffichees;
-    string txtChrono;
+    vector<int> gradesMtrAffichees;
+    float valChrono;
     InfosSuccintesSurPerso infosPersoActuel;
     
     InterfaceCombat(GestionnaireImages* _gestImages, unsigned int _appL, unsigned int _appH);
@@ -80,6 +82,8 @@ public:
     
     void GL_DessinPourSelection(unsigned int curseurX, unsigned int curseurY, bool _clic=false);
     void GL_Dessin();
+    
+    int numMtrDsChoix(int numMtr);
     
     void passerSelection(int* selection);
     void pasDeSelection();
