@@ -5,6 +5,7 @@
 #include "MapGraphique.hpp"
 #include "InterfaceCombat.hpp"
 #include "GestionnaireImages.hpp"
+#include "PersoGraphique.hpp"
 
 #include <list>
 #include <iostream>
@@ -76,6 +77,7 @@ public:
     void setChrono(float temps=0);
     void setInfosPersoActuel(string nom, float VIE, float FTG);
     void setMaitrisesAffichees(vector<string> listeMtr, vector<int> listeGrades);
+    void setPosEtEquipesPersos(vector<PersoGraphique> listePersos);
 };
 
 }

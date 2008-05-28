@@ -32,12 +32,14 @@ static void pyMoteurCombat_dealloc(pyMoteurCombat* self)
 static PyObject* pyMoteurCombat_centrerCurseur(pyMoteurCombat* self, PyObject* args)
 {
     self->instc->centrerCurseur();
+    
     Py_RETURN_NONE;
 }
 
 static PyObject* pyMoteurCombat_afficher(pyMoteurCombat* self, PyObject* args)
 {
     self->instc->afficher();
+    
     Py_RETURN_NONE;
 }
 
@@ -73,6 +75,7 @@ static PyObject* pyMoteurCombat_setInfosDsBarre(pyMoteurCombat* self, PyObject* 
         return NULL;
     
     self->instc->setInfosDsBarre(PyString_AsString(tuile), PyString_AsString(element), PyString_AsString(perso));
+    
     Py_RETURN_NONE;
 }
 
@@ -83,6 +86,7 @@ static PyObject* pyMoteurCombat_setChrono(pyMoteurCombat* self, PyObject* args)
         return NULL;
     
     self->instc->setChrono(temps);
+    
     Py_RETURN_NONE;
 }
 
@@ -94,12 +98,13 @@ static PyObject* pyMoteurCombat_setInfosPersoActuel(pyMoteurCombat* self, PyObje
         return NULL;
     
     self->instc->setInfosPersoActuel(PyString_AsString(nomPerso), VIE, FTG);
+    
     Py_RETURN_NONE;
 }
 
 static PyObject* pyMoteurCombat_setMaitrisesAffichees(pyMoteurCombat* self, PyObject* args)
 {
-    PyObject* pyListeMtr;
+    PyObject* pyListeMtr=NULL;
     if( !PyArg_ParseTuple(args, "O", &pyListeMtr) )
         return NULL;
     
@@ -107,13 +112,35 @@ static PyObject* pyMoteurCombat_setMaitrisesAffichees(pyMoteurCombat* self, PyOb
     vector<int> listeGrades;
     for(int i=0; i<PyList_Size(pyListeMtr); i++)
     {
-        PyObject* nomMaitrise; int gradeMaitrise;
+        PyObject* nomMaitrise=NULL; int gradeMaitrise;
         if( !PyArg_ParseTuple(PyList_GetItem(pyListeMtr, i), "Oi", &nomMaitrise, &gradeMaitrise) )
             return NULL;
         listeMtr.push_back(PyString_AsString(nomMaitrise));
         listeGrades.push_back(gradeMaitrise);
     }
+    
     self->instc->setMaitrisesAffichees(listeMtr, listeGrades);
+    
+    Py_RETURN_NONE;
+}
+
+static PyObject* pyMoteurCombat_setPosEtEquipesPersos(pyMoteurCombat* self, PyObject* args)
+{
+    PyObject* pyListePersos=NULL;
+    if( !PyArg_ParseTuple(args, "O", &pyListePersos) )
+        return NULL;
+    
+    vector<ws::PersoGraphique> listePE;
+    for(int i=0; i<PyList_Size(pyListePersos); i++)
+    {
+        ws::PersoGraphique persoAct;
+        if( !PyArg_ParseTuple(PyList_GetItem(pyListePersos, i), "i(iii)", &persoAct.pos, &persoAct.clr.R, &persoAct.clr.V, &persoAct.clr.B) )
+            return NULL;
+        listePE.push_back(persoAct);
+    }
+    
+    self->instc->setPosEtEquipesPersos(listePE);
+    
     Py_RETURN_NONE;
 }
 
@@ -128,6 +155,7 @@ static PyMethodDef pyMoteurCombat_methods[] = {
     {"setChrono", (PyCFunction)pyMoteurCombat_setChrono, METH_VARARGS, "Met à jour le chronomètre"},
     {"setInfosPersoActuel", (PyCFunction)pyMoteurCombat_setInfosPersoActuel, METH_VARARGS, "Met à jour les infos succintes sur le perso en train de jouer"},
     {"setMaitrisesAffichees", (PyCFunction)pyMoteurCombat_setMaitrisesAffichees, METH_VARARGS, "Met à jour la liste des maîtrises affichées et donc sélectionnables"},
+    {"setPosEtEquipesPersos", (PyCFunction)pyMoteurCombat_setPosEtEquipesPersos, METH_VARARGS, "Indique au moteur la liste des cases sur lesquelles il y a un personnage, avec le numéro de l'équipe associé au chaque perso"},
     {NULL}
 };
 // FIN METHODES
@@ -229,6 +257,18 @@ void pyMoteurCombat_initConsts()
     
     cst = PyInt_FromLong(ws::MoteurCombat::GRADE_A);
     PyDict_SetItemString(pyMoteurCombatType.tp_dict, "GRADE_A", cst);
+    Py_DECREF(cst);
+    
+    cst = PyInt_FromLong(0);
+    PyDict_SetItemString(pyMoteurCombatType.tp_dict, "TUILE", cst);
+    Py_DECREF(cst);
+    
+    cst = PyInt_FromLong(1);
+    PyDict_SetItemString(pyMoteurCombatType.tp_dict, "ELEMENT", cst);
+    Py_DECREF(cst);
+    
+    cst = PyInt_FromLong(2);
+    PyDict_SetItemString(pyMoteurCombatType.tp_dict, "PERSO", cst);
     Py_DECREF(cst);
 }
 // FIN DEFINITION DES CONSTANTES

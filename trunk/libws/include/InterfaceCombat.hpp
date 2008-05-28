@@ -2,6 +2,7 @@
 #define INTERFACE_COMBAT_HEADER
 
 #include "GestionnaireImages.hpp"
+#include "PersoGraphique.hpp"
 
 #include <SFML/Graphics.hpp>
 #include <GL/gl.h>
@@ -17,12 +18,6 @@ using namespace std;
 
 namespace ws
 {
-
-struct InfosSuccintesSurPerso
-{
-    string nom;
-    float VIE, FTG;
-};
 
 class InterfaceCombat
 {

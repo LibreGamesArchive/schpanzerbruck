@@ -6,6 +6,7 @@
 #include <MoteurJeu.hpp>
 #include <MoteurCombat.hpp>
 #include <MapGraphique.hpp>
+#include <PersoGraphique.hpp>
 #include "pyMoteurCombat.hpp"
 #include <string>
 

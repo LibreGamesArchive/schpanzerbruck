@@ -39,7 +39,7 @@ class CoreClient:
             
             self.MC.afficher()
             
-            numCase, numObj = self.MC.selectMapActuelle()
+            numCase, numObj = self.MC.selectMapActuelle()   # numObj == self.MC.TUILE ou ELEMENT ou PERSO
             
             if numCase != -1:
                 self.MC.setInfosDsBarre(self.map.infosSur("tuiles", numCase, "nom"), self.map.infosSur("elements", numCase, "nom"), "")
