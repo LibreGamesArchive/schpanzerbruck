@@ -178,7 +178,12 @@ void MoteurCombat::traiterSelectInterface(int* selec, bool clic, float delta, un
                                 gui->gradesChoisis[numMtrDsChoix] = -1;
                             }
                             else    // Si on a cliqué sur un grade
-                                gui->gradesChoisis[numMtrDsChoix] = selec[3];
+                                if(selec[3] == gui->gradesChoisis[numMtrDsChoix])    // Si le grade cliqué est le grade choisi, on dé-choisit la maitrise
+                                {   gui->mtrChoisies[numMtrDsChoix] = -1;
+                                    gui->gradesChoisis[numMtrDsChoix] = -1;
+                                }
+                                else
+                                    gui->gradesChoisis[numMtrDsChoix] = selec[3];
                         }
                         else
                         {
