@@ -3,6 +3,7 @@
 
 #include "GestionnaireImages.hpp"
 #include "MapFX.hpp"
+#include "PersoGraphique.hpp"
 
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
@@ -69,6 +70,7 @@ public:
     bool noircir;
     int picked[2];
     float inclinaisonElements;
+    vector<PersoGraphique> listePersos;
     
     MapGraphique(GestionnaireImages* _gestImages, const DonneesMap& _DM, unsigned int _appL, unsigned int _appH);
     ~MapGraphique();

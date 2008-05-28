@@ -140,6 +140,11 @@ void MoteurCombat::setMaitrisesAffichees(vector<string> listeMtr, vector<int> li
     gui->numPremMtrAffichee = 0;
 }
 
+void MoteurCombat::setPosEtEquipesPersos(vector<PersoGraphique> listePersos)
+{
+    mapGraph->listePersos = listePersos;
+}
+
 
 void MoteurCombat::traiterSelectInterface(int* selec, bool clic, float delta, unsigned int& whatHappens)
 {
