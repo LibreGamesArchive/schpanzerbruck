@@ -30,5 +30,56 @@ PyMODINIT_FUNC initws(void)
     Py_INCREF(&pyMoteurCombatType);
     PyModule_AddObject(WSModule, "MoteurCombat", (PyObject *)&pyMoteurCombatType);
     
-    pyMoteurCombat_initConsts();
+    pyWS_initConsts(WSModule);
+}
+
+
+void pyWS_initConsts(PyObject *WSModule)
+{
+    PyObject *cst;
+    
+    cst = PyInt_FromLong(ws::RAS);
+    PyModule_AddObject(WSModule, "RAS", cst);
+    
+    cst = PyInt_FromLong(ws::QUITTER);
+    PyModule_AddObject(WSModule, "QUITTER", cst);
+    
+    cst = PyInt_FromLong(ws::MAITRISES_CHOISIES);
+    PyModule_AddObject(WSModule, "MAITRISES_CHOISIES", cst);
+    
+    cst = PyInt_FromLong(ws::CASE_CHOISIE);
+    PyModule_AddObject(WSModule, "CASE_CHOISIE", cst);
+    
+    cst = PyInt_FromLong(ws::CIBLE_CHOISIE);
+    PyModule_AddObject(WSModule, "CIBLE_CHOISIE", cst);
+    
+    cst = PyInt_FromLong(ws::LISTE_MAITRISES_DEMANDEE);
+    PyModule_AddObject(WSModule, "LISTE_MAITRISES_DEMANDEE", cst);
+    
+    cst = PyInt_FromLong(ws::INFOS_DETAILLEES_DEMANDEES);
+    PyModule_AddObject(WSModule, "INFOS_DETAILLEES_DEMANDEES", cst);
+    
+    cst = PyInt_FromLong(ws::GRADE_E);
+    PyModule_AddObject(WSModule, "GRADE_E", cst);
+    
+    cst = PyInt_FromLong(ws::GRADE_D);
+    PyModule_AddObject(WSModule, "GRADE_D", cst);
+    
+    cst = PyInt_FromLong(ws::GRADE_C);
+    PyModule_AddObject(WSModule, "GRADE_C", cst);
+    
+    cst = PyInt_FromLong(ws::GRADE_B);
+    PyModule_AddObject(WSModule, "GRADE_B", cst);
+    
+    cst = PyInt_FromLong(ws::GRADE_A);
+    PyModule_AddObject(WSModule, "GRADE_A", cst);
+    
+    cst = PyInt_FromLong(ws::TUILE);
+    PyModule_AddObject(WSModule, "TUILE", cst);
+    
+    cst = PyInt_FromLong(ws::ELEMENT);
+    PyModule_AddObject(WSModule, "ELEMENT", cst);
+    
+    cst = PyInt_FromLong(ws::PERSO);
+    PyModule_AddObject(WSModule, "PERSO", cst);
 }
