@@ -5,7 +5,7 @@
 #include "MapGraphique.hpp"
 #include "InterfaceCombat.hpp"
 #include "GestionnaireImages.hpp"
-#include "PersoGraphique.hpp"
+#include "Utils.hpp"
 
 #include <list>
 #include <iostream>
@@ -13,7 +13,6 @@
 #include <SFML/Window.hpp>
 #include <GL/gl.h>
 
-#define IC  InterfaceCombat
 
 using namespace std;
 
@@ -54,11 +53,6 @@ private:
     void traiterSelectInterface(int* selec, bool clic, float delta, unsigned int& whatHappens);
 
 public:
-    enum {
-        GRADE_E, GRADE_D, GRADE_C, GRADE_B, GRADE_A,
-        RAS, QUITTER, MAITRISES_CHOISIES, CASE_CHOISIE, CIBLE_CHOISIE, LISTE_MAITRISES_DEMANDEE,
-        INFOS_DETAILLEES_DEMANDEES
-    };
     
     ~MoteurCombat();
     

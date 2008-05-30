@@ -3,7 +3,7 @@
 
 #include "GestionnaireImages.hpp"
 #include "MapFX.hpp"
-#include "PersoGraphique.hpp"
+#include "Utils.hpp"
 
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
@@ -62,9 +62,6 @@ private:
 
 
 public:
-    enum {
-        PAS_DE_SELECTION, INFOS_SEULEMENT, DEPLACEMENT, CIBLAGE
-    };
     
     unsigned int statut;
     bool noircir;

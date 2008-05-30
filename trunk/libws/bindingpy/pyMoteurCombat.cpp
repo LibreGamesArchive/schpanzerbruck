@@ -211,63 +211,63 @@ void pyMoteurCombat_initConsts()
 {
     PyObject *cst;
     
-    cst = PyInt_FromLong(ws::MoteurCombat::RAS);
+    cst = PyInt_FromLong(ws::RAS);
     PyDict_SetItemString(pyMoteurCombatType.tp_dict, "RAS", cst);
     Py_DECREF(cst);
     
-    cst = PyInt_FromLong(ws::MoteurCombat::QUITTER);
+    cst = PyInt_FromLong(ws::QUITTER);
     PyDict_SetItemString(pyMoteurCombatType.tp_dict, "QUITTER", cst);
     Py_DECREF(cst);
     
-    cst = PyInt_FromLong(ws::MoteurCombat::MAITRISES_CHOISIES);
+    cst = PyInt_FromLong(ws::MAITRISES_CHOISIES);
     PyDict_SetItemString(pyMoteurCombatType.tp_dict, "MAITRISES_CHOISIES", cst);
     Py_DECREF(cst);
     
-    cst = PyInt_FromLong(ws::MoteurCombat::CASE_CHOISIE);
+    cst = PyInt_FromLong(ws::CASE_CHOISIE);
     PyDict_SetItemString(pyMoteurCombatType.tp_dict, "CASE_CHOISIE", cst);
     Py_DECREF(cst);
     
-    cst = PyInt_FromLong(ws::MoteurCombat::CIBLE_CHOISIE);
+    cst = PyInt_FromLong(ws::CIBLE_CHOISIE);
     PyDict_SetItemString(pyMoteurCombatType.tp_dict, "CIBLE_CHOISIE", cst);
     Py_DECREF(cst);
     
-    cst = PyInt_FromLong(ws::MoteurCombat::LISTE_MAITRISES_DEMANDEE);
+    cst = PyInt_FromLong(ws::LISTE_MAITRISES_DEMANDEE);
     PyDict_SetItemString(pyMoteurCombatType.tp_dict, "LISTE_MAITRISES_DEMANDEE", cst);
     Py_DECREF(cst);
     
-    cst = PyInt_FromLong(ws::MoteurCombat::INFOS_DETAILLEES_DEMANDEES);
+    cst = PyInt_FromLong(ws::INFOS_DETAILLEES_DEMANDEES);
     PyDict_SetItemString(pyMoteurCombatType.tp_dict, "INFOS_DETAILLEES_DEMANDEES", cst);
     Py_DECREF(cst);
     
-    cst = PyInt_FromLong(ws::MoteurCombat::GRADE_E);
+    cst = PyInt_FromLong(ws::GRADE_E);
     PyDict_SetItemString(pyMoteurCombatType.tp_dict, "GRADE_E", cst);
     Py_DECREF(cst);
     
-    cst = PyInt_FromLong(ws::MoteurCombat::GRADE_D);
+    cst = PyInt_FromLong(ws::GRADE_D);
     PyDict_SetItemString(pyMoteurCombatType.tp_dict, "GRADE_D", cst);
     Py_DECREF(cst);
     
-    cst = PyInt_FromLong(ws::MoteurCombat::GRADE_C);
+    cst = PyInt_FromLong(ws::GRADE_C);
     PyDict_SetItemString(pyMoteurCombatType.tp_dict, "GRADE_C", cst);
     Py_DECREF(cst);
     
-    cst = PyInt_FromLong(ws::MoteurCombat::GRADE_B);
+    cst = PyInt_FromLong(ws::GRADE_B);
     PyDict_SetItemString(pyMoteurCombatType.tp_dict, "GRADE_B", cst);
     Py_DECREF(cst);
     
-    cst = PyInt_FromLong(ws::MoteurCombat::GRADE_A);
+    cst = PyInt_FromLong(ws::GRADE_A);
     PyDict_SetItemString(pyMoteurCombatType.tp_dict, "GRADE_A", cst);
     Py_DECREF(cst);
     
-    cst = PyInt_FromLong(0);
+    cst = PyInt_FromLong(ws::TUILE);
     PyDict_SetItemString(pyMoteurCombatType.tp_dict, "TUILE", cst);
     Py_DECREF(cst);
     
-    cst = PyInt_FromLong(1);
+    cst = PyInt_FromLong(ws::ELEMENT);
     PyDict_SetItemString(pyMoteurCombatType.tp_dict, "ELEMENT", cst);
     Py_DECREF(cst);
     
-    cst = PyInt_FromLong(2);
+    cst = PyInt_FromLong(ws::PERSO);
     PyDict_SetItemString(pyMoteurCombatType.tp_dict, "PERSO", cst);
     Py_DECREF(cst);
 }

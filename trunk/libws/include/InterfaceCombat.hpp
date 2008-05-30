@@ -2,7 +2,7 @@
 #define INTERFACE_COMBAT_HEADER
 
 #include "GestionnaireImages.hpp"
-#include "PersoGraphique.hpp"
+#include "Utils.hpp"
 
 #include <SFML/Graphics.hpp>
 #include <GL/gl.h>
@@ -55,12 +55,6 @@ private:
     string infosActDsBarre[3];
     
 public:
-    enum {
-        SLC_GRADE_E, SLC_GRADE_D, SLC_GRADE_C, SLC_GRADE_B, SLC_GRADE_A,
-        SLC_MENU_ECHAP, SLC_CONTINUER, SLC_QUITTER,
-        SLC_MENU_TRIANGLE, SLC_DEPLACEMENT, SLC_ACTION, SLC_FIN_DU_TOUR,
-        SLC_FENETRE_MAITRISES, SLC_FERMER_MAITRISES, SLC_VALIDER_MAITRISES, SLC_LISTE_MAITRISES, SLC_MAITRISE
-    };
     
     int mtrChoisies[3];
     int gradesChoisis[3];

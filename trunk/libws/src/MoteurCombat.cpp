@@ -150,17 +150,17 @@ void MoteurCombat::traiterSelectInterface(int* selec, bool clic, float delta, un
 {
     switch(selec[0])
     {
-        case IC::SLC_MENU_ECHAP:
+        case SLC_MENU_ECHAP:
             switch(selec[1])
             {
-                case IC::SLC_CONTINUER:
+                case SLC_CONTINUER:
                     if(clic)
                     {   gui->switchMenuEchap();
                         mapGraph->noircir = false;
                     }
                     break;
                 
-                case IC::SLC_QUITTER:
+                case SLC_QUITTER:
                     if(clic)
                         whatHappens = QUITTER;
                     break;
@@ -169,16 +169,16 @@ void MoteurCombat::traiterSelectInterface(int* selec, bool clic, float delta, un
             }
             break;
         
-        case IC::SLC_FENETRE_MAITRISES:
+        case SLC_FENETRE_MAITRISES:
             switch(selec[1])
             {
-                case IC::SLC_LISTE_MAITRISES:
+                case SLC_LISTE_MAITRISES:
                     if(clic)
                     {
                         int numMtrDsChoix = gui->numMtrDsChoix(selec[2]);
                         if(numMtrDsChoix != -1)     // Si la maitrise a déjà été choisie
                         {
-                            if(selec[3] == IC::SLC_MAITRISE)    // Si on a cliqué sur le nom de la maitrise, on la dé-choisit
+                            if(selec[3] == SLC_MAITRISE)    // Si on a cliqué sur le nom de la maitrise, on la dé-choisit
                             {   gui->mtrChoisies[numMtrDsChoix] = -1;
                                 gui->gradesChoisis[numMtrDsChoix] = -1;
                             }
@@ -195,7 +195,7 @@ void MoteurCombat::traiterSelectInterface(int* selec, bool clic, float delta, un
                             for(unsigned int i=0; i<3; i++)     // On trouve si possible une place vide pour ajouter la maitrise choisie
                             {   if(gui->mtrChoisies[i] == -1)
                                 {   gui->mtrChoisies[i] = selec[2];
-                                    if(selec[3] == IC::SLC_MAITRISE)    // Si l'on a pas spécifié de grade, on met le grade le plus fort
+                                    if(selec[3] == SLC_MAITRISE)    // Si l'on a pas spécifié de grade, on met le grade le plus fort
                                         gui->gradesChoisis[i] = gui->gradesMtrAffichees[selec[2]];
                                     else
                                         gui->gradesChoisis[i] = selec[3];
@@ -210,11 +210,11 @@ void MoteurCombat::traiterSelectInterface(int* selec, bool clic, float delta, un
                         gui->numPremMtrAffichee++;
                     break;
                 
-                case IC::SLC_VALIDER_MAITRISES:
+                case SLC_VALIDER_MAITRISES:
                     if(clic)
                         whatHappens = MAITRISES_CHOISIES;
                 
-                case IC::SLC_FERMER_MAITRISES:
+                case SLC_FERMER_MAITRISES:
                     if(clic)
                         gui->switchFenetreMaitrises();
                     break;
