@@ -98,54 +98,58 @@ void MapGraphique::GL_DessinElement(sf::Image* texture)
 
 void MapGraphique::GL_DessinPersoPourSelection()
 {
-    glTranslatef(0.8, 0, 0);
+    float haut=1.8;
+    float larg=haut/2;
+    glTranslatef(0.8, (1-larg)/2, 0);
     glRotatef(inclinaisonElements-90, 0, 1, 0);
     glBegin(GL_QUADS);
-        glVertex3f(0, 0, 2);
+        glVertex3f(0, 0, haut);
         glVertex3f(0, 0, 0);
-        glVertex3f(0, 1, 0);
-        glVertex3f(0, 1, 2);
+        glVertex3f(0, larg, 0);
+        glVertex3f(0, larg, haut);
     glEnd();
 }
 
 void MapGraphique::GL_DessinPerso(sf::Image* texFantome, sf::Image* texHalo, sf::Image* texArmeFantome, sf::Image* texArmeHalo, int R, int V, int B, bool select)
 {
-    glTranslatef(0.8, 0, 0);
+    float haut=1.8;
+    float larg=haut/2;
+    glTranslatef(0.8, (1-larg)/2, 0);
     glRotated(inclinaisonElements-90, 0, 1, 0);
     texHalo->Bind();
-    glColor3ub(R/factAssomb, V/factAssomb, B/factAssomb);
+    glColor4ub(R/factAssomb, V/factAssomb, B/factAssomb, 210);
     glBegin(GL_QUADS);
-        glTexCoord2f(0, 0); glVertex3f(0, 0, 2);
+        glTexCoord2f(0, 0); glVertex3f(0, 0, haut);
         glTexCoord2f(0, 1); glVertex3f(0, 0, 0);
-        glTexCoord2f(1, 1); glVertex3f(0, 1, 0);
-        glTexCoord2f(1, 0); glVertex3f(0, 1, 2);
+        glTexCoord2f(1, 1); glVertex3f(0, larg, 0);
+        glTexCoord2f(1, 0); glVertex3f(0, larg, haut);
     glEnd();
     texArmeHalo->Bind();
     glBegin(GL_QUADS);
-        glTexCoord2f(0, 0); glVertex3f(0.01, 0, 2);
-        glTexCoord2f(0, 1); glVertex3f(0.01, 0, 0);
-        glTexCoord2f(1, 1); glVertex3f(0.01, 1, 0);
-        glTexCoord2f(1, 0); glVertex3f(0.01, 1, 2);
+        glTexCoord2f(0, 0); glVertex3f(0.001, 0, haut);
+        glTexCoord2f(0, 1); glVertex3f(0.001, 0, 0);
+        glTexCoord2f(1, 1); glVertex3f(0.001, larg, 0);
+        glTexCoord2f(1, 0); glVertex3f(0.001, larg, haut);
     glEnd();
     
     int nvGris = 255/factAssomb;
     if(select)
-        glColor3ub(0, nvGris/2, nvGris);
+        glColor4ub(0, nvGris/2, nvGris, 230);
     else
-        glColor3ub(nvGris, nvGris, nvGris);
+        glColor4ub(nvGris, nvGris, nvGris, 230);
     texArmeFantome->Bind();
     glBegin(GL_QUADS);
-        glTexCoord2f(0, 0); glVertex3f(0.02, 0, 2);
-        glTexCoord2f(0, 1); glVertex3f(0.02, 0, 0);
-        glTexCoord2f(1, 1); glVertex3f(0.02, 1, 0);
-        glTexCoord2f(1, 0); glVertex3f(0.02, 1, 2);
+        glTexCoord2f(0, 0); glVertex3f(0.002, 0, haut);
+        glTexCoord2f(0, 1); glVertex3f(0.002, 0, 0);
+        glTexCoord2f(1, 1); glVertex3f(0.002, larg, 0);
+        glTexCoord2f(1, 0); glVertex3f(0.002, larg, haut);
     glEnd();
     texFantome->Bind();
     glBegin(GL_QUADS);
-        glTexCoord2f(0, 0); glVertex3f(0.03, 0, 2);
-        glTexCoord2f(0, 1); glVertex3f(0.03, 0, 0);
-        glTexCoord2f(1, 1); glVertex3f(0.03, 1, 0);
-        glTexCoord2f(1, 0); glVertex3f(0.03, 1, 2);
+        glTexCoord2f(0, 0); glVertex3f(0.003, 0, haut);
+        glTexCoord2f(0, 1); glVertex3f(0.003, 0, 0);
+        glTexCoord2f(1, 1); glVertex3f(0.003, larg, 0);
+        glTexCoord2f(1, 0); glVertex3f(0.003, larg, haut);
     glEnd();
     
     if(select)
