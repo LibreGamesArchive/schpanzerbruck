@@ -52,13 +52,16 @@ private:
     unsigned int hauteur, largeur, numTexBordure;
     float hauteurBordure;
     
+    unsigned int factAssomb;
+    
     sf::Image* texBordure;
 
     list<FX*> FXActives;   // Liste des effets spéciaux actuellement utilisés sur la Map
 
     void GL_DessinTuile(sf::Image* texture=NULL);
     void GL_DessinElement(sf::Image* texture=NULL);
-
+    void GL_DessinPersoPourSelection();
+    void GL_DessinPerso(sf::Image* texFantome, sf::Image* texHalo, sf::Image* texArmeFantome, sf::Image* texArmeHalo, int R, int V, int B, bool select);
 
 public:  
     unsigned int statut;

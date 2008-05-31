@@ -13,7 +13,7 @@ chemins.OBJETS_EQUIP = os.path.join(cheminDossierRacine, "struct", "objets_equip
 chemins.MAITRISES = os.path.join(cheminDossierRacine, "struct", "maitrises")
 chemins.IMGS_TUILES = os.path.join(cheminDossierRacine, "rsc", "visuels", "tuiles")
 chemins.IMGS_ELEMENTS = os.path.join(cheminDossierRacine, "rsc", "visuels", "elements")
-chemins.IMGS_PERSOS = os.path.join(cheminDossierRacine, "rsc", "visuels", "persos")
+chemins.IMGS_PERSOS_ET_ARMES = os.path.join(cheminDossierRacine, "rsc", "visuels", "persos_et_armes")
 chemins.POLICES_BITMAP = os.path.join(cheminDossierRacine, "rsc", "bmpfonts")
 chemins.SONS = os.path.join(cheminDossierRacine, "rsc", "sons")
 chemins.MAPS = os.path.join(cheminDossierRacine, "maps")
@@ -41,6 +41,11 @@ defaut.touches.DEFIL_BAS = sf.Key.Down
 defaut.CARTE = u"maptest2-cold.xml"
 defaut.TEXTURE_BORDURE = sf.Image(1, 1, sf.Color(128, 128, 128))
 defaut.HAUTEUR_BORDURE = 0.6
+
+armes = utils.ConstsContainer()   # Les numéros associés aux types d'armes sont impairs car les nombres pairs sont réservés pour les halos correspondants
+armes.EPEE = 1      # Démarre à 1 car 0 signifie "pas d'image" pour ws::GestionnaireImages
+armes.HACHE = 3
+armes.ARC = 5
 
 reseau = utils.ConstsContainer()
 reseau.IP_PORT_SERVEUR = ("", 3088)
