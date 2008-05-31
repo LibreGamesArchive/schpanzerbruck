@@ -95,3 +95,7 @@ class MapBase(dict):
             fichierTexBordure = ""
         
         MJ.demarrerMoteurCombat(self.largeur, self.hauteur, self["tuiles"], self["elements"], LFI["tuiles"], LFI["elements"], self.numTexBordure, fichierTexBordure, 0.4, os.path.join(chemins.POLICES_BITMAP, "monospaced.png"))
+        MC = MJ.getMoteurCombat()
+        #MC.chargerImagesPersos(.........)    # Passe au MoteurCombat les images liées aux personnages (fantôme, halo, armes)
+        
+        return MC

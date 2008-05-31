@@ -34,7 +34,7 @@ PyMODINIT_FUNC initws(void)
 }
 
 
-void pyWS_initConsts(PyObject *WSModule)
+void pyWS_initConsts(PyObject* WSModule)
 {
     PyObject *cst;
     

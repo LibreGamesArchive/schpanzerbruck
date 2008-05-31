@@ -36,8 +36,7 @@ bool GestionnaireImages::chargerImagesMap(unsigned int _nbrCases, vector<unsigne
 bool GestionnaireImages::chargerImage(string typeObj, unsigned int num, string chemin, unsigned int etalement)
 {
     bool chargementOK = true;
-    // Les numéros des images sont en HEXADECIMAL
-    // num == 0 (0x00) signifie qu'il n'y a pas d'image de ce type pour cette case
+    // num == 0 signifie qu'il n'y a pas d'image de ce type pour cette case
     if (num != 0)
     {   // Si l'image n'a pas déjà été chargée
         if (objets[typeObj].find(num) == objets[typeObj].end())

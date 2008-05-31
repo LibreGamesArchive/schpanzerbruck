@@ -55,7 +55,6 @@ private:
     string infosActDsBarre[3];
     
 public:
-    
     int mtrChoisies[3];
     int gradesChoisis[3];
     unsigned int numPremMtrAffichee;

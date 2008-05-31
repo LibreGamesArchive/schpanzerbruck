@@ -6,6 +6,7 @@ namespace ws
 MoteurCombat::MoteurCombat(sf::RenderWindow* _app, GestionnaireImages* _gestImages, const DonneesMap& _DM, const Touches& _touches)
 {
     app = _app;
+    gestImages = _gestImages;
     L = app->GetWidth();
     H = app->GetHeight();
     mapGraph = new MapGraphique(_gestImages, _DM, L, H);
@@ -140,9 +141,20 @@ void MoteurCombat::setMaitrisesAffichees(vector<string> listeMtr, vector<int> li
     gui->numPremMtrAffichee = 0;
 }
 
-void MoteurCombat::setPosEtEquipesPersos(vector<PersoGraphique> listePersos)
+void MoteurCombat::setListePersos(vector<PersoGraphique> listePersos)
 {
     mapGraph->listePersos = listePersos;
+}
+
+void MoteurCombat::chargerImagesPersos(string cheminFantome, string cheminHalo, map<int, string> cheminsArmes)
+{
+    gestImages->chargerImage("persos", FANTOME, cheminFantome);
+    gestImages->chargerImage("persos", HALO, cheminHalo);
+    
+    for(map<int, string>::iterator it=cheminsArmes.begin(); it!=cheminsArmes.end(); it++)
+        gestImages->chargerImage("armes", it->first, it->second);
+    
+    mapGraph->imagesPersosChargees = true;
 }
 
 
@@ -183,11 +195,11 @@ void MoteurCombat::traiterSelectInterface(int* selec, bool clic, float delta, un
                                 gui->gradesChoisis[numMtrDsChoix] = -1;
                             }
                             else    // Si on a cliqué sur un grade
-                                if(selec[3] == gui->gradesChoisis[numMtrDsChoix])    // Si le grade cliqué est le grade choisi, on dé-choisit la maitrise
+                                if(selec[3] == gui->gradesChoisis[numMtrDsChoix])    // Si le grade cliqué est le grade déjà choisi, on dé-choisit la maitrise
                                 {   gui->mtrChoisies[numMtrDsChoix] = -1;
                                     gui->gradesChoisis[numMtrDsChoix] = -1;
                                 }
-                                else
+                                else    // Sinon, on change le grade choisi
                                     gui->gradesChoisis[numMtrDsChoix] = selec[3];
                         }
                         else
@@ -299,11 +311,11 @@ unsigned int MoteurCombat::traiterEvenements()
     glRenderMode(GL_SELECT);
     glInitNames();
     
-    glPushName(0); // O pour la Map, 1 pour l'interface
+    glPushName(MAP);
     mapGraph->GL_DessinPourSelection(app->GetFrameTime(), *camera, curseurX, curseurY, elemsON, clic);
     glPopName();
     
-    glPushName(1);
+    glPushName(INTERFACE);
     gui->GL_DessinPourSelection(curseurX, curseurY, clic);
     glPopName();
     
@@ -340,7 +352,7 @@ unsigned int MoteurCombat::traiterEvenements()
                     ptr++;
         }
         
-        if(curseurSur == 0)   // CURSEUR SUR LA MAP
+        if(curseurSur == MAP)   // CURSEUR SUR LA MAP
         {
             mapGraph->passerSelection(selection);
             gui->pasDeSelection();

@@ -42,7 +42,6 @@ class FX;
 class MapGraphique
 {
 private:
-
     vector<unsigned int> numsTuiles, numsElements;
     GestionnaireImages* gestImages;
     
@@ -61,13 +60,13 @@ private:
     void GL_DessinElement(sf::Image* texture=NULL);
 
 
-public:
-    
+public:  
     unsigned int statut;
     bool noircir;
     int picked[2];
     float inclinaisonElements;
     vector<PersoGraphique> listePersos;
+    bool imagesPersosChargees;      // Le MoteurCombat met ce booléen à TRUE si les images des persos (fantôme, halo, armes, etc.) ont bien été chargées dans le GestionnaireImages
     
     MapGraphique(GestionnaireImages* _gestImages, const DonneesMap& _DM, unsigned int _appL, unsigned int _appH);
     ~MapGraphique();

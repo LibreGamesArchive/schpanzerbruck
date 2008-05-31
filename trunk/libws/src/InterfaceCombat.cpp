@@ -13,7 +13,7 @@ InterfaceCombat::InterfaceCombat(GestionnaireImages* _gestImages, unsigned int _
         picked[i] = -1;
     menuEchapON = false;
     barreInfosON = false;
-    fenetreMaitrisesON = true;
+    fenetreMaitrisesON = false;
     clic = false;
     for(unsigned int i=0; i<3; i++)
     {
@@ -403,7 +403,7 @@ void InterfaceCombat::GL_FenetreMaitrisesPourSelection()
                     
                     glPushMatrix();
                         glTranslatef(zoneAffMaitrisesL + gradeL, 0, 0);
-                        for(int j=0; j<=gradesMtrAffichees[i]; j++)     // j itère sur les grades (0:E ... 4:A)
+                        for(int j=GRADE_E; j<=gradesMtrAffichees[i]; j++)     // j itère sur les grades
                         {
                             glTranslatef(-gradeL*2, 0, 0);
                             glPushName(j);
@@ -524,7 +524,7 @@ void InterfaceCombat::GL_FenetreMaitrises()
             
             glPushMatrix();
                 glTranslatef(zoneAffMaitrisesL + gradeL, 0, 0);
-                for(int j=0; j<=gradesMtrAffichees[i]; j++)     // j itère sur les grades (0:E ... 4:A)
+                for(int j=GRADE_E; j<=gradesMtrAffichees[i]; j++)     // j itère sur les grades
                 {
                     glColor3ub(255/factAssomb, 255/factAssomb, 255/factAssomb);
                     if(curseurSurMtr)   // Si la maitrise actuelle est sélectionnée
@@ -549,7 +549,7 @@ void InterfaceCombat::GL_FenetreMaitrises()
                             glColor3ub(255/factAssomb, 170/factAssomb, 0);
                     
                     glTranslatef(-gradeL*2, 0, 0);
-                    sprintf(gradeAct, "%c", 'E'-j);
+                    sprintf(gradeAct, "%c", 'E'-j+GRADE_E);
                     GL_LigneTexte(gradeAct, gradeL, txtH);
                 }
             glPopMatrix();

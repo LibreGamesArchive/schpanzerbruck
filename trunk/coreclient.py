@@ -14,9 +14,7 @@ class CoreClient:
     
     def __init__(self, moteurJeuWS, fichierMap, touches = config.touches):
         self.map = MapBase(fichierMap)
-        self.MJ = moteurJeuWS
-        self.map.demarrerMoteurCombat(self.MJ)
-        self.MC = self.MJ.getMoteurCombat()
+        self.MC = self.map.demarrerMoteurCombat(moteurJeuWS)
         
         self.persos = []    # persos[0] est toujours le personnage dont c'est actuellement le tour
         # La liste est mise à jour depuis le serveur
@@ -32,8 +30,6 @@ class CoreClient:
         # Met le curseur au centre de l'écran (fixe le bug de scrolling)
         self.MC.centrerCurseur()
         
-        unset = True
-        
         running = True
         while running:
             # GESTION DES EVENEMENTS :
@@ -41,7 +37,7 @@ class CoreClient:
             
             self.MC.afficher()
             
-            numCase, numObj = self.MC.selectMapActuelle()   # numObj == self.MC.TUILE ou ELEMENT ou PERSO
+            numCase, numObj = self.MC.selectMapActuelle()   # numObj == ws.TUILE, ws.ELEMENT ou ws.PERSO
             
             if numCase != -1:
                 self.MC.setInfosDsBarre(self.map.infosSur("tuiles", numCase, "nom"), self.map.infosSur("elements", numCase, "nom"), "")
@@ -50,9 +46,7 @@ class CoreClient:
             
             self.MC.setInfosPersoActuel("Kadok", 20.76, 40)
             
-            if unset:
-                self.MC.setMaitrisesAffichees([("Poulette",ws.GRADE_D), ("Gneuh",0), ("Pouik",ws.GRADE_B), ("Poulette",0), ("Gneuh",0), ("Pouik",0), ("Poulette",0), ("Gneuh",0), ("Pouik",0), ("Poulette",0), ("Gneuh",0), ("Pouik",0), ("Poulette",0), ("Gneuh",0), ("Pouik",ws.GRADE_A), ("Poulette",0), ("Gneuh",ws.GRADE_C), ("Pouik",0), ("Poulette",0), ("Gneuh",0), ("Pouik",0), ("Poulette",0), ("Gneuh",0), ("Pouik",0)])
-                unset = False
+            #self.MC.setMaitrisesAffichees([("Poulette",ws.GRADE_D), ("Gneuh",ws.GRADE_E), ("Pouik",ws.GRADE_B), ("Pouik",ws.GRADE_A), ("Gneuh",ws.GRADE_C)])
             
             #self.MC.maitrisesChoisies()    #Pour récupérer les 3 tuples (num_maitrise, grade) choisis
             
