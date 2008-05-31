@@ -24,7 +24,7 @@ MapGraphique::MapGraphique(GestionnaireImages* _gestImages, const DonneesMap& _D
     if (numTexBordure!=0)
     {
         gestImages->chargerImage("tuiles", numTexBordure, _DM.fichierTexBordure);
-        texBordure=gestImages->obtenirImage("tuiles", numTexBordure);
+        texBordure = gestImages->obtenirImage("tuiles", numTexBordure);
     }
     else
         texBordure = new sf::Image(1, 1, sf::Color(128, 128, 128));
@@ -46,6 +46,7 @@ MapGraphique::MapGraphique(GestionnaireImages* _gestImages, const DonneesMap& _D
     noircir = false;
     
     inclinaisonElements = 1;
+    factAssomb = 1;
     
     DeploiementElements* monFX = new DeploiementElements();
     lancerFX(monFX);
@@ -74,25 +75,81 @@ void MapGraphique::GL_DessinTuile(sf::Image* texture)
     if (texture != NULL)
         texture->Bind();
     glBegin(GL_QUADS);
-    glTexCoord2f(0, 0); glVertex3f(0, 0, 0);
-    glTexCoord2f(0, 1); glVertex3f(1, 0, 0);
-    glTexCoord2f(1, 1); glVertex3f(1, 1, 0);
-    glTexCoord2f(1, 0); glVertex3f(0, 1, 0);
+        glTexCoord2f(0, 0); glVertex3f(0, 0, 0);
+        glTexCoord2f(0, 1); glVertex3f(1, 0, 0);
+        glTexCoord2f(1, 1); glVertex3f(1, 1, 0);
+        glTexCoord2f(1, 0); glVertex3f(0, 1, 0);
     glEnd();
 }
 
 void MapGraphique::GL_DessinElement(sf::Image* texture)
 {
     glTranslatef(0.5, 0, 0);
-    glRotated(inclinaisonElements-90, 0, 1, 0);
+    glRotatef(inclinaisonElements-90, 0, 1, 0);
     if (texture != NULL)
         texture->Bind();
     glBegin(GL_QUADS);
-    glTexCoord2f(0, 0); glVertex3f(0, 0, 1.15);
-    glTexCoord2f(0, 1); glVertex3f(0, 0, 0);
-    glTexCoord2f(1, 1); glVertex3f(0, 1, 0);
-    glTexCoord2f(1, 0); glVertex3f(0, 1, 1.15);
+        glTexCoord2f(0, 0); glVertex3f(0, 0, 1.15);
+        glTexCoord2f(0, 1); glVertex3f(0, 0, 0);
+        glTexCoord2f(1, 1); glVertex3f(0, 1, 0);
+        glTexCoord2f(1, 0); glVertex3f(0, 1, 1.15);
     glEnd();
+}
+
+void MapGraphique::GL_DessinPersoPourSelection()
+{
+    glTranslatef(0.8, 0, 0);
+    glRotatef(inclinaisonElements-90, 0, 1, 0);
+    glBegin(GL_QUADS);
+        glVertex3f(0, 0, 2);
+        glVertex3f(0, 0, 0);
+        glVertex3f(0, 1, 0);
+        glVertex3f(0, 1, 2);
+    glEnd();
+}
+
+void MapGraphique::GL_DessinPerso(sf::Image* texFantome, sf::Image* texHalo, sf::Image* texArmeFantome, sf::Image* texArmeHalo, int R, int V, int B, bool select)
+{
+    glTranslatef(0.8, 0, 0);
+    glRotated(inclinaisonElements-90, 0, 1, 0);
+    texHalo->Bind();
+    glColor3ub(R/factAssomb, V/factAssomb, B/factAssomb);
+    glBegin(GL_QUADS);
+        glTexCoord2f(0, 0); glVertex3f(0, 0, 2);
+        glTexCoord2f(0, 1); glVertex3f(0, 0, 0);
+        glTexCoord2f(1, 1); glVertex3f(0, 1, 0);
+        glTexCoord2f(1, 0); glVertex3f(0, 1, 2);
+    glEnd();
+    texArmeHalo->Bind();
+    glBegin(GL_QUADS);
+        glTexCoord2f(0, 0); glVertex3f(0.01, 0, 2);
+        glTexCoord2f(0, 1); glVertex3f(0.01, 0, 0);
+        glTexCoord2f(1, 1); glVertex3f(0.01, 1, 0);
+        glTexCoord2f(1, 0); glVertex3f(0.01, 1, 2);
+    glEnd();
+    
+    int nvGris = 255/factAssomb;
+    if(select)
+        glColor3ub(0, nvGris/2, nvGris);
+    else
+        glColor3ub(nvGris, nvGris, nvGris);
+    texArmeFantome->Bind();
+    glBegin(GL_QUADS);
+        glTexCoord2f(0, 0); glVertex3f(0.02, 0, 2);
+        glTexCoord2f(0, 1); glVertex3f(0.02, 0, 0);
+        glTexCoord2f(1, 1); glVertex3f(0.02, 1, 0);
+        glTexCoord2f(1, 0); glVertex3f(0.02, 1, 2);
+    glEnd();
+    texFantome->Bind();
+    glBegin(GL_QUADS);
+        glTexCoord2f(0, 0); glVertex3f(0.03, 0, 2);
+        glTexCoord2f(0, 1); glVertex3f(0.03, 0, 0);
+        glTexCoord2f(1, 1); glVertex3f(0.03, 1, 0);
+        glTexCoord2f(1, 0); glVertex3f(0.03, 1, 2);
+    glEnd();
+    
+    if(select)
+        glColor3ub(nvGris, nvGris, nvGris);
 }
 
 int MapGraphique::getHauteur()
@@ -194,11 +251,12 @@ void MapGraphique::GL_Dessin(float frameTime, const Camera& camera, bool elemsON
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glAlphaFunc(GL_GREATER, 0);
     
-    unsigned int factAssomb = 1;
     if (noircir)
         factAssomb = 5;
     else
-    {   list<FX*>::iterator it = FXActives.begin();
+    {   factAssomb = 1;
+        
+        list<FX*>::iterator it = FXActives.begin();
         while(it != FXActives.end())
         {
             FX* FXActuel = *it;
@@ -224,7 +282,7 @@ void MapGraphique::GL_Dessin(float frameTime, const Camera& camera, bool elemsON
         if (numTuileAct > 0)
         {
             glPushMatrix();
-            glTranslated(coordsCases[numCase][0], coordsCases[numCase][1], coordsCases[numCase][2]);
+            glTranslatef(coordsCases[numCase][0], coordsCases[numCase][1], coordsCases[numCase][2]);
             
             selec = false;
             if (picked[0] == static_cast<int>(numCase))
@@ -248,7 +306,7 @@ void MapGraphique::GL_Dessin(float frameTime, const Camera& camera, bool elemsON
         if (numElemAct > 0)
         {
             glPushMatrix();
-            glTranslated(coordsCases[numCase][0], coordsCases[numCase][1], coordsCases[numCase][2]);
+            glTranslatef(coordsCases[numCase][0], coordsCases[numCase][1], coordsCases[numCase][2]);
             
             selec = false;
             if (picked[0] == static_cast<int>(numCase))
@@ -268,7 +326,25 @@ void MapGraphique::GL_Dessin(float frameTime, const Camera& camera, bool elemsON
         }
     }
     
-    // Dessin du plateau:
+    // DESSIN DES PERSOS
+    if(imagesPersosChargees)
+        for(vector<PersoGraphique>::iterator pAct=listePersos.begin(); pAct!=listePersos.end(); pAct++)
+        {
+            glPushMatrix();
+            int numCase = pAct->pos;
+            glTranslatef(coordsCases[numCase][0], coordsCases[numCase][1], coordsCases[numCase][2]);
+            
+            selec = false;
+            if (picked[0] == static_cast<int>(numCase))
+                if (picked[1] == PERSO)
+                    selec = true;
+            
+            GL_DessinPerso(gestImages->obtenirImage("persos", FANTOME), gestImages->obtenirImage("persos", HALO), gestImages->obtenirImage("armes", pAct->arme), gestImages->obtenirImage("armes", (pAct->arme)+1), pAct->clr.R, pAct->clr.V, pAct->clr.B, selec);
+            
+            glPopMatrix();
+        }
+    
+    // DESSIN DU PLATEAU
     texBordure->Bind();
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);

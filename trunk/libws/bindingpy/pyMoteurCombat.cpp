@@ -130,16 +130,16 @@ static PyObject* pyMoteurCombat_setListePersos(pyMoteurCombat* self, PyObject* a
     if( !PyArg_ParseTuple(args, "O", &pyListePersos) )
         return NULL;
     
-    vector<ws::PersoGraphique> listePE;
+    vector<ws::PersoGraphique> listePG;
     for(int i=0; i<PyList_Size(pyListePersos); i++)
     {
         ws::PersoGraphique persoAct;
         if( !PyArg_ParseTuple(PyList_GetItem(pyListePersos, i), "ii(iii)", &persoAct.pos, &persoAct.arme, &persoAct.clr.R, &persoAct.clr.V, &persoAct.clr.B) )
             return NULL;
-        listePE.push_back(persoAct);
+        listePG.push_back(persoAct);
     }
     
-    self->instc->setListePersos(listePE);
+    self->instc->setListePersos(listePG);
     
     Py_RETURN_NONE;
 }

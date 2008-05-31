@@ -4,7 +4,8 @@ import glob, os
 
 from PyWS import ws
 from mapbase import MapBase
-import infos, constantes
+import infos
+from constantes import chemins, armes
 from config import Config
 
 config = Config.getInstance()
@@ -14,10 +15,20 @@ class CoreClient:
     
     def __init__(self, moteurJeuWS, fichierMap, touches = config.touches):
         self.map = MapBase(fichierMap)
-        self.MC = self.map.demarrerMoteurCombat(moteurJeuWS)
+        self.map.demarrerMoteurCombat(moteurJeuWS)
+        self.MC = moteurJeuWS.getMoteurCombat()
+        
+        chemPersoF = os.path.join(chemins.IMGS_PERSOS_ET_ARMES, "persoFantome.png")
+        chemPersoH = os.path.join(chemins.IMGS_PERSOS_ET_ARMES, "persoHalo.png")
+        chemEpeeF = os.path.join(chemins.IMGS_PERSOS_ET_ARMES, "epeeFantome.png")
+        chemEpeeH = os.path.join(chemins.IMGS_PERSOS_ET_ARMES, "epeeHalo.png")
+        self.MC.chargerImagesPersos(chemPersoF, chemPersoH, {armes.EPEE: chemEpeeF, armes.EPEE+1: chemEpeeH})    # Passe au MoteurCombat les images liées aux personnages (fantôme, halo, armes)
+        
         
         self.persos = []    # persos[0] est toujours le personnage dont c'est actuellement le tour
         # La liste est mise à jour depuis le serveur
+        
+        self.MC.setListePersos([(0, armes.EPEE, (255, 0, 255)), (10, armes.EPEE, (0, 255, 0))])
     
     
     def persoActuel(self):
