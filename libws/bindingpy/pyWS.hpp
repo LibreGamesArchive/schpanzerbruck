@@ -6,6 +6,6 @@
 #include "pyMoteurJeu.hpp"
 #include "pyMoteurCombat.hpp"
 
-void pyWS_initConsts(PyObject *WSModule);
+void pyWS_initConsts(PyObject* WSModule);
 
 #endif

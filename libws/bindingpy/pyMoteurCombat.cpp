@@ -124,7 +124,7 @@ static PyObject* pyMoteurCombat_setMaitrisesAffichees(pyMoteurCombat* self, PyOb
     Py_RETURN_NONE;
 }
 
-static PyObject* pyMoteurCombat_setPosEtEquipesPersos(pyMoteurCombat* self, PyObject* args)
+static PyObject* pyMoteurCombat_setListePersos(pyMoteurCombat* self, PyObject* args)
 {
     PyObject* pyListePersos=NULL;
     if( !PyArg_ParseTuple(args, "O", &pyListePersos) )
@@ -134,12 +134,29 @@ static PyObject* pyMoteurCombat_setPosEtEquipesPersos(pyMoteurCombat* self, PyOb
     for(int i=0; i<PyList_Size(pyListePersos); i++)
     {
         ws::PersoGraphique persoAct;
-        if( !PyArg_ParseTuple(PyList_GetItem(pyListePersos, i), "i(iii)", &persoAct.pos, &persoAct.clr.R, &persoAct.clr.V, &persoAct.clr.B) )
+        if( !PyArg_ParseTuple(PyList_GetItem(pyListePersos, i), "ii(iii)", &persoAct.pos, &persoAct.arme, &persoAct.clr.R, &persoAct.clr.V, &persoAct.clr.B) )
             return NULL;
         listePE.push_back(persoAct);
     }
     
-    self->instc->setPosEtEquipesPersos(listePE);
+    self->instc->setListePersos(listePE);
+    
+    Py_RETURN_NONE;
+}
+
+static PyObject* pyMoteurCombat_chargerImagesPersos(pyMoteurCombat* self, PyObject* args)
+{
+    PyObject *pyCheminFantome=NULL, *pyCheminHalo=NULL, *pyDictCheminsArmes=NULL;
+    if( !PyArg_ParseTuple(args, "OOO", &pyCheminFantome, &pyCheminHalo, &pyDictCheminsArmes) )
+        return NULL;
+    
+    map<int, string> cheminsArmes;
+    PyObject *key, *value;
+    int pos = 0;
+    while(PyDict_Next(pyDictCheminsArmes, &pos, &key, &value))
+        cheminsArmes[PyInt_AsLong(key)] = PyString_AsString(value);
+    
+    self->instc->chargerImagesPersos(PyString_AsString(pyCheminFantome), PyString_AsString(pyCheminHalo), cheminsArmes);
     
     Py_RETURN_NONE;
 }
@@ -155,7 +172,8 @@ static PyMethodDef pyMoteurCombat_methods[] = {
     {"setChrono", (PyCFunction)pyMoteurCombat_setChrono, METH_VARARGS, "Met à jour le chronomètre"},
     {"setInfosPersoActuel", (PyCFunction)pyMoteurCombat_setInfosPersoActuel, METH_VARARGS, "Met à jour les infos succintes sur le perso en train de jouer"},
     {"setMaitrisesAffichees", (PyCFunction)pyMoteurCombat_setMaitrisesAffichees, METH_VARARGS, "Met à jour la liste des maîtrises affichées et donc sélectionnables"},
-    {"setPosEtEquipesPersos", (PyCFunction)pyMoteurCombat_setPosEtEquipesPersos, METH_VARARGS, "Indique au moteur la liste des cases sur lesquelles il y a un personnage, avec le numéro de l'équipe associé au chaque perso"},
+    {"setListePersos", (PyCFunction)pyMoteurCombat_setListePersos, METH_VARARGS, "Indique au moteur la liste des cases sur lesquelles il y a un personnage, avec la couleur de l'équipe et le type d'arme associées au chaque perso"},
+    {"chargerImagesPersos", (PyCFunction)pyMoteurCombat_chargerImagesPersos, METH_VARARGS, "Spécifie les images liées aux persos qu'il faut charger"},
     {NULL}
 };
 // FIN METHODES

@@ -8,6 +8,7 @@
 #include "Utils.hpp"
 
 #include <list>
+#include <map>
 #include <iostream>
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
@@ -28,12 +29,11 @@ struct Touches
 
 class MoteurJeu;
 
-class EvenementCombat;
-
 class MoteurCombat      // Synchronise la Map et l'Interface
 {
 private:
     sf::RenderWindow* app;
+    GestionnaireImages* gestImages;
     unsigned int L, H, curseurX, curseurY;
     Touches touches;
     MapGraphique* mapGraph;
@@ -53,7 +53,6 @@ private:
     void traiterSelectInterface(int* selec, bool clic, float delta, unsigned int& whatHappens);
 
 public:
-    
     ~MoteurCombat();
     
     void centrerCurseur();
@@ -71,7 +70,8 @@ public:
     void setChrono(float temps=0);
     void setInfosPersoActuel(string nom, float VIE, float FTG);
     void setMaitrisesAffichees(vector<string> listeMtr, vector<int> listeGrades);
-    void setPosEtEquipesPersos(vector<PersoGraphique> listePersos);
+    void setListePersos(vector<PersoGraphique> listePersos);
+    void chargerImagesPersos(string cheminFantome, string cheminHalo, map<int, string> cheminsArmes);
 };
 
 }

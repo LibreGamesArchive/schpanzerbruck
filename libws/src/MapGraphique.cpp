@@ -3,6 +3,7 @@
 
 namespace ws
 {
+
 MapGraphique::MapGraphique(GestionnaireImages* _gestImages, const DonneesMap& _DM, unsigned int _appL, unsigned int _appH)
 {
     appL = _appL;
@@ -17,6 +18,7 @@ MapGraphique::MapGraphique(GestionnaireImages* _gestImages, const DonneesMap& _D
     texBordure = NULL;
     
     clic = false;
+    imagesPersosChargees = false;
     
     gestImages->chargerImagesMap(largeur*hauteur, numsTuiles, numsElements, _DM.cheminsTuiles, _DM.cheminsElements);
     if (numTexBordure!=0)
@@ -132,7 +134,7 @@ void MapGraphique::GL_DessinPourSelection(float frameTime, const Camera& camera,
     glDisable(GL_BLEND);
     glDisable(GL_ALPHA_TEST);
     
-    if (statut != CIBLAGE)
+    if(statut != CIBLAGE)
     {
         // DESSIN DES TUILES
         for(unsigned int numCase=0; numCase<hauteur*largeur; numCase++)
@@ -143,7 +145,7 @@ void MapGraphique::GL_DessinPourSelection(float frameTime, const Camera& camera,
                 glPushMatrix();
                 glTranslated(coordsCases[numCase][0], coordsCases[numCase][1], coordsCases[numCase][2]);
                 
-                glPushName(numCase); glPushName(0);
+                glPushName(numCase); glPushName(TUILE);
                 GL_DessinTuile(gestImages->obtenirImage("tuiles", numTuileAct));
                 glPopName(); glPopName();
                 
@@ -163,7 +165,7 @@ void MapGraphique::GL_DessinPourSelection(float frameTime, const Camera& camera,
                 glPushMatrix();
                 glTranslated(coordsCases[numCase][0], coordsCases[numCase][1], coordsCases[numCase][2]);
                 
-                glPushName(numCase); glPushName(1);
+                glPushName(numCase); glPushName(ELEMENT);
                 GL_DessinElement(gestImages->obtenirImage("elements", numElemAct));
                 glPopName(); glPopName();
                 
@@ -226,7 +228,7 @@ void MapGraphique::GL_Dessin(float frameTime, const Camera& camera, bool elemsON
             
             selec = false;
             if (picked[0] == static_cast<int>(numCase))
-                if (picked[1] == 0)
+                if (picked[1] == TUILE)
                     selec = true;
             
             if (selec)
@@ -250,7 +252,7 @@ void MapGraphique::GL_Dessin(float frameTime, const Camera& camera, bool elemsON
             
             selec = false;
             if (picked[0] == static_cast<int>(numCase))
-                if (picked[1] == 1)
+                if (picked[1] == ELEMENT)
                     selec = true;
             
             if (selec)
@@ -315,4 +317,5 @@ void MapGraphique::pasDeSelection()
     picked[0] = -1; picked[1] = -1;
     clic = false;
 }
+
 }
