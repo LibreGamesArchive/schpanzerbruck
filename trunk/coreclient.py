@@ -28,7 +28,7 @@ class CoreClient:
         self.persos = []    # persos[0] est toujours le personnage dont c'est actuellement le tour
         # La liste est mise à jour depuis le serveur
         
-        self.MC.setListePersos([(0, armes.EPEE, (255, 0, 255)), (10, armes.EPEE, (0, 255, 0))])
+        self.MC.setListePersos([(0, armes.EPEE, (255, 0, 255)), (10, armes.EPEE, (0, 255, 0)), (31, armes.EPEE, (255, 0, 0))])
     
     
     def persoActuel(self):
