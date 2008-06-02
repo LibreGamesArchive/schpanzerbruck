@@ -20,7 +20,7 @@ class MoteurCombat;
 class MoteurJeu
 {
 private:
-    sf::RenderWindow* app;
+    sf::Window* app;
     GestionnaireImages* gestImages;
     MoteurCombat* MC;
 

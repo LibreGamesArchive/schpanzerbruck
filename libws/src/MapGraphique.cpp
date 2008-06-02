@@ -276,8 +276,44 @@ void MapGraphique::GL_Dessin(float frameTime, const Camera& camera, bool elemsON
     
     unsigned int nvGris = 255/factAssomb;
     glColor3ub(nvGris, nvGris, nvGris);
-
+    
     bool selec = false;
+    
+    // DESSIN DU PLATEAU
+    texBordure->Bind();
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glBegin(GL_QUADS);
+    
+    nvGris = 195/factAssomb;
+    glColor3ub(nvGris, nvGris, nvGris);
+    glTexCoord2d(0, 0); glVertex3f(0, 0, 0);
+    glTexCoord2d(0, hauteurBordure); glVertex3f(0, 0, -hauteurBordure);
+    glTexCoord2d(hauteur, hauteurBordure); glVertex3f(hauteur, 0, -hauteurBordure);
+    glTexCoord2d(hauteur, 0); glVertex3f(hauteur, 0, 0);
+    
+    nvGris = 85/factAssomb;
+    glColor3ub(nvGris, nvGris, nvGris);
+    glTexCoord2d(0, 0); glVertex3f(0, 0, 0);
+    glTexCoord2d(0, hauteurBordure); glVertex3f(0, 0, -hauteurBordure);
+    glTexCoord2d(largeur, hauteurBordure); glVertex3f(0, largeur, -hauteurBordure);
+    glTexCoord2d(largeur, 0); glVertex3f(0, largeur, 0);
+    
+    nvGris = 135/factAssomb;
+    glColor3ub(nvGris, nvGris, nvGris);
+    glTexCoord2d(0, 0); glVertex3f(hauteur, largeur, 0);
+    glTexCoord2d(0, hauteurBordure); glVertex3f(hauteur, largeur, -hauteurBordure);
+    glTexCoord2d(hauteur, hauteurBordure); glVertex3f(0, largeur, -hauteurBordure);
+    glTexCoord2d(hauteur, 0); glVertex3f(0, largeur, 0);
+    
+    nvGris = 255/factAssomb;
+    glColor3ub(nvGris, nvGris, nvGris);
+    glTexCoord2d(0, 0); glVertex3f(hauteur, 0, 0);
+    glTexCoord2d(0, hauteurBordure); glVertex3f(hauteur, 0, -hauteurBordure);
+    glTexCoord2d(largeur, hauteurBordure); glVertex3f(hauteur, largeur, -hauteurBordure);
+    glTexCoord2d(largeur, 0); glVertex3f(hauteur, largeur, 0);
+    
+    glEnd();
     
     // DESSIN DES TUILES
     for(unsigned int numCase=0; numCase<hauteur*largeur; numCase++)
@@ -347,42 +383,6 @@ void MapGraphique::GL_Dessin(float frameTime, const Camera& camera, bool elemsON
             
             glPopMatrix();
         }
-    
-    // DESSIN DU PLATEAU
-    texBordure->Bind();
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glBegin(GL_QUADS);
-
-    nvGris = 195/factAssomb;
-    glColor3ub(nvGris, nvGris, nvGris);
-    glTexCoord2d(0, 0); glVertex3f(0, 0, 0);
-    glTexCoord2d(0, hauteurBordure); glVertex3f(0, 0, -hauteurBordure);
-    glTexCoord2d(hauteur, hauteurBordure); glVertex3f(hauteur, 0, -hauteurBordure);
-    glTexCoord2d(hauteur, 0); glVertex3f(hauteur, 0, 0);
-
-    nvGris = 85/factAssomb;
-    glColor3ub(nvGris, nvGris, nvGris);
-    glTexCoord2d(0, 0); glVertex3f(0, 0, 0);
-    glTexCoord2d(0, hauteurBordure); glVertex3f(0, 0, -hauteurBordure);
-    glTexCoord2d(largeur, hauteurBordure); glVertex3f(0, largeur, -hauteurBordure);
-    glTexCoord2d(largeur, 0); glVertex3f(0, largeur, 0);
-
-    nvGris = 135/factAssomb;
-    glColor3ub(nvGris, nvGris, nvGris);
-    glTexCoord2d(0, 0); glVertex3f(hauteur, largeur, 0);
-    glTexCoord2d(0, hauteurBordure); glVertex3f(hauteur, largeur, -hauteurBordure);
-    glTexCoord2d(hauteur, hauteurBordure); glVertex3f(0, largeur, -hauteurBordure);
-    glTexCoord2d(hauteur, 0); glVertex3f(0, largeur, 0);
-
-    nvGris = 255/factAssomb;
-    glColor3ub(nvGris, nvGris, nvGris);
-    glTexCoord2d(0, 0); glVertex3f(hauteur, 0, 0);
-    glTexCoord2d(0, hauteurBordure); glVertex3f(hauteur, 0, -hauteurBordure);
-    glTexCoord2d(largeur, hauteurBordure); glVertex3f(hauteur, largeur, -hauteurBordure);
-    glTexCoord2d(largeur, 0); glVertex3f(hauteur, largeur, 0);
-
-    glEnd();
 }
 
 void MapGraphique::passerSelection(int* selection)

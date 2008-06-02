@@ -32,7 +32,7 @@ class MoteurJeu;
 class MoteurCombat      // Synchronise la Map et l'Interface
 {
 private:
-    sf::RenderWindow* app;
+    sf::Window* app;
     GestionnaireImages* gestImages;
     unsigned int L, H, curseurX, curseurY;
     Touches touches;
@@ -48,7 +48,7 @@ private:
     
     friend class MoteurJeu;
     
-    MoteurCombat(sf::RenderWindow* _app, GestionnaireImages* _gestImages, const DonneesMap& _DM, const Touches& _touches);
+    MoteurCombat(sf::Window* _app, GestionnaireImages* _gestImages, const DonneesMap& _DM, const Touches& _touches);
     
     void traiterSelectInterface(int* selec, bool clic, float delta, unsigned int& whatHappens);
 
