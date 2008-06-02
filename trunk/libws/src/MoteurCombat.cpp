@@ -3,7 +3,7 @@
 namespace ws
 {
 
-MoteurCombat::MoteurCombat(sf::RenderWindow* _app, GestionnaireImages* _gestImages, const DonneesMap& _DM, const Touches& _touches)
+MoteurCombat::MoteurCombat(sf::Window* _app, GestionnaireImages* _gestImages, const DonneesMap& _DM, const Touches& _touches)
 {
     app = _app;
     gestImages = _gestImages;
@@ -29,6 +29,9 @@ MoteurCombat::MoteurCombat(sf::RenderWindow* _app, GestionnaireImages* _gestImag
     camera->cible[2] = 0;
     
     elemsON = true;
+    
+    glCullFace( GL_BACK );
+    glEnable( GL_CULL_FACE );
 }
 
 MoteurCombat::~MoteurCombat()

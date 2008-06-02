@@ -10,9 +10,9 @@ MoteurJeu::MoteurJeu(bool pleinEcran, bool modeAuto, bool synchroVert, int appL,
     if(pleinEcran)
         style |= sf::Style::Fullscreen;
     if(modeAuto)
-        app = new sf::RenderWindow(sf::VideoMode::GetDesktopMode(), "SCHPANZERBRUCK", style);
+        app = new sf::Window(sf::VideoMode::GetDesktopMode(), "SCHPANZERBRUCK", style);
     else
-        app = new sf::RenderWindow(sf::VideoMode(appL, appH, bpp), "SCHPANZERBRUCK", style);
+        app = new sf::Window(sf::VideoMode(appL, appH, bpp), "SCHPANZERBRUCK", style);
     app->UseVerticalSync(synchroVert);
     // app->PreserveOpenGLStates(true)
 }
