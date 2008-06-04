@@ -22,13 +22,17 @@ class CoreClient:
         chemPersoH = os.path.join(chemins.IMGS_PERSOS_ET_ARMES, "persoHalo.png")
         chemEpeeF = os.path.join(chemins.IMGS_PERSOS_ET_ARMES, "epeeFantome.png")
         chemEpeeH = os.path.join(chemins.IMGS_PERSOS_ET_ARMES, "epeeHalo.png")
-        self.MC.chargerImagesPersos(chemPersoF, chemPersoH, {armes.EPEE: chemEpeeF, armes.EPEE+1: chemEpeeH})    # Passe au MoteurCombat les images liées aux personnages (fantôme, halo, armes)
+        chemHacheF = os.path.join(chemins.IMGS_PERSOS_ET_ARMES, "hacheFantome.png")
+        chemHacheH = os.path.join(chemins.IMGS_PERSOS_ET_ARMES, "hacheHalo.png")
+        self.MC.chargerImagesPersos(chemPersoF, chemPersoH, {armes.EPEE: chemEpeeF, armes.EPEE+1: chemEpeeH, armes.HACHE: chemHacheF, armes.HACHE+1: chemHacheH})    # Passe au MoteurCombat les images liées aux personnages (fantôme, halo, armes)
         
         
         self.persos = []    # persos[0] est toujours le personnage dont c'est actuellement le tour
         # La liste est mise à jour depuis le serveur
         
-        self.MC.setListePersos([(0, armes.EPEE, (255, 0, 255)), (10, armes.EPEE, (0, 255, 0)), (31, armes.EPEE, (255, 0, 0))])
+        self.MC.setListePersos([(0, armes.EPEE, (255, 0, 255)), (10, armes.EPEE, (0, 255, 0)), (31, armes.HACHE, (255, 0, 0))])
+        self.MC.setPersoCourant(0, "Kadok", 20.76, 40)
+        self.MC.deplacerPersoCourant([ws.DROITE, ws.BAS, ws.BAS, ws.BAS, ws.BAS, ws.BAS, ws.DROITE, ws.DROITE, ws.BAS]);
     
     
     def persoActuel(self):
@@ -54,8 +58,6 @@ class CoreClient:
                 self.MC.setInfosDsBarre(self.map.infosSur("tuiles", numCase, "nom"), self.map.infosSur("elements", numCase, "nom"), "")
             
             self.MC.setChrono(self.MC.getFPS())
-            
-            self.MC.setInfosPersoActuel("Kadok", 20.76, 40)
             
             #self.MC.setMaitrisesAffichees([("Poulette",ws.GRADE_D), ("Gneuh",ws.GRADE_E), ("Pouik",ws.GRADE_B), ("Pouik",ws.GRADE_A), ("Gneuh",ws.GRADE_C)])
             

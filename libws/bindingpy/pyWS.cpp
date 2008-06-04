@@ -82,4 +82,16 @@ void pyWS_initConsts(PyObject* WSModule)
     
     cst = PyInt_FromLong(ws::PERSO);
     PyModule_AddObject(WSModule, "PERSO", cst);
+    
+    cst = PyInt_FromLong(ws::GAUCHE);
+    PyModule_AddObject(WSModule, "GAUCHE", cst);
+    
+    cst = PyInt_FromLong(ws::DROITE);
+    PyModule_AddObject(WSModule, "DROITE", cst);
+    
+    cst = PyInt_FromLong(ws::HAUT);
+    PyModule_AddObject(WSModule, "HAUT", cst);
+    
+    cst = PyInt_FromLong(ws::BAS);
+    PyModule_AddObject(WSModule, "BAS", cst);
 }

@@ -25,11 +25,18 @@ struct PersoGraphique   // Ne contient que des donnees visuelles sur le perso (i
     int arme;   // Indice du type d'arme portée par le perso
 };
 
+struct MenuTriangle
+{
+    bool affiche;
+    float posBtnDeplacement, posBtnAction, posBtnPasser;
+};
+
 enum
 {
     TUILE, ELEMENT, PERSO, GRADE_E, GRADE_D, GRADE_C, GRADE_B, GRADE_A,
     RAS, QUITTER, MAITRISES_CHOISIES, CASE_CHOISIE, CIBLE_CHOISIE, LISTE_MAITRISES_DEMANDEE,
-    INFOS_DETAILLEES_DEMANDEES,     // Ces constantes sont les seules utiles pour un utilisateur de WS
+    INFOS_DETAILLEES_DEMANDEES, GAUCHE, DROITE, HAUT, BAS,
+    // Ces constantes sont les seules utiles pour un utilisateur de WS
     
     // Interface
     INTERFACE, SLC_MENU_ECHAP, SLC_CONTINUER, SLC_QUITTER,
@@ -37,7 +44,7 @@ enum
     SLC_FENETRE_MAITRISES, SLC_FERMER_MAITRISES, SLC_VALIDER_MAITRISES, SLC_LISTE_MAITRISES, SLC_MAITRISE,
     
     // Map
-    MAP, PAS_DE_SELECTION, INFOS_SEULEMENT, DEPLACEMENT, CIBLAGE,
+    MAP, PAS_DE_SELECTION, INFOS_SEULEMENT, CHOIX_ACTION, DEPLACEMENT, CIBLAGE,
     
     // GestionnaireImages
     FANTOME, HALO

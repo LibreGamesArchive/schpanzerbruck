@@ -90,14 +90,15 @@ static PyObject* pyMoteurCombat_setChrono(pyMoteurCombat* self, PyObject* args)
     Py_RETURN_NONE;
 }
 
-static PyObject* pyMoteurCombat_setInfosPersoActuel(pyMoteurCombat* self, PyObject* args)
+static PyObject* pyMoteurCombat_setPersoCourant(pyMoteurCombat* self, PyObject* args)
 {
     PyObject* nomPerso=NULL;
     float VIE = 0, FTG = 0;
-    if( !PyArg_ParseTuple(args, "Off", &nomPerso, &VIE, &FTG) )
+    int numPerso=-1;
+    if( !PyArg_ParseTuple(args, "iOff", &numPerso, &nomPerso, &VIE, &FTG) )
         return NULL;
     
-    self->instc->setInfosPersoActuel(PyString_AsString(nomPerso), VIE, FTG);
+    self->instc->setPersoCourant(numPerso, PyString_AsString(nomPerso), VIE, FTG);
     
     Py_RETURN_NONE;
 }
@@ -161,6 +162,21 @@ static PyObject* pyMoteurCombat_chargerImagesPersos(pyMoteurCombat* self, PyObje
     Py_RETURN_NONE;
 }
 
+static PyObject* pyMoteurCombat_deplacerPersoCourant(pyMoteurCombat* self, PyObject* args)
+{
+    PyObject *pyChemin=NULL;
+    if( !PyArg_ParseTuple(args, "O", &pyChemin) )
+        return NULL;
+    
+    list<int> chemin;
+    for(int i=0; i<PyList_Size(pyChemin); i++)
+        chemin.push_back(PyInt_AsLong(PyList_GetItem(pyChemin, i)));
+    
+    self->instc->deplacerPersoCourant(chemin);
+    
+    Py_RETURN_NONE;
+}
+
 static PyMethodDef pyMoteurCombat_methods[] = {
     {"centrerCurseur", (PyCFunction)pyMoteurCombat_centrerCurseur, METH_NOARGS, "Centre le curseur"},
     {"afficher", (PyCFunction)pyMoteurCombat_afficher, METH_NOARGS, "Met a jour l'affichage du jeu"},
@@ -170,10 +186,11 @@ static PyMethodDef pyMoteurCombat_methods[] = {
     {"maitrisesChoisies", (PyCFunction)pyMoteurCombat_maitrisesChoisies, METH_NOARGS, "Renvoie la liste des 3 maîtrises actuellement choisies"},
     {"setInfosDsBarre", (PyCFunction)pyMoteurCombat_setInfosDsBarre, METH_VARARGS, "Met à jour les infos de la BarreInfos"},
     {"setChrono", (PyCFunction)pyMoteurCombat_setChrono, METH_VARARGS, "Met à jour le chronomètre"},
-    {"setInfosPersoActuel", (PyCFunction)pyMoteurCombat_setInfosPersoActuel, METH_VARARGS, "Met à jour les infos succintes sur le perso en train de jouer"},
+    {"setPersoCourant", (PyCFunction)pyMoteurCombat_setPersoCourant, METH_VARARGS, "Met à jour les infos succintes sur le perso en train de jouer"},
     {"setMaitrisesAffichees", (PyCFunction)pyMoteurCombat_setMaitrisesAffichees, METH_VARARGS, "Met à jour la liste des maîtrises affichées et donc sélectionnables"},
     {"setListePersos", (PyCFunction)pyMoteurCombat_setListePersos, METH_VARARGS, "Indique au moteur la liste des cases sur lesquelles il y a un personnage, avec la couleur de l'équipe et le type d'arme associées au chaque perso"},
     {"chargerImagesPersos", (PyCFunction)pyMoteurCombat_chargerImagesPersos, METH_VARARGS, "Spécifie les images liées aux persos qu'il faut charger"},
+    {"deplacerPersoCourant", (PyCFunction)pyMoteurCombat_deplacerPersoCourant, METH_VARARGS, "Lance le déplacement d'un personnage"},
     {NULL}
 };
 // FIN METHODES

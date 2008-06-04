@@ -62,6 +62,7 @@ public:
     vector<int> gradesMtrAffichees;
     float valChrono;
     InfosSuccintesSurPerso infosPersoActuel;
+    MenuTriangle menuTriangle;
     
     InterfaceCombat(GestionnaireImages* _gestImages, unsigned int _appL, unsigned int _appH);
     

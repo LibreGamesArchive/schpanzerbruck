@@ -27,6 +27,11 @@ InterfaceCombat::InterfaceCombat(GestionnaireImages* _gestImages, unsigned int _
     infosPersoActuel.VIE = 0;
     infosPersoActuel.FTG = 0;
     numPremMtrAffichee = 0;
+    
+    menuTriangle.affiche = false;
+    menuTriangle.posBtnDeplacement = -1;
+    menuTriangle.posBtnAction = -1;
+    menuTriangle.posBtnPasser = -1;
 }
 
 
