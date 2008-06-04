@@ -73,6 +73,7 @@ public:
     void setListePersos(vector<PersoGraphique> listePersos);
     void chargerImagesPersos(string cheminFantome, string cheminHalo, map<int, string> cheminsArmes);
     void deplacerPersoCourant(list<int> chemin);
+    void setCasesPossibles(vector<int> casesPossibles);
 };
 
 }

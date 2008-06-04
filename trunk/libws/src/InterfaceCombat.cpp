@@ -14,6 +14,7 @@ InterfaceCombat::InterfaceCombat(GestionnaireImages* _gestImages, unsigned int _
     menuEchapON = false;
     barreInfosON = false;
     fenetreMaitrisesON = false;
+    menuTriangleON = false;
     clic = false;
     for(unsigned int i=0; i<3; i++)
     {
@@ -29,9 +30,12 @@ InterfaceCombat::InterfaceCombat(GestionnaireImages* _gestImages, unsigned int _
     numPremMtrAffichee = 0;
     
     menuTriangle.affiche = false;
-    menuTriangle.posBtnDeplacement = -1;
-    menuTriangle.posBtnAction = -1;
-    menuTriangle.posBtnPasser = -1;
+    menuTriangle.btnDeplX = -1;
+    menuTriangle.btnDeplY = -1;
+    menuTriangle.btnActionX = -1;
+    menuTriangle.btnActionY = -1;
+    menuTriangle.btnPasserX = -1;
+    menuTriangle.btnPasserY = -1;
 }
 
 
@@ -42,10 +46,14 @@ void InterfaceCombat::switchMenuEchap()
     barreInfosON = !menuEchapON;
 }
 
-
 void InterfaceCombat::switchFenetreMaitrises()
 {
     fenetreMaitrisesON = !fenetreMaitrisesON;
+}
+
+void InterfaceCombat::switchMenuTriangle()
+{
+    menuTriangleON = !menuTriangleON;
 }
 
 
@@ -570,6 +578,78 @@ void InterfaceCombat::GL_FenetreMaitrises()
 }
 
 
+void InterfaceCombat::GL_MenuTrianglePourSelection()
+{
+    double rayonBtn = appL/35;
+    double diamBtn = rayonBtn*2;
+    
+    glMatrixMode(GL_MODELVIEW);
+    
+    // Bouton DEPLACEMENT
+    glPushMatrix();
+        glPushName(SLC_DEPLACEMENT);
+            glTranslated(menuTriangle.btnDeplX - rayonBtn, menuTriangle.btnDeplY - rayonBtn, 0);
+            GL_Cadre(diamBtn, diamBtn);
+        glPopName();
+    glPopMatrix();
+    
+    // Bouton ACTION
+    glPushMatrix();
+        glPushName(SLC_ACTION);
+            glTranslated(menuTriangle.btnActionX - rayonBtn, menuTriangle.btnActionY - rayonBtn, 0);
+            GL_Cadre(diamBtn, diamBtn);
+        glPopName();
+    glPopMatrix();
+    
+    // Bouton PASSER
+    glPushMatrix();
+        glPushName(SLC_PASSER);
+            glTranslated(menuTriangle.btnPasserX - rayonBtn, menuTriangle.btnPasserY - rayonBtn, 0);
+            GL_Cadre(diamBtn, diamBtn);
+        glPopName();
+    glPopMatrix();
+}
+
+
+void InterfaceCombat::GL_MenuTriangle()
+{
+    double rayonBtn = appL/35;
+    double diamBtn = rayonBtn*2;
+    
+    glMatrixMode(GL_MODELVIEW);
+    
+    // Bouton DEPLACEMENT
+    glPushMatrix();
+        glTranslated(menuTriangle.btnDeplX - rayonBtn, menuTriangle.btnDeplY - rayonBtn, 0);
+        glColor3ub(0, 128/factAssomb, 255/factAssomb);
+        if(picked[1] == SLC_DEPLACEMENT)
+            GL_Bouton("MVT", 255/factAssomb, 255/factAssomb, 0, diamBtn, diamBtn, rayonBtn);
+        else
+            GL_Bouton("MVT", 255/factAssomb, 255/factAssomb, 255/factAssomb, diamBtn, diamBtn, rayonBtn);
+    glPopMatrix();
+    
+    // Bouton ACTION
+    glPushMatrix();
+        glTranslated(menuTriangle.btnActionX - rayonBtn, menuTriangle.btnActionY - rayonBtn, 0);
+        glColor3ub(255/factAssomb, 0, 0);
+        if(picked[1] == SLC_ACTION)
+            GL_Bouton("ACT", 255/factAssomb, 255/factAssomb, 0, diamBtn, diamBtn, rayonBtn);
+        else
+            GL_Bouton("ACT", 255/factAssomb, 255/factAssomb, 255/factAssomb, diamBtn, diamBtn, rayonBtn);
+    glPopMatrix();
+    
+    // Bouton PASSER
+    glPushMatrix();
+        glTranslated(menuTriangle.btnPasserX - rayonBtn, menuTriangle.btnPasserY - rayonBtn, 0);
+        glColor3ub(0, 0, 0);
+        if(picked[1] == SLC_PASSER)
+            GL_Bouton("FIN", 255/factAssomb, 255/factAssomb, 0, diamBtn, diamBtn, rayonBtn);
+        else
+            GL_Bouton("FIN", 255/factAssomb, 255/factAssomb, 255/factAssomb, diamBtn, diamBtn, rayonBtn);
+    glPopMatrix();
+}
+
+
 void InterfaceCombat::GL_DessinPourSelection(unsigned int curseurX, unsigned int curseurY, bool _clic)
 {
     clic = _clic;
@@ -598,6 +678,13 @@ void InterfaceCombat::GL_DessinPourSelection(unsigned int curseurX, unsigned int
     }
     else
     {
+        if(menuTriangleON)
+        {
+            glPushName(SLC_MENU_TRIANGLE);
+            GL_MenuTrianglePourSelection();
+            glPopName();
+        }
+        
         if(fenetreMaitrisesON)
         {
             glPushName(SLC_FENETRE_MAITRISES);
@@ -626,6 +713,9 @@ void InterfaceCombat::GL_Dessin()
     glAlphaFunc(GL_GREATER, 0);
     
     // On est ici en 2D, donc les menus doivent être affichés dans un ordre précis
+    if(menuTriangleON)
+        GL_MenuTriangle();
+    
     if(barreInfosON)
         GL_BarreInfos();
     

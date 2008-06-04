@@ -164,7 +164,7 @@ static PyObject* pyMoteurCombat_chargerImagesPersos(pyMoteurCombat* self, PyObje
 
 static PyObject* pyMoteurCombat_deplacerPersoCourant(pyMoteurCombat* self, PyObject* args)
 {
-    PyObject *pyChemin=NULL;
+    PyObject* pyChemin=NULL;
     if( !PyArg_ParseTuple(args, "O", &pyChemin) )
         return NULL;
     
@@ -173,6 +173,21 @@ static PyObject* pyMoteurCombat_deplacerPersoCourant(pyMoteurCombat* self, PyObj
         chemin.push_back(PyInt_AsLong(PyList_GetItem(pyChemin, i)));
     
     self->instc->deplacerPersoCourant(chemin);
+    
+    Py_RETURN_NONE;
+}
+
+static PyObject* pyMoteurCombat_setCasesPossibles(pyMoteurCombat* self, PyObject* args)
+{
+    PyObject* pyCases=NULL;
+    if( !PyArg_ParseTuple(args, "O", &pyCases) )
+        return NULL;
+    
+    vector<int> casesPossibles;
+    for(int i=0; i<PyList_Size(pyCases); i++)
+        casesPossibles.push_back(PyInt_AsLong(PyList_GetItem(pyCases, i)));
+    
+    self->instc->setCasesPossibles(casesPossibles);
     
     Py_RETURN_NONE;
 }
@@ -191,6 +206,7 @@ static PyMethodDef pyMoteurCombat_methods[] = {
     {"setListePersos", (PyCFunction)pyMoteurCombat_setListePersos, METH_VARARGS, "Indique au moteur la liste des cases sur lesquelles il y a un personnage, avec la couleur de l'équipe et le type d'arme associées au chaque perso"},
     {"chargerImagesPersos", (PyCFunction)pyMoteurCombat_chargerImagesPersos, METH_VARARGS, "Spécifie les images liées aux persos qu'il faut charger"},
     {"deplacerPersoCourant", (PyCFunction)pyMoteurCombat_deplacerPersoCourant, METH_VARARGS, "Lance le déplacement d'un personnage"},
+    {"setCasesPossibles", (PyCFunction)pyMoteurCombat_setCasesPossibles, METH_VARARGS, "Définit les cases accessibles pour un déplacement ou une attaque"},
     {NULL}
 };
 // FIN METHODES

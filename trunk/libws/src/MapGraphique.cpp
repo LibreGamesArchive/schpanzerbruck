@@ -34,6 +34,9 @@ MapGraphique::MapGraphique(GestionnaireImages* _gestImages, const DonneesMap& _D
     for(unsigned int i=0; i<hauteur*largeur; i++)
         coordsCases[i] = new int[3];
     
+    masqueCasesPossibles = new bool[hauteur*largeur];
+    initMasqueCasesPossibles();
+    
     int i=0;
     for(unsigned int x=0; x<hauteur; x++)
         for(unsigned int y=0; y<largeur; y++) {
@@ -74,6 +77,8 @@ MapGraphique::~MapGraphique()
     
     if (numTexBordure == 0)
         delete texBordure;
+    
+    delete masqueCasesPossibles;
 }
 
 void MapGraphique::GL_DessinTuile(sf::Image* texture)
@@ -362,6 +367,11 @@ void MapGraphique::GL_Dessin(float frameTime, const Camera& camera, bool elemsON
             glPushMatrix();
             glTranslatef(coordsCases[numCase][0], coordsCases[numCase][1], coordsCases[numCase][2]);
             
+            bool accessible = masqueCasesPossibles[numCase];
+            
+            if(accessible)
+                glColor3ub(nvGris, nvGris, 0);
+            
             selec = false;
             if (picked[0] == static_cast<int>(numCase))
                 if (picked[1] == TUILE)
@@ -370,7 +380,7 @@ void MapGraphique::GL_Dessin(float frameTime, const Camera& camera, bool elemsON
             if (selec)
                 glColor3ub(0, nvGris/2, nvGris);
             GL_DessinTuile(gestImages->obtenirImage("tuiles", numTuileAct));
-            if (selec)
+            if (selec || accessible)
                 glColor3ub(nvGris, nvGris, nvGris);
             
             glPopMatrix();
@@ -457,16 +467,25 @@ void MapGraphique::GL_Dessin(float frameTime, const Camera& camera, bool elemsON
             
             GL_DessinPerso(gestImages->obtenirImage("persos", FANTOME), gestImages->obtenirImage("persos", HALO), gestImages->obtenirImage("armes", pAct->arme), gestImages->obtenirImage("armes", (pAct->arme)+1), pAct->clr.R, pAct->clr.V, pAct->clr.B, selec);
             
+            //Calcul des coords du menu triangle
+            if(statut == CHOIX_ACTION && numPerso == numPersoCourant)
+            {
+                GLdouble modelview[16], proj[16];
+                GLint viewport[4];
+                glGetDoublev(GL_MODELVIEW_MATRIX, modelview);
+                glGetDoublev(GL_PROJECTION_MATRIX, proj);
+                glGetIntegerv(GL_VIEWPORT, viewport);
+                GLdouble z=0;
+                
+                gluProject(0, -0.4, 1.6, modelview, proj, viewport, &(menuTriangle->btnDeplX), &(menuTriangle->btnDeplY), &z);
+                gluProject(0, 1.4, 1.6, modelview, proj, viewport, &(menuTriangle->btnActionX), &(menuTriangle->btnActionY), &z);
+                gluProject(0, 0.5, -0.7, modelview, proj, viewport, &(menuTriangle->btnPasserX), &(menuTriangle->btnPasserY), &z);
+            }
+            
             glPopMatrix();
             
             numPerso++;
         }
-    }
-    
-    //Calcul des coords du menu triangle
-    if(statut == CHOIX_ACTION)
-    {
-        
     }
 }
 
@@ -486,6 +505,12 @@ void MapGraphique::pasDeSelection()
 void MapGraphique::deplacerPersoCourant(list<int> _chemin)
 {
     cheminDeplacement = _chemin;
+}
+
+void MapGraphique::initMasqueCasesPossibles()
+{
+    for(unsigned int i=0; i<hauteur*largeur; i++)
+        masqueCasesPossibles[i] = false;
 }
 
 }
