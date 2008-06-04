@@ -28,7 +28,7 @@ struct PersoGraphique   // Ne contient que des donnees visuelles sur le perso (i
 struct MenuTriangle
 {
     bool affiche;
-    float posBtnDeplacement, posBtnAction, posBtnPasser;
+    GLdouble btnDeplX, btnDeplY, btnActionX, btnActionY, btnPasserX, btnPasserY;
 };
 
 enum
@@ -40,7 +40,7 @@ enum
     
     // Interface
     INTERFACE, SLC_MENU_ECHAP, SLC_CONTINUER, SLC_QUITTER,
-    SLC_MENU_TRIANGLE, SLC_DEPLACEMENT, SLC_ACTION, SLC_FIN_DU_TOUR,
+    SLC_MENU_TRIANGLE, SLC_DEPLACEMENT, SLC_ACTION, SLC_PASSER,
     SLC_FENETRE_MAITRISES, SLC_FERMER_MAITRISES, SLC_VALIDER_MAITRISES, SLC_LISTE_MAITRISES, SLC_MAITRISE,
     
     // Map

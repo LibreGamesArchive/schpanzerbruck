@@ -22,7 +22,7 @@ namespace ws
 class InterfaceCombat
 {
 private:
-    bool menuEchapON, barreInfosON, fenetreMaitrisesON, clic;
+    bool menuEchapON, barreInfosON, fenetreMaitrisesON, menuTriangleON, clic;
     
     unsigned int appL, appH;
     GestionnaireImages* gestImages;
@@ -49,6 +49,9 @@ private:
     void GL_FenetreMaitrisesPourSelection();
     void GL_FenetreMaitrises();
     
+    void GL_MenuTrianglePourSelection();
+    void GL_MenuTriangle();
+    
     unsigned int nbrMaitrisesChoisies();
     
     unsigned int factAssomb;
@@ -68,6 +71,7 @@ public:
     
     void switchMenuEchap();
     void switchFenetreMaitrises();
+    void switchMenuTriangle();
     
     void GL_DessinPourSelection(unsigned int curseurX, unsigned int curseurY, bool _clic=false);
     void GL_Dessin();

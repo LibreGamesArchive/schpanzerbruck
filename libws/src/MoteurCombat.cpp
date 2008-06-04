@@ -166,6 +166,14 @@ void MoteurCombat::deplacerPersoCourant(list<int> chemin)
     mapGraph->deplacerPersoCourant(chemin);
 }
 
+void MoteurCombat::setCasesPossibles(vector<int> casesPossibles)
+{
+    mapGraph->initMasqueCasesPossibles();
+    
+    for(vector<int>::iterator it=casesPossibles.begin(); it!=casesPossibles.end(); it++)
+        mapGraph->masqueCasesPossibles[*it] = true;
+}
+
 
 void MoteurCombat::traiterSelectInterface(int* selec, bool clic, float delta, unsigned int& whatHappens)
 {

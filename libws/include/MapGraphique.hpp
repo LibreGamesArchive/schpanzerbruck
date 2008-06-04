@@ -51,14 +51,14 @@ private:
     bool clic;
     unsigned int appL, appH;
     int **coordsCases;
-
+    
     unsigned int hauteur, largeur, numTexBordure;
     float hauteurBordure;
     
     unsigned int factAssomb;
     
     sf::Image* texBordure;
-
+    
     list<FX*> FXActives;   // Liste des effets spéciaux actuellement utilisés sur la Map
     
     float persoDep_offsetX, persoDep_offsetY;
@@ -71,7 +71,7 @@ private:
     void GL_DessinPersoPourSelection();
     void GL_DessinPerso(sf::Image* texFantome, sf::Image* texHalo, sf::Image* texArmeFantome, sf::Image* texArmeHalo, int R, int V, int B, bool select);
 
-public:  
+public:
     unsigned int statut;
     bool noircir;
     int picked[2];
@@ -79,6 +79,7 @@ public:
     vector<PersoGraphique> listePersos;
     int numPersoCourant;
     bool imagesPersosChargees;      // Le MoteurCombat met ce booléen à TRUE si les images des persos (fantôme, halo, armes, etc.) ont bien été chargées dans le GestionnaireImages
+    bool* masqueCasesPossibles;
     
     MapGraphique(GestionnaireImages* _gestImages, const DonneesMap& _DM, unsigned int _appL, unsigned int _appH, MenuTriangle* _menuTriangle);
     ~MapGraphique();
@@ -95,6 +96,8 @@ public:
     void pasDeSelection();
     
     void deplacerPersoCourant(list<int> _chemin);
+    
+    void initMasqueCasesPossibles();
 };
 
 }
