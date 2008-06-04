@@ -9,8 +9,8 @@ MoteurCombat::MoteurCombat(sf::Window* _app, GestionnaireImages* _gestImages, co
     gestImages = _gestImages;
     L = app->GetWidth();
     H = app->GetHeight();
-    mapGraph = new MapGraphique(_gestImages, _DM, L, H);
     gui = new InterfaceCombat(_gestImages, L, H);
+    mapGraph = new MapGraphique(_gestImages, _DM, L, H, &(gui->menuTriangle));
     
     touches = _touches;
     
@@ -125,8 +125,9 @@ void MoteurCombat::setChrono(float temps)
     gui->valChrono = temps;
 }
 
-void MoteurCombat::setInfosPersoActuel(string nom, float VIE, float FTG)
+void MoteurCombat::setPersoCourant(int numPerso, string nom, float VIE, float FTG)
 {
+    mapGraph->numPersoCourant = numPerso;
     gui->infosPersoActuel.nom = nom;
     gui->infosPersoActuel.VIE = VIE;
     gui->infosPersoActuel.FTG = FTG;
@@ -158,6 +159,11 @@ void MoteurCombat::chargerImagesPersos(string cheminFantome, string cheminHalo, 
         gestImages->chargerImage("armes", it->first, it->second);
     
     mapGraph->imagesPersosChargees = true;
+}
+
+void MoteurCombat::deplacerPersoCourant(list<int> chemin)
+{
+    mapGraph->deplacerPersoCourant(chemin);
 }
 
 

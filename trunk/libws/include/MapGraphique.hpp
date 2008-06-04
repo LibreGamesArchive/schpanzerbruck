@@ -13,6 +13,9 @@
 #include <string>
 #include <iostream>
 
+#define VITESSE_DEP     4
+//Distance parcourue par les persos chaque seconde
+
 
 using namespace std;
 
@@ -57,7 +60,12 @@ private:
     sf::Image* texBordure;
 
     list<FX*> FXActives;   // Liste des effets spéciaux actuellement utilisés sur la Map
-
+    
+    float persoDep_offsetX, persoDep_offsetY;
+    list<int> cheminDeplacement;
+    
+    MenuTriangle* menuTriangle;
+    
     void GL_DessinTuile(sf::Image* texture=NULL);
     void GL_DessinElement(sf::Image* texture=NULL);
     void GL_DessinPersoPourSelection();
@@ -69,9 +77,10 @@ public:
     int picked[2];
     float inclinaisonElements;
     vector<PersoGraphique> listePersos;
+    int numPersoCourant;
     bool imagesPersosChargees;      // Le MoteurCombat met ce booléen à TRUE si les images des persos (fantôme, halo, armes, etc.) ont bien été chargées dans le GestionnaireImages
     
-    MapGraphique(GestionnaireImages* _gestImages, const DonneesMap& _DM, unsigned int _appL, unsigned int _appH);
+    MapGraphique(GestionnaireImages* _gestImages, const DonneesMap& _DM, unsigned int _appL, unsigned int _appH, MenuTriangle* _menuTriangle);
     ~MapGraphique();
     
     int getHauteur();
@@ -84,6 +93,8 @@ public:
     
     void passerSelection(int* selection);
     void pasDeSelection();
+    
+    void deplacerPersoCourant(list<int> _chemin);
 };
 
 }

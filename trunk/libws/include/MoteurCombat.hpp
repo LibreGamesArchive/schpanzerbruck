@@ -68,10 +68,11 @@ public:
     
     void setInfosDsBarre(string tuile="", string element="", string perso="");
     void setChrono(float temps=0);
-    void setInfosPersoActuel(string nom, float VIE, float FTG);
+    void setPersoCourant(int numPerso, string nom, float VIE, float FTG);
     void setMaitrisesAffichees(vector<string> listeMtr, vector<int> listeGrades);
     void setListePersos(vector<PersoGraphique> listePersos);
     void chargerImagesPersos(string cheminFantome, string cheminHalo, map<int, string> cheminsArmes);
+    void deplacerPersoCourant(list<int> chemin);
 };
 
 }
