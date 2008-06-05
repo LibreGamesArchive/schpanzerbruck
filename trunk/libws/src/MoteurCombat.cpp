@@ -28,6 +28,7 @@ MoteurCombat::MoteurCombat(sf::Window* _app, GestionnaireImages* _gestImages, co
     camera->cible[1] = mapGraph->getLargeur()/2;
     camera->cible[2] = 0;
     
+    persoCourantPossede = false;
     elemsON = true;
     deplEffectue = false;
     actionEffectuee = false;
@@ -117,14 +118,19 @@ void MoteurCombat::setChrono(float temps)
     gui->valChrono = temps;
 }
 
-void MoteurCombat::setPersoCourant(int numPerso, string nom, float VIE, float FTG)
+void MoteurCombat::setPersoCourant(bool possede, int numPerso, string nom, float VIE, float FTG)
 {   // Indique le début d'un tour
+    persoCourantPossede = possede;
+    
     mapGraph->numPersoCourant = numPerso;
     gui->infosPersoActuel.nom = nom;
     gui->infosPersoActuel.VIE = VIE;
     gui->infosPersoActuel.FTG = FTG;
     
-    mapGraph->statut = CHOIX_ACTION;
+    if(persoCourantPossede)
+        mapGraph->statut = CHOIX_ACTION;
+    else
+        mapGraph->statut = INFOS_SEULEMENT;
     
     deplEffectue = false;
     actionEffectuee = false;
@@ -283,6 +289,7 @@ void MoteurCombat::traiterSelectInterface(int* selec, bool clic, float delta, un
                     case SLC_PASSER:
                         mapGraph->statut = INFOS_SEULEMENT;
                         whatHappens = FIN_DU_TOUR;
+                        persoCourantPossede = false;    // Pour faire disparaitre le menuTriangle
                         break;
                     
                     default: break;
@@ -431,7 +438,7 @@ unsigned int MoteurCombat::evenementsEtAffichage()
     
     
     // GESTION AFFICHAGE MENU TRIANGLE
-    if(mapGraph->deplacementEnCours() || mapGraph->actionEnCours() || (actionEffectuee && deplEffectue) || gui->fenetreMaitrisesON || mapGraph->statut == DEPLACEMENT || mapGraph->statut == CIBLAGE)
+    if(!persoCourantPossede || mapGraph->deplacementEnCours() || mapGraph->actionEnCours() || (actionEffectuee && deplEffectue) || gui->fenetreMaitrisesON || mapGraph->statut == DEPLACEMENT || mapGraph->statut == CIBLAGE)
     {
         gui->menuTriangleON = false;
     }

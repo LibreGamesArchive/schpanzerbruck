@@ -46,7 +46,7 @@ MapGraphique::MapGraphique(GestionnaireImages* _gestImages, const DonneesMap& _D
             i++;
         }
     
-    statut = CHOIX_ACTION;
+    statut = INFOS_SEULEMENT;
     noircir = false;
     
     inclinaisonElements = 1;

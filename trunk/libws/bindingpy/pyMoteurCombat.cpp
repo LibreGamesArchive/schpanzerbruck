@@ -85,13 +85,14 @@ static PyObject* pyMoteurCombat_setChrono(pyMoteurCombat* self, PyObject* args)
 
 static PyObject* pyMoteurCombat_setPersoCourant(pyMoteurCombat* self, PyObject* args)
 {
-    PyObject* nomPerso=NULL;
+    PyObject *pyNomPerso=NULL, *pyPossede=NULL;
     float VIE = 0, FTG = 0;
     int numPerso=-1;
-    if( !PyArg_ParseTuple(args, "iOff", &numPerso, &nomPerso, &VIE, &FTG) )
+    if( !PyArg_ParseTuple(args, "OiOff", &pyPossede, &numPerso, &pyNomPerso, &VIE, &FTG) )
         return NULL;
     
-    self->instc->setPersoCourant(numPerso, PyString_AsString(nomPerso), VIE, FTG);
+    bool possede = (pyPossede == Py_True);
+    self->instc->setPersoCourant(possede, numPerso, PyString_AsString(pyNomPerso), VIE, FTG);
     
     Py_RETURN_NONE;
 }
