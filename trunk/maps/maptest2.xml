@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<map nom="MapTest2" largeur="7" hauteur="7">
+<map nom="MapTest2" largeur="7" hauteur="7" bordure="21">
     <tuiles>
         01|01|01|01|01|01|01|
         01|01|01|01|01|01|01|
