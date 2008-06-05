@@ -44,6 +44,9 @@ void pyWS_initConsts(PyObject* WSModule)
     cst = PyInt_FromLong(ws::QUITTER);
     PyModule_AddObject(WSModule, "QUITTER", cst);
     
+    cst = PyInt_FromLong(ws::DEPLACEMENT_DEMANDE);
+    PyModule_AddObject(WSModule, "DEPLACEMENT_DEMANDE", cst);
+    
     cst = PyInt_FromLong(ws::MAITRISES_CHOISIES);
     PyModule_AddObject(WSModule, "MAITRISES_CHOISIES", cst);
     
@@ -56,8 +59,8 @@ void pyWS_initConsts(PyObject* WSModule)
     cst = PyInt_FromLong(ws::LISTE_MAITRISES_DEMANDEE);
     PyModule_AddObject(WSModule, "LISTE_MAITRISES_DEMANDEE", cst);
     
-    cst = PyInt_FromLong(ws::INFOS_DETAILLEES_DEMANDEES);
-    PyModule_AddObject(WSModule, "INFOS_DETAILLEES_DEMANDEES", cst);
+    cst = PyInt_FromLong(ws::FIN_DU_TOUR);
+    PyModule_AddObject(WSModule, "FIN_DU_TOUR", cst);
     
     cst = PyInt_FromLong(ws::GRADE_E);
     PyModule_AddObject(WSModule, "GRADE_E", cst);

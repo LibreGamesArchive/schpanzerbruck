@@ -41,7 +41,7 @@ private:
     Camera* camera;
     
     unsigned int vitesseDefil, bordureDefil;
-    bool elemsON;
+    bool elemsON, deplEffectue, actionEffectuee;
     
     void scrolling();
     void zoom(float delta);
@@ -57,9 +57,7 @@ public:
     
     void centrerCurseur();
     
-    void afficher();
-    
-    unsigned int traiterEvenements();
+    unsigned int evenementsEtAffichage();
     
     float getFPS();
     
@@ -69,6 +67,7 @@ public:
     void setInfosDsBarre(string tuile="", string element="", string perso="");
     void setChrono(float temps=0);
     void setPersoCourant(int numPerso, string nom, float VIE, float FTG);
+    void modifVieFtgPersoCourant(float VIE, float FTG);
     void setMaitrisesAffichees(vector<string> listeMtr, vector<int> listeGrades);
     void setListePersos(vector<PersoGraphique> listePersos);
     void chargerImagesPersos(string cheminFantome, string cheminHalo, map<int, string> cheminsArmes);

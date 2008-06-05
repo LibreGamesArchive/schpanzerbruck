@@ -49,9 +49,7 @@ class CoreClient:
         running = True
         while running:
             # GESTION DES EVENEMENTS :
-            whatHappens = self.MC.traiterEvenements()
-            
-            self.MC.afficher()
+            whatHappens = self.MC.evenementsEtAffichage()
             
             numCase, numObj = self.MC.selectMapActuelle()   # numObj == ws.TUILE, ws.ELEMENT ou ws.PERSO
             

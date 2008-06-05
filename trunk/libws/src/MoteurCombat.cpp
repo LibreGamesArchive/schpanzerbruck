@@ -29,6 +29,8 @@ MoteurCombat::MoteurCombat(sf::Window* _app, GestionnaireImages* _gestImages, co
     camera->cible[2] = 0;
     
     elemsON = true;
+    deplEffectue = false;
+    actionEffectuee = false;
     
     glCullFace( GL_BACK );
     glEnable( GL_CULL_FACE );
@@ -91,16 +93,6 @@ float MoteurCombat::getFPS()
     return 0;
 }
 
-void MoteurCombat::afficher()
-{
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    
-    mapGraph->GL_Dessin(app->GetFrameTime(), *camera, elemsON);
-    gui->GL_Dessin();
-    
-    app->Display();
-}
-
 int* MoteurCombat::selectMapActuelle()
 {
     return mapGraph->picked;
@@ -126,12 +118,24 @@ void MoteurCombat::setChrono(float temps)
 }
 
 void MoteurCombat::setPersoCourant(int numPerso, string nom, float VIE, float FTG)
-{
+{   // Indique le début d'un tour
     mapGraph->numPersoCourant = numPerso;
     gui->infosPersoActuel.nom = nom;
     gui->infosPersoActuel.VIE = VIE;
     gui->infosPersoActuel.FTG = FTG;
+    
+    mapGraph->statut = CHOIX_ACTION;
+    
+    deplEffectue = false;
+    actionEffectuee = false;
 }
+
+void MoteurCombat::modifVieFtgPersoCourant(float VIE, float FTG)
+{   // Si la vie et/ou la fatigue du perso courant sont modifiées au cours de son tour
+    gui->infosPersoActuel.VIE = VIE;
+    gui->infosPersoActuel.FTG = FTG;
+}
+
 
 void MoteurCombat::setMaitrisesAffichees(vector<string> listeMtr, vector<int> listeGrades)
 {
@@ -164,6 +168,8 @@ void MoteurCombat::chargerImagesPersos(string cheminFantome, string cheminHalo, 
 void MoteurCombat::deplacerPersoCourant(list<int> chemin)
 {
     mapGraph->deplacerPersoCourant(chemin);
+    deplEffectue = true;
+    mapGraph->statut = INFOS_SEULEMENT;
 }
 
 void MoteurCombat::setCasesPossibles(vector<int> casesPossibles)
@@ -184,7 +190,8 @@ void MoteurCombat::traiterSelectInterface(int* selec, bool clic, float delta, un
             {
                 case SLC_CONTINUER:
                     if(clic)
-                    {   gui->switchMenuEchap();
+                    {   gui->menuEchapON = false;
+                        gui->assombrir(false);
                         mapGraph->noircir = false;
                     }
                     break;
@@ -241,14 +248,45 @@ void MoteurCombat::traiterSelectInterface(int* selec, bool clic, float delta, un
                 
                 case SLC_VALIDER_MAITRISES:
                     if(clic)
-                        whatHappens = MAITRISES_CHOISIES;
+                    {   whatHappens = MAITRISES_CHOISIES;
+                        gui->fenetreMaitrisesON = false;
+                        mapGraph->statut = CIBLAGE;
+                    }
+                    break;
                 
                 case SLC_FERMER_MAITRISES:
                     if(clic)
-                        gui->switchFenetreMaitrises();
+                    {   gui->fenetreMaitrisesON = false;
+                        mapGraph->statut = CHOIX_ACTION;
+                    }
                     break;
                 
                 default: break;
+            }
+            break;
+        
+        case SLC_MENU_TRIANGLE:
+            if(clic)
+            {
+                switch(selec[1])
+                {
+                    case SLC_DEPLACEMENT:
+                        whatHappens = DEPLACEMENT_DEMANDE;
+                        mapGraph->statut = DEPLACEMENT;
+                        break;
+                    
+                    case SLC_ACTION:
+                        mapGraph->statut = INFOS_SEULEMENT;
+                        gui->fenetreMaitrisesON = true;
+                        break;
+                    
+                    case SLC_PASSER:
+                        mapGraph->statut = INFOS_SEULEMENT;
+                        whatHappens = FIN_DU_TOUR;
+                        break;
+                    
+                    default: break;
+                }
             }
             break;
         
@@ -256,7 +294,7 @@ void MoteurCombat::traiterSelectInterface(int* selec, bool clic, float delta, un
     }
 }
 
-unsigned int MoteurCombat::traiterEvenements()
+unsigned int MoteurCombat::evenementsEtAffichage()
 {
     bool clic = false;
     sf::Event evt;
@@ -277,7 +315,8 @@ unsigned int MoteurCombat::traiterEvenements()
                 {
                     case sf::Key::Escape:
                         mapGraph->noircir = !mapGraph->noircir;
-                        gui->switchMenuEchap();
+                        gui->menuEchapON = !gui->menuEchapON;
+                        gui->assombrir(gui->menuEchapON);
                         break;
                     
                     default: break;
@@ -389,6 +428,30 @@ unsigned int MoteurCombat::traiterEvenements()
         
         zoom(delta);
     }
+    
+    
+    // GESTION AFFICHAGE MENU TRIANGLE
+    if(mapGraph->deplacementEnCours() || mapGraph->actionEnCours() || (actionEffectuee && deplEffectue) || gui->fenetreMaitrisesON || mapGraph->statut == DEPLACEMENT || mapGraph->statut == CIBLAGE)
+    {
+        gui->menuTriangleON = false;
+    }
+    else
+    {
+        gui->menuTriangleON = true;
+        mapGraph->statut = CHOIX_ACTION;
+    }
+    
+    
+    
+    // AFFICHAGE
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    
+    mapGraph->GL_Dessin(app->GetFrameTime(), *camera, elemsON);
+    gui->GL_Dessin();
+    
+    app->Display();
+    
+    
     
     return whatHappens;
 }
