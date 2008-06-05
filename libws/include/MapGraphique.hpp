@@ -98,6 +98,9 @@ public:
     void deplacerPersoCourant(list<int> _chemin);
     
     void initMasqueCasesPossibles();
+    
+    bool deplacementEnCours();
+    bool actionEnCours();
 };
 
 }

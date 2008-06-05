@@ -39,21 +39,12 @@ InterfaceCombat::InterfaceCombat(GestionnaireImages* _gestImages, unsigned int _
 }
 
 
-void InterfaceCombat::switchMenuEchap()
+void InterfaceCombat::assombrir(bool assomb)
 {
-    menuEchapON = !menuEchapON;
-    factAssomb = (factAssomb == 1 ? 5 : 1);
-    barreInfosON = !menuEchapON;
-}
-
-void InterfaceCombat::switchFenetreMaitrises()
-{
-    fenetreMaitrisesON = !fenetreMaitrisesON;
-}
-
-void InterfaceCombat::switchMenuTriangle()
-{
-    menuTriangleON = !menuTriangleON;
+    if(assomb)
+        factAssomb = 5;
+    else
+        factAssomb = 1;
 }
 
 

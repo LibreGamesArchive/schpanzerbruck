@@ -36,16 +36,9 @@ static PyObject* pyMoteurCombat_centrerCurseur(pyMoteurCombat* self, PyObject* a
     Py_RETURN_NONE;
 }
 
-static PyObject* pyMoteurCombat_afficher(pyMoteurCombat* self, PyObject* args)
+static PyObject* pyMoteurCombat_evenementsEtAffichage(pyMoteurCombat* self, PyObject* args)
 {
-    self->instc->afficher();
-    
-    Py_RETURN_NONE;
-}
-
-static PyObject* pyMoteurCombat_traiterEvenements(pyMoteurCombat* self, PyObject* args)
-{
-    unsigned int whatHappens = self->instc->traiterEvenements();
+    unsigned int whatHappens = self->instc->evenementsEtAffichage();
     return Py_BuildValue("i", whatHappens);
 }
 
@@ -99,6 +92,17 @@ static PyObject* pyMoteurCombat_setPersoCourant(pyMoteurCombat* self, PyObject* 
         return NULL;
     
     self->instc->setPersoCourant(numPerso, PyString_AsString(nomPerso), VIE, FTG);
+    
+    Py_RETURN_NONE;
+}
+
+static PyObject* pyMoteurCombat_modifVieFtgPersoCourant(pyMoteurCombat* self, PyObject* args)
+{
+    float VIE=0, FTG=0;
+    if( !PyArg_ParseTuple(args, "ii", &VIE, &FTG) )
+        return NULL;
+    
+    self->instc->modifVieFtgPersoCourant(VIE, FTG);
     
     Py_RETURN_NONE;
 }
@@ -194,14 +198,14 @@ static PyObject* pyMoteurCombat_setCasesPossibles(pyMoteurCombat* self, PyObject
 
 static PyMethodDef pyMoteurCombat_methods[] = {
     {"centrerCurseur", (PyCFunction)pyMoteurCombat_centrerCurseur, METH_NOARGS, "Centre le curseur"},
-    {"afficher", (PyCFunction)pyMoteurCombat_afficher, METH_NOARGS, "Met a jour l'affichage du jeu"},
-    {"traiterEvenements", (PyCFunction)pyMoteurCombat_traiterEvenements, METH_NOARGS, "Traite les evenements venant du clavier/de la souris et effectue les operations en decoulant (scrolling, zoom...)"},
+    {"evenementsEtAffichage", (PyCFunction)pyMoteurCombat_evenementsEtAffichage, METH_NOARGS, "Traite les evenements venant du clavier/de la souris et effectue les operations en decoulant (scrolling, zoom...)"},
     {"getFPS", (PyCFunction)pyMoteurCombat_getFPS, METH_NOARGS, "Renvoie le FPS actuel"},
     {"selectMapActuelle", (PyCFunction)pyMoteurCombat_selectMapActuelle, METH_NOARGS, "Renvoie la sélection actuellement faite sur la Map"},
     {"maitrisesChoisies", (PyCFunction)pyMoteurCombat_maitrisesChoisies, METH_NOARGS, "Renvoie la liste des 3 maîtrises actuellement choisies"},
     {"setInfosDsBarre", (PyCFunction)pyMoteurCombat_setInfosDsBarre, METH_VARARGS, "Met à jour les infos de la BarreInfos"},
     {"setChrono", (PyCFunction)pyMoteurCombat_setChrono, METH_VARARGS, "Met à jour le chronomètre"},
-    {"setPersoCourant", (PyCFunction)pyMoteurCombat_setPersoCourant, METH_VARARGS, "Met à jour les infos succintes sur le perso en train de jouer"},
+    {"setPersoCourant", (PyCFunction)pyMoteurCombat_setPersoCourant, METH_VARARGS, "Met à jour les infos succintes sur le perso en train de jouer. Signale le début d'un tour"},
+    {"modifVieFtgPersoCourant", (PyCFunction)pyMoteurCombat_modifVieFtgPersoCourant, METH_VARARGS, "Modifie la vie et la fatique du perso en train de jouer"},
     {"setMaitrisesAffichees", (PyCFunction)pyMoteurCombat_setMaitrisesAffichees, METH_VARARGS, "Met à jour la liste des maîtrises affichées et donc sélectionnables"},
     {"setListePersos", (PyCFunction)pyMoteurCombat_setListePersos, METH_VARARGS, "Indique au moteur la liste des cases sur lesquelles il y a un personnage, avec la couleur de l'équipe et le type d'arme associées au chaque perso"},
     {"chargerImagesPersos", (PyCFunction)pyMoteurCombat_chargerImagesPersos, METH_VARARGS, "Spécifie les images liées aux persos qu'il faut charger"},

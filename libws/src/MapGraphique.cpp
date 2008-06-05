@@ -46,7 +46,7 @@ MapGraphique::MapGraphique(GestionnaireImages* _gestImages, const DonneesMap& _D
             i++;
         }
     
-    statut = INFOS_SEULEMENT;
+    statut = CHOIX_ACTION;
     noircir = false;
     
     inclinaisonElements = 1;
@@ -218,6 +218,9 @@ void MapGraphique::GL_DessinPourSelection(float frameTime, const Camera& camera,
         // DESSIN DES TUILES
         for(unsigned int numCase=0; numCase<hauteur*largeur; numCase++)
         {
+            if(statut == DEPLACEMENT && !masqueCasesPossibles[numCase])
+                continue;
+            
             int numTuileAct = numsTuiles[numCase];
             if (numTuileAct > 0)
             {
@@ -238,6 +241,9 @@ void MapGraphique::GL_DessinPourSelection(float frameTime, const Camera& camera,
         // DESSIN DES ELEMENTS
         for(unsigned int numCase=0; numCase<hauteur*largeur; numCase++)
         {
+            if(!masqueCasesPossibles[numCase])
+                continue;
+            
             int numElemAct = numsElements[numCase];
             if (numElemAct > 0)
             {
@@ -260,6 +266,9 @@ void MapGraphique::GL_DessinPourSelection(float frameTime, const Camera& camera,
         {   int numPerso=0;
             for(vector<PersoGraphique>::iterator pAct=listePersos.begin(); pAct!=listePersos.end(); pAct++)
             {
+                if(!masqueCasesPossibles[pAct->pos])
+                    continue;
+                
                 glPushMatrix();
                 
                 if(numPerso == numPersoCourant)
@@ -370,7 +379,12 @@ void MapGraphique::GL_Dessin(float frameTime, const Camera& camera, bool elemsON
             bool accessible = masqueCasesPossibles[numCase];
             
             if(accessible)
-                glColor3ub(nvGris, nvGris, 0);
+            {
+                if(statut == DEPLACEMENT)
+                    glColor3ub(nvGris, nvGris, 0);
+                else if(statut == CIBLAGE)
+                    glColor3ub(nvGris, nvGris/3, 0);
+            }
             
             selec = false;
             if (picked[0] == static_cast<int>(numCase))
@@ -511,6 +525,16 @@ void MapGraphique::initMasqueCasesPossibles()
 {
     for(unsigned int i=0; i<hauteur*largeur; i++)
         masqueCasesPossibles[i] = false;
+}
+
+bool MapGraphique::deplacementEnCours()
+{
+    return (cheminDeplacement.size() != 0);
+}
+
+bool MapGraphique::actionEnCours()
+{
+    return false;
 }
 
 }
