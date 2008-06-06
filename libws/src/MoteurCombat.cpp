@@ -157,7 +157,7 @@ void MoteurCombat::setMaitrisesAffichees(vector<string> listeMtr, vector<int> li
 
 void MoteurCombat::setListePersos(vector<PersoGraphique> listePersos)
 {
-    mapGraph->listePersos = listePersos;
+    mapGraph->setListePersos(listePersos);
 }
 
 void MoteurCombat::chargerImagesPersos(string cheminFantome, string cheminHalo, map<int, string> cheminsArmes)
@@ -191,9 +191,9 @@ void MoteurCombat::afficherMessage(string message, Couleur clr, float temps)
     gui->afficherMessage(message, clr, temps);
 }
 
-void MoteurCombat::mortPerso(int numPerso)
+void MoteurCombat::mortPerso(int numPerso, bool retirer)
 {
-    //mapGraph->
+    mapGraph->mortPerso(numPerso, retirer);
 }
 
 void MoteurCombat::mortElement(int numCase)

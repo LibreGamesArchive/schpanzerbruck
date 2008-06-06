@@ -64,19 +64,21 @@ private:
     float persoDep_offsetX, persoDep_offsetY;
     list<int> cheminDeplacement;
     
+    vector<PersoGraphique> listePersos;
+    vector<InfosSupDessin> infosDessinPersos;   // Sert pour la mort des persos
+    
     MenuTriangle* menuTriangle;
     
     void GL_DessinTuile(sf::Image* texture=NULL);
     void GL_DessinElement(sf::Image* texture=NULL);
     void GL_DessinPersoPourSelection();
-    void GL_DessinPerso(sf::Image* texFantome, sf::Image* texHalo, sf::Image* texArmeFantome, sf::Image* texArmeHalo, int R, int V, int B, bool select);
+    void GL_DessinPerso(vector<PersoGraphique>::iterator perso, vector<InfosSupDessin>::iterator infosSupDessin, bool select);
 
 public:
     unsigned int statut;
     bool noircir;
     int picked[2];
     float inclinaisonElements;
-    vector<PersoGraphique> listePersos;
     int numPersoCourant;
     bool imagesPersosChargees;      // Le MoteurCombat met ce booléen à TRUE si les images des persos (fantôme, halo, armes, etc.) ont bien été chargées dans le GestionnaireImages
     bool* masqueCasesPossibles;
@@ -95,9 +97,13 @@ public:
     void passerSelection(int* selection);
     void pasDeSelection();
     
+    void setListePersos(vector<PersoGraphique> _listePersos);
+    
     void deplacerPersoCourant(list<int> _chemin);
     
     void initMasqueCasesPossibles();
+    
+    void mortPerso(int numPerso, bool retirer);
     
     bool deplacementEnCours();
     bool actionEnCours();
