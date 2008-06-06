@@ -76,6 +76,7 @@ public:
     void afficherMessage(string message, Couleur clr, float temps);
     void mortPerso(int numPerso, bool retirer);
     void mortElement(int numCase);
+    void lancerAnimationCombat(int numLanceur, bool cibleEstElement, int numCible, bool aDistance, float modifLanceurVie, float modifLanceurFatigue, float modifCibleVie, float modifCibleFatigue);
 };
 
 }

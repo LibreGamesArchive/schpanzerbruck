@@ -51,7 +51,7 @@ static PyObject* pyMoteurCombat_getFPS(pyMoteurCombat* self, PyObject* args)
 static PyObject* pyMoteurCombat_selectMapActuelle(pyMoteurCombat* self, PyObject* args)
 {
     int* select = self->instc->selectMapActuelle();
-    return Py_BuildValue("(ii)", select[0], select[1]);
+    return Py_BuildValue("(iii)", select[0], select[1], select[2]);
 }
 
 static PyObject* pyMoteurCombat_maitrisesChoisies(pyMoteurCombat* self, PyObject* args)
@@ -236,6 +236,22 @@ static PyObject* pyMoteurCombat_mortElement(pyMoteurCombat* self, PyObject* args
     Py_RETURN_NONE;
 }
 
+static PyObject* pyMoteurCombat_lancerAnimationCombat(pyMoteurCombat* self, PyObject* args)
+{
+    int numLanceur, numCible;
+    PyObject *pyCibleEstElement=NULL, *pyADistance=NULL;
+    float modifLanceurVie, modifLanceurFatigue, modifCibleVie, modifCibleFatigue;
+    if( !PyArg_ParseTuple(args, "iOiOffff", &numLanceur, &pyCibleEstElement, &numCible, &pyADistance, &modifLanceurVie, &modifLanceurFatigue, &modifCibleVie, &modifCibleFatigue) )
+        return NULL;
+    
+    bool cibleEstElement = (pyCibleEstElement == Py_True);
+    bool aDistance = (pyADistance == Py_True);
+    
+    self->instc->lancerAnimationCombat(numLanceur, cibleEstElement, numCible, aDistance, modifLanceurVie, modifLanceurFatigue, modifCibleVie, modifCibleFatigue);
+    
+    Py_RETURN_NONE;
+}
+
 static PyMethodDef pyMoteurCombat_methods[] = {
     {"centrerCurseur", (PyCFunction)pyMoteurCombat_centrerCurseur, METH_NOARGS, "Centre le curseur"},
     {"evenementsEtAffichage", (PyCFunction)pyMoteurCombat_evenementsEtAffichage, METH_NOARGS, "Traite les evenements venant du clavier/de la souris et effectue les operations en decoulant (scrolling, zoom...)"},
@@ -254,6 +270,7 @@ static PyMethodDef pyMoteurCombat_methods[] = {
     {"afficherMessage", (PyCFunction)pyMoteurCombat_afficherMessage, METH_VARARGS, "Affiche un message de la couleur choisie"},
     {"mortPerso", (PyCFunction)pyMoteurCombat_mortPerso, METH_VARARGS, "Signale la mort d'un perso"},
     {"mortElement", (PyCFunction)pyMoteurCombat_mortElement, METH_VARARGS, "Signale la disparition d'un element"},
+    {"lancerAnimationCombat", (PyCFunction)pyMoteurCombat_lancerAnimationCombat, METH_VARARGS, "Lance une animation de combat"},
     {NULL}
 };
 // FIN METHODES

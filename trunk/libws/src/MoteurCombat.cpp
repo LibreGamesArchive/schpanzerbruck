@@ -201,6 +201,11 @@ void MoteurCombat::mortElement(int numCase)
     mapGraph->mortElement(numCase);
 }
 
+void MoteurCombat::lancerAnimationCombat(int numLanceur, bool cibleEstElement, int numCible, bool aDistance, float modifLanceurVie, float modifLanceurFatigue, float modifCibleVie, float modifCibleFatigue)
+{
+    mapGraph->lancerAnimationCombat(numLanceur, cibleEstElement, numCible, aDistance, modifLanceurVie, modifLanceurFatigue, modifCibleVie, modifCibleFatigue);
+}
+
 
 void MoteurCombat::traiterSelectInterface(int* selec, bool clic, float delta, unsigned int& whatHappens)
 {
