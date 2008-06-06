@@ -64,6 +64,16 @@ MapGraphique::MapGraphique(GestionnaireImages* _gestImages, const DonneesMap& _D
     // picked == [-1, -1] : Pas d'objet sélectionné
     // picked = [numCase, typeObjet] : Objet sélectionné :
     //       typeObjet: ==0 : tuile; ==1 : élément; ==2 : perso
+    
+    // Edition de infosDessinElements:
+    for(unsigned int i=0; i<numsElements.size(); i++)
+    {
+        InfosSupDessin info;
+        info.clrCorps.R = 255; info.clrCorps.V = 255; info.clrCorps.B = 255;
+        info.alphaCorps = 255;
+        info.mourant = false; info.retirer = false;
+        infosDessinElements.push_back(info);
+    }
 }
 
 MapGraphique::~MapGraphique()
@@ -121,7 +131,7 @@ void MapGraphique::GL_DessinPersoPourSelection()
     glEnd();
 }
 
-void MapGraphique::GL_DessinPerso(vector<PersoGraphique>::iterator perso, vector<InfosSupDessin>::iterator infosSupDessin, bool select)
+void MapGraphique::GL_DessinPerso(list<PersoGraphique>::iterator perso, list<InfosSupDessin>::iterator infosSupDessin, bool select)
 {
     float haut=1.8;
     float larg=haut/2;
@@ -270,7 +280,7 @@ void MapGraphique::GL_DessinPourSelection(float frameTime, const Camera& camera,
         // DESSIN DES PERSOS
         if(imagesPersosChargees)
         {   int numPerso=0;
-            for(vector<PersoGraphique>::iterator pAct=listePersos.begin(); pAct!=listePersos.end(); pAct++)
+            for(list<PersoGraphique>::iterator pAct=listePersos.begin(); pAct!=listePersos.end(); pAct++)
             {
                 // Si la case est accessible est que le pAct n'est pas mort
                 if(masqueCasesPossibles[pAct->pos] && pAct->pos >= 0 && pAct->pos < static_cast<int>(largeur*hauteur))
@@ -383,26 +393,26 @@ void MapGraphique::GL_Dessin(float frameTime, const Camera& camera, bool elemsON
         glTranslatef(coordsCases[numCase][0], coordsCases[numCase][1], coordsCases[numCase][2]);
         
         bool accessible = false;
-        selec = false;
         
         if (numTuileAct > 0)
         {
             accessible = masqueCasesPossibles[numCase];
             
-            if(accessible)
+            if (picked[0] == static_cast<int>(numCase))
+            {
+                if (picked[1] == TUILE)
+                    glColor3ub(0, nvGris/2, nvGris);
+            }
+            else if(accessible)
             {
                 if(statut == DEPLACEMENT)
                     glColor3ub(nvGris, nvGris, 0);
-                else if(statut == CIBLAGE)
+                else        // statut == CIBLAGE
                     glColor3ub(nvGris, nvGris/3, 0);
             }
+            else
+                glColor3ub(nvGris, nvGris, nvGris);
             
-            if (picked[0] == static_cast<int>(numCase))
-                if (picked[1] == TUILE)
-                    selec = true;
-            
-            if (selec)
-                glColor3ub(0, nvGris/2, nvGris);
             GL_DessinTuile(gestImages->obtenirImage("tuiles", numTuileAct));
         }
         else
@@ -413,45 +423,60 @@ void MapGraphique::GL_Dessin(float frameTime, const Camera& camera, bool elemsON
             glEnable(GL_TEXTURE_2D);
         }
         
-        if (selec || accessible || numTuileAct <= 0)
-            glColor3ub(nvGris, nvGris, nvGris);
-        
         glPopMatrix();
     }
     
     // DESSIN DES ELEMENTS
-    for(unsigned int numCase=0; numCase<hauteur*largeur; numCase++)
+    vector<unsigned int>::iterator elemAct = numsElements.begin();
+    vector<InfosSupDessin>::iterator infosElemAct = infosDessinElements.begin();
+    unsigned int numCase=0;
+    while(elemAct != numsElements.end())
     {
-        int numElemAct = numsElements[numCase];
+        int numElemAct = *elemAct;
         if (numElemAct > 0)
         {
             glPushMatrix();
             glTranslatef(coordsCases[numCase][0], coordsCases[numCase][1], coordsCases[numCase][2]);
             
-            selec = false;
             if (picked[0] == static_cast<int>(numCase))
+            {
                 if (picked[1] == ELEMENT)
-                    selec = true;
-            
-            if (selec)
-                glColor3ub(0, nvGris/2, nvGris);
+                    glColor4ub(0, nvGris/2, nvGris, infosElemAct->alphaCorps);
+            }
             else
-                if (!elemsON)
-                    glColor4ub(nvGris, nvGris, nvGris, 80);
+            {
+                if(elemsON)
+                    glColor4ub(infosElemAct->clrCorps.R/factAssomb, infosElemAct->clrCorps.V/factAssomb, infosElemAct->clrCorps.B/factAssomb, infosElemAct->alphaCorps);
+                else
+                    glColor4ub(infosElemAct->clrCorps.R/factAssomb, infosElemAct->clrCorps.V/factAssomb, infosElemAct->clrCorps.B/factAssomb, infosElemAct->alphaCorps/5);
+            }
             GL_DessinElement(gestImages->obtenirImage("elements", numElemAct));
-            if (selec || !elemsON)
-                glColor3ub(nvGris, nvGris, nvGris);
+            
+            if(infosElemAct->mourant)
+            {
+                infosElemAct->alphaCorps -= static_cast<int>(250*frameTime);
+                if(infosElemAct->alphaCorps <= 0)    // L'élément est mort
+                {
+                    *elemAct = 0;
+                }
+            }
             
             glPopMatrix();
         }
+        
+        numCase++;
+        elemAct++;
+        infosElemAct++;
     }
     
     // DESSIN DES PERSOS
     if(imagesPersosChargees)
     {   int numPerso=0;
-        vector<InfosSupDessin>::iterator infAct = infosDessinPersos.begin();
-        for(vector<PersoGraphique>::iterator pAct=listePersos.begin(); pAct!=listePersos.end(); pAct++)
+        list<InfosSupDessin>::iterator infAct = infosDessinPersos.begin();
+        list<PersoGraphique>::iterator pAct = listePersos.begin();
+        while(pAct != listePersos.end())
         {
+            bool increm = true;
             // Si le perso n'est pas mort
             if(pAct->pos >= 0 && pAct->pos < static_cast<int>(largeur*hauteur)) 
             {            
@@ -507,8 +532,21 @@ void MapGraphique::GL_Dessin(float frameTime, const Camera& camera, bool elemsON
                 if(infAct->mourant)
                 {
                     infAct->alphaCorps -= static_cast<int>(250*frameTime);
-                    if(infAct->alphaCorps <= 0)
-                        pAct->pos = -1;
+                    if(infAct->alphaCorps <= 0)    // Le perso est mort
+                    {
+                        if(infAct->retirer)
+                        {
+                            pAct = listePersos.erase(pAct);
+                            infAct = infosDessinPersos.erase(infAct);
+                            increm = false;
+                            if(numPersoCourant > numPerso)     // On recalcule numPersoCourant pour qu'il soit toujours valide
+                                numPersoCourant--;
+                            else if(numPersoCourant == numPerso)    // Cas improbable : Le perso qui meurt est le perso courant
+                                numPersoCourant = -1;
+                        }
+                        else
+                            pAct->pos = -1;
+                    }
                 }
                 
                 // Calcul des coords du menu triangle
@@ -529,8 +567,12 @@ void MapGraphique::GL_Dessin(float frameTime, const Camera& camera, bool elemsON
                 glPopMatrix();
             }
             
-            numPerso++;
-            infAct++;
+            if(increm)
+            {
+                numPerso++;
+                pAct++;
+                infAct++;
+            }
         }
     }
 }
@@ -548,7 +590,7 @@ void MapGraphique::pasDeSelection()
     clic = false;
 }
 
-void MapGraphique::setListePersos(vector<PersoGraphique> _listePersos)
+void MapGraphique::setListePersos(list<PersoGraphique> _listePersos)
 {
     listePersos = _listePersos;
     infosDessinPersos.clear();
@@ -576,11 +618,30 @@ void MapGraphique::initMasqueCasesPossibles()
 
 void MapGraphique::mortPerso(int numPerso, bool retirer)
 {
-    infosDessinPersos[numPerso].mourant = true;
-    infosDessinPersos[numPerso].retirer = retirer;
-    infosDessinPersos[numPerso].clrCorps.R = 255;
-    infosDessinPersos[numPerso].clrCorps.V = 0;
-    infosDessinPersos[numPerso].clrCorps.B = 0;
+    int num=0;
+    for(list<InfosSupDessin>::iterator it=infosDessinPersos.begin(); it!=infosDessinPersos.end(); it++)
+    {
+        if(num == numPerso)
+        {
+            it->mourant = true;
+            it->retirer = retirer;
+            it->clrCorps.R = 255;
+            it->clrCorps.V = 0;
+            it->clrCorps.B = 0;
+            it->alphaCorps = 255;
+            break;
+        }
+        num++;
+    }
+}
+
+void MapGraphique::mortElement(int numCase)
+{
+    infosDessinElements[numCase].mourant = true;
+    infosDessinElements[numCase].clrCorps.R = 255;
+    infosDessinElements[numCase].clrCorps.V = 0;
+    infosDessinElements[numCase].clrCorps.B = 0;
+    infosDessinElements[numCase].alphaCorps = 255;
 }
 
 bool MapGraphique::deplacementEnCours()

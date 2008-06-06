@@ -46,6 +46,7 @@ class MapGraphique
 {
 private:
     vector<unsigned int> numsTuiles, numsElements;
+    vector<InfosSupDessin>  infosDessinElements;
     GestionnaireImages* gestImages;
     
     bool clic;
@@ -64,15 +65,15 @@ private:
     float persoDep_offsetX, persoDep_offsetY;
     list<int> cheminDeplacement;
     
-    vector<PersoGraphique> listePersos;
-    vector<InfosSupDessin> infosDessinPersos;   // Sert pour la mort des persos
+    list<PersoGraphique> listePersos;
+    list<InfosSupDessin> infosDessinPersos;   // Sert pour la mort des persos
     
     MenuTriangle* menuTriangle;
     
     void GL_DessinTuile(sf::Image* texture=NULL);
     void GL_DessinElement(sf::Image* texture=NULL);
     void GL_DessinPersoPourSelection();
-    void GL_DessinPerso(vector<PersoGraphique>::iterator perso, vector<InfosSupDessin>::iterator infosSupDessin, bool select);
+    void GL_DessinPerso(list<PersoGraphique>::iterator perso, list<InfosSupDessin>::iterator infosSupDessin, bool select);
 
 public:
     unsigned int statut;
@@ -97,13 +98,14 @@ public:
     void passerSelection(int* selection);
     void pasDeSelection();
     
-    void setListePersos(vector<PersoGraphique> _listePersos);
+    void setListePersos(list<PersoGraphique> _listePersos);
     
     void deplacerPersoCourant(list<int> _chemin);
     
     void initMasqueCasesPossibles();
     
     void mortPerso(int numPerso, bool retirer);
+    void mortElement(int numCase);
     
     bool deplacementEnCours();
     bool actionEnCours();

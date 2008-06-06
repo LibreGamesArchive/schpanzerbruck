@@ -155,7 +155,7 @@ void MoteurCombat::setMaitrisesAffichees(vector<string> listeMtr, vector<int> li
     gui->numPremMtrAffichee = 0;
 }
 
-void MoteurCombat::setListePersos(vector<PersoGraphique> listePersos)
+void MoteurCombat::setListePersos(list<PersoGraphique> listePersos)
 {
     mapGraph->setListePersos(listePersos);
 }
@@ -198,7 +198,7 @@ void MoteurCombat::mortPerso(int numPerso, bool retirer)
 
 void MoteurCombat::mortElement(int numCase)
 {
-    
+    mapGraph->mortElement(numCase);
 }
 
 

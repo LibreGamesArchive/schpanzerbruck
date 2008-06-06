@@ -31,14 +31,15 @@ class CoreClient:
         # La liste est mise à jour depuis le serveur
         
         self.MC.setListePersos([(0, armes.EPEE, (255, 0, 255)), (10, armes.EPEE, (0, 255, 0)), (31, armes.HACHE, (255, 0, 0))])
-        self.MC.setPersoCourant(True, 0, "Kadoc", 20.76, 40)
+        self.MC.setPersoCourant(True, 2, "Kadoc", 20.76, 40)
         self.MC.deplacerPersoCourant([ws.DROITE, ws.BAS, ws.BAS, ws.BAS, ws.BAS, ws.BAS, ws.DROITE, ws.DROITE, ws.BAS], False);
         
         self.MC.setCasesPossibles([0, 1, 2, 15])    # Spécifie la liste des cases accessibles pour un déplacement/une attaque
         
         self.MC.afficherMessage("Pouik", (0, 0, 255), 2)
         
-        self.MC.mortPerso(2, False)
+        self.MC.mortPerso(1, True)      # True si le perso mort doit être retiré de la liste, False si il doit y rester mais sans être affiché (la taille de la liste reste inchangée dans ce cas)
+        self.MC.mortElement(35)
     
     def persoActuel(self):
         return self.persos[0]
