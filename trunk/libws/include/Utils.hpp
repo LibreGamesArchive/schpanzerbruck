@@ -21,8 +21,16 @@ struct InfosSuccintesSurPerso
 struct PersoGraphique   // Ne contient que des donnees visuelles sur le perso (i.e. uniquement des trucs qui servent pour le dessiner)
 {
     int pos;    // Numéro de la case sur laquelle se trouve le perso
-    Couleur clr;
+    Couleur clr;    // Couleur de l'équipe
     int arme;   // Indice du type d'arme portée par le perso
+};
+
+struct InfosSupDessin
+{
+    Couleur clrCorps;
+    int alphaCorps;
+    bool mourant;
+    bool retirer;   // Retirer le perso ou non quand il est mort
 };
 
 struct MenuTriangle

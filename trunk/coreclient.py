@@ -36,7 +36,9 @@ class CoreClient:
         
         self.MC.setCasesPossibles([0, 1, 2, 15])    # Spécifie la liste des cases accessibles pour un déplacement/une attaque
         
-        self.MC.afficherMessage("Pouik", (0, 0, 0), 2)
+        self.MC.afficherMessage("Pouik", (0, 0, 255), 2)
+        
+        self.MC.mortPerso(2, False)
     
     def persoActuel(self):
         return self.persos[0]
@@ -54,7 +56,7 @@ class CoreClient:
             whatHappens = self.MC.evenementsEtAffichage()
             
             numCase, numObj = self.MC.selectMapActuelle()   # numObj == ws.TUILE, ws.ELEMENT ou ws.PERSO
-            
+            # On récupère ce qui est actuellement pointé par la souris, et on met à jour les infos dans la barre en conséquence
             if numCase != -1:
                 self.MC.setInfosDsBarre(self.map.infosSur("tuiles", numCase, "nom"), self.map.infosSur("elements", numCase, "nom"), "")
             

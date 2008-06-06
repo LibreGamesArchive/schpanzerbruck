@@ -74,7 +74,7 @@ public:
     void deplacerPersoCourant(list<int> chemin, bool _deplEffectue);
     void setCasesPossibles(vector<int> casesPossibles);
     void afficherMessage(string message, Couleur clr, float temps);
-    void mortPerso(int numPerso);
+    void mortPerso(int numPerso, bool retirer);
     void mortElement(int numCase);
 };
 

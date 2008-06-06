@@ -121,7 +121,7 @@ void MapGraphique::GL_DessinPersoPourSelection()
     glEnd();
 }
 
-void MapGraphique::GL_DessinPerso(sf::Image* texFantome, sf::Image* texHalo, sf::Image* texArmeFantome, sf::Image* texArmeHalo, int R, int V, int B, bool select)
+void MapGraphique::GL_DessinPerso(vector<PersoGraphique>::iterator perso, vector<InfosSupDessin>::iterator infosSupDessin, bool select)
 {
     float haut=1.8;
     float larg=haut/2;
@@ -129,8 +129,14 @@ void MapGraphique::GL_DessinPerso(sf::Image* texFantome, sf::Image* texHalo, sf:
     glRotated(inclinaisonElements-90, 0, 1, 0);
     int nvGris = 255/factAssomb;
     
-    glColor4ub(R/factAssomb, V/factAssomb, B/factAssomb, 210);
-    texHalo->Bind();
+    int R_corps = infosSupDessin->clrCorps.R/factAssomb; // Ne pas confondre avec perso->clr, qui indique la couleur de l'équipe !
+    int V_corps = infosSupDessin->clrCorps.V/factAssomb;
+    int B_corps = infosSupDessin->clrCorps.B/factAssomb;
+    int A_corps = infosSupDessin->alphaCorps;
+    int A_halo = A_corps > 20 ? A_corps-20 : 0;
+    
+    glColor4ub(perso->clr.R/factAssomb, perso->clr.V/factAssomb, perso->clr.B/factAssomb, A_halo);
+    gestImages->obtenirImage("persos", HALO)->Bind();
     glBegin(GL_QUADS);
         glTexCoord2f(0, 0); glVertex3f(0, 0, haut);
         glTexCoord2f(0, 1); glVertex3f(0, 0, 0);
@@ -139,10 +145,10 @@ void MapGraphique::GL_DessinPerso(sf::Image* texFantome, sf::Image* texHalo, sf:
     glEnd();
     
     if(select)
-        glColor4ub(0, nvGris/2, nvGris, 230);
+        glColor4ub(0, nvGris/2, nvGris, A_corps);
     else
-        glColor4ub(nvGris, nvGris, nvGris, 230);
-    texFantome->Bind();
+        glColor4ub(R_corps, V_corps, B_corps, A_corps);
+    gestImages->obtenirImage("persos", FANTOME)->Bind();
     glBegin(GL_QUADS);
         glTexCoord2f(0, 0); glVertex3f(0.01, 0, haut);
         glTexCoord2f(0, 1); glVertex3f(0.01, 0, 0);
@@ -150,8 +156,8 @@ void MapGraphique::GL_DessinPerso(sf::Image* texFantome, sf::Image* texHalo, sf:
         glTexCoord2f(1, 0); glVertex3f(0.01, larg, haut);
     glEnd();
     
-    glColor4ub(R/factAssomb, V/factAssomb, B/factAssomb, 210);
-    texArmeHalo->Bind();
+    glColor4ub(perso->clr.R/factAssomb, perso->clr.V/factAssomb, perso->clr.B/factAssomb, A_halo);
+    gestImages->obtenirImage("armes", (perso->arme)+1)->Bind();
     glBegin(GL_QUADS);
         glTexCoord2f(0, 0); glVertex3f(0.02, 0, haut);
         glTexCoord2f(0, 1); glVertex3f(0.02, 0, 0);
@@ -160,10 +166,10 @@ void MapGraphique::GL_DessinPerso(sf::Image* texFantome, sf::Image* texHalo, sf:
     glEnd();
     
     if(select)
-        glColor4ub(0, nvGris/2, nvGris, 230);
+        glColor4ub(0, nvGris/2, nvGris, A_corps);
     else
-        glColor4ub(nvGris, nvGris, nvGris, 230);
-    texArmeFantome->Bind();
+        glColor4ub(R_corps, V_corps, B_corps, A_corps);
+    gestImages->obtenirImage("armes", perso->arme)->Bind();
     glBegin(GL_QUADS);
         glTexCoord2f(0, 0); glVertex3f(0.03, 0, haut);
         glTexCoord2f(0, 1); glVertex3f(0.03, 0, 0);
@@ -266,21 +272,22 @@ void MapGraphique::GL_DessinPourSelection(float frameTime, const Camera& camera,
         {   int numPerso=0;
             for(vector<PersoGraphique>::iterator pAct=listePersos.begin(); pAct!=listePersos.end(); pAct++)
             {
-                if(!masqueCasesPossibles[pAct->pos])
-                    continue;
-                
-                glPushMatrix();
-                
-                if(numPerso == numPersoCourant)
-                    glTranslatef(persoDep_offsetX, persoDep_offsetY, 0);
-                
-                glTranslatef(coordsCases[pAct->pos][0], coordsCases[pAct->pos][1], coordsCases[pAct->pos][2]);
-                
-                glPushName(pAct->pos); glPushName(PERSO);
-                GL_DessinPersoPourSelection();
-                glPopName(); glPopName();
-                
-                glPopMatrix();
+                // Si la case est accessible est que le pAct n'est pas mort
+                if(masqueCasesPossibles[pAct->pos] && pAct->pos >= 0 && pAct->pos < static_cast<int>(largeur*hauteur))
+                {                
+                    glPushMatrix();
+                    
+                    if(numPerso == numPersoCourant)
+                        glTranslatef(persoDep_offsetX, persoDep_offsetY, 0);
+                    
+                    glTranslatef(coordsCases[pAct->pos][0], coordsCases[pAct->pos][1], coordsCases[pAct->pos][2]);
+                    
+                    glPushName(pAct->pos); glPushName(PERSO);
+                    GL_DessinPersoPourSelection();
+                    glPopName(); glPopName();
+                    
+                    glPopMatrix();
+                }
                 
                 numPerso++;
             }
@@ -371,12 +378,16 @@ void MapGraphique::GL_Dessin(float frameTime, const Camera& camera, bool elemsON
     for(unsigned int numCase=0; numCase<hauteur*largeur; numCase++)
     {
         int numTuileAct = numsTuiles[numCase];
+        
+        glPushMatrix();
+        glTranslatef(coordsCases[numCase][0], coordsCases[numCase][1], coordsCases[numCase][2]);
+        
+        bool accessible = false;
+        selec = false;
+        
         if (numTuileAct > 0)
         {
-            glPushMatrix();
-            glTranslatef(coordsCases[numCase][0], coordsCases[numCase][1], coordsCases[numCase][2]);
-            
-            bool accessible = masqueCasesPossibles[numCase];
+            accessible = masqueCasesPossibles[numCase];
             
             if(accessible)
             {
@@ -386,7 +397,6 @@ void MapGraphique::GL_Dessin(float frameTime, const Camera& camera, bool elemsON
                     glColor3ub(nvGris, nvGris/3, 0);
             }
             
-            selec = false;
             if (picked[0] == static_cast<int>(numCase))
                 if (picked[1] == TUILE)
                     selec = true;
@@ -394,11 +404,19 @@ void MapGraphique::GL_Dessin(float frameTime, const Camera& camera, bool elemsON
             if (selec)
                 glColor3ub(0, nvGris/2, nvGris);
             GL_DessinTuile(gestImages->obtenirImage("tuiles", numTuileAct));
-            if (selec || accessible)
-                glColor3ub(nvGris, nvGris, nvGris);
-            
-            glPopMatrix();
         }
+        else
+        {
+            glColor3ub(nvGris/4, nvGris/4, nvGris/3);
+            glDisable(GL_TEXTURE_2D);
+            GL_DessinTuile();
+            glEnable(GL_TEXTURE_2D);
+        }
+        
+        if (selec || accessible || numTuileAct <= 0)
+            glColor3ub(nvGris, nvGris, nvGris);
+        
+        glPopMatrix();
     }
     
     // DESSIN DES ELEMENTS
@@ -431,74 +449,88 @@ void MapGraphique::GL_Dessin(float frameTime, const Camera& camera, bool elemsON
     // DESSIN DES PERSOS
     if(imagesPersosChargees)
     {   int numPerso=0;
+        vector<InfosSupDessin>::iterator infAct = infosDessinPersos.begin();
         for(vector<PersoGraphique>::iterator pAct=listePersos.begin(); pAct!=listePersos.end(); pAct++)
         {
-            glPushMatrix();
-            
-            if(numPerso == numPersoCourant && cheminDeplacement.size() != 0)
-            {
-                switch(cheminDeplacement.front())
-                {
-                    case GAUCHE: persoDep_offsetY -= VITESSE_DEP*frameTime;
-                        if(persoDep_offsetY <= 1)
-                        {   persoDep_offsetY = 0;
-                            pAct->pos--;
-                            cheminDeplacement.pop_front();
-                        }
-                        break;
-                    case DROITE: persoDep_offsetY += VITESSE_DEP*frameTime;
-                        if(persoDep_offsetY >= 1)
-                        {   persoDep_offsetY = 0;
-                            pAct->pos++;
-                            cheminDeplacement.pop_front();
-                        }
-                        break;
-                    case HAUT: persoDep_offsetX -= VITESSE_DEP*frameTime;
-                        if(persoDep_offsetX <= 1)
-                        {   persoDep_offsetX = 0;
-                            pAct->pos -= largeur;
-                            cheminDeplacement.pop_front();
-                        }
-                        break;
-                    case BAS: persoDep_offsetX += VITESSE_DEP*frameTime;
-                        if(persoDep_offsetX >= 1)
-                        {   persoDep_offsetX = 0;
-                            pAct->pos += largeur;
-                            cheminDeplacement.pop_front();
-                        }
-                        break;
-                    default: break;
-                }
-                glTranslatef(persoDep_offsetX, persoDep_offsetY, 0);
-            }
-            
-            glTranslatef(coordsCases[pAct->pos][0], coordsCases[pAct->pos][1], coordsCases[pAct->pos][2]);
-            
-            selec = false;
-            if (picked[0] == static_cast<int>(pAct->pos))
-                if (picked[1] == PERSO)
-                    selec = true;
-            
-            GL_DessinPerso(gestImages->obtenirImage("persos", FANTOME), gestImages->obtenirImage("persos", HALO), gestImages->obtenirImage("armes", pAct->arme), gestImages->obtenirImage("armes", (pAct->arme)+1), pAct->clr.R, pAct->clr.V, pAct->clr.B, selec);
-            
-            //Calcul des coords du menu triangle
-            if(statut == CHOIX_ACTION && numPerso == numPersoCourant)
-            {
-                GLdouble modelview[16], proj[16];
-                GLint viewport[4];
-                glGetDoublev(GL_MODELVIEW_MATRIX, modelview);
-                glGetDoublev(GL_PROJECTION_MATRIX, proj);
-                glGetIntegerv(GL_VIEWPORT, viewport);
-                GLdouble z=0;
+            // Si le perso n'est pas mort
+            if(pAct->pos >= 0 && pAct->pos < static_cast<int>(largeur*hauteur)) 
+            {            
+                glPushMatrix();
                 
-                gluProject(0, -0.4, 1.6, modelview, proj, viewport, &(menuTriangle->btnDeplX), &(menuTriangle->btnDeplY), &z);
-                gluProject(0, 1.4, 1.6, modelview, proj, viewport, &(menuTriangle->btnActionX), &(menuTriangle->btnActionY), &z);
-                gluProject(0, 0.5, -0.7, modelview, proj, viewport, &(menuTriangle->btnPasserX), &(menuTriangle->btnPasserY), &z);
+                if(numPerso == numPersoCourant && cheminDeplacement.size() != 0)
+                {
+                    switch(cheminDeplacement.front())
+                    {
+                        case GAUCHE: persoDep_offsetY -= VITESSE_DEP*frameTime;
+                            if(persoDep_offsetY <= 1)
+                            {   persoDep_offsetY = 0;
+                                pAct->pos--;
+                                cheminDeplacement.pop_front();
+                            }
+                            break;
+                        case DROITE: persoDep_offsetY += VITESSE_DEP*frameTime;
+                            if(persoDep_offsetY >= 1)
+                            {   persoDep_offsetY = 0;
+                                pAct->pos++;
+                                cheminDeplacement.pop_front();
+                            }
+                            break;
+                        case HAUT: persoDep_offsetX -= VITESSE_DEP*frameTime;
+                            if(persoDep_offsetX <= 1)
+                            {   persoDep_offsetX = 0;
+                                pAct->pos -= largeur;
+                                cheminDeplacement.pop_front();
+                            }
+                            break;
+                        case BAS: persoDep_offsetX += VITESSE_DEP*frameTime;
+                            if(persoDep_offsetX >= 1)
+                            {   persoDep_offsetX = 0;
+                                pAct->pos += largeur;
+                                cheminDeplacement.pop_front();
+                            }
+                            break;
+                        default: break;
+                    }
+                    glTranslatef(persoDep_offsetX, persoDep_offsetY, 0);
+                }
+                
+                glTranslatef(coordsCases[pAct->pos][0], coordsCases[pAct->pos][1], coordsCases[pAct->pos][2]);
+                
+                selec = false;
+                if (picked[0] == static_cast<int>(pAct->pos))
+                    if (picked[1] == PERSO)
+                        selec = true;
+                
+                GL_DessinPerso(pAct, infAct, selec);
+                
+                // Gestion de la mort du perso
+                if(infAct->mourant)
+                {
+                    infAct->alphaCorps -= static_cast<int>(250*frameTime);
+                    if(infAct->alphaCorps <= 0)
+                        pAct->pos = -1;
+                }
+                
+                // Calcul des coords du menu triangle
+                if(statut == CHOIX_ACTION && numPerso == numPersoCourant)
+                {
+                    GLdouble modelview[16], proj[16];
+                    GLint viewport[4];
+                    glGetDoublev(GL_MODELVIEW_MATRIX, modelview);
+                    glGetDoublev(GL_PROJECTION_MATRIX, proj);
+                    glGetIntegerv(GL_VIEWPORT, viewport);
+                    GLdouble z=0;
+                    
+                    gluProject(0, -0.4, 1.6, modelview, proj, viewport, &(menuTriangle->btnDeplX), &(menuTriangle->btnDeplY), &z);
+                    gluProject(0, 1.4, 1.6, modelview, proj, viewport, &(menuTriangle->btnActionX), &(menuTriangle->btnActionY), &z);
+                    gluProject(0, 0.5, -0.7, modelview, proj, viewport, &(menuTriangle->btnPasserX), &(menuTriangle->btnPasserY), &z);
+                }
+                
+                glPopMatrix();
             }
-            
-            glPopMatrix();
             
             numPerso++;
+            infAct++;
         }
     }
 }
@@ -516,6 +548,21 @@ void MapGraphique::pasDeSelection()
     clic = false;
 }
 
+void MapGraphique::setListePersos(vector<PersoGraphique> _listePersos)
+{
+    listePersos = _listePersos;
+    infosDessinPersos.clear();
+    for(unsigned int i=0; i<listePersos.size(); i++)
+    {
+        InfosSupDessin info;
+        info.clrCorps.R = 255; info.clrCorps.V = 255; info.clrCorps.B = 255;
+        info.alphaCorps = 230;
+        info.mourant = false;
+        info.retirer = false;
+        infosDessinPersos.push_back(info);
+    }
+}
+
 void MapGraphique::deplacerPersoCourant(list<int> _chemin)
 {
     cheminDeplacement = _chemin;
@@ -525,6 +572,15 @@ void MapGraphique::initMasqueCasesPossibles()
 {
     for(unsigned int i=0; i<hauteur*largeur; i++)
         masqueCasesPossibles[i] = false;
+}
+
+void MapGraphique::mortPerso(int numPerso, bool retirer)
+{
+    infosDessinPersos[numPerso].mourant = true;
+    infosDessinPersos[numPerso].retirer = retirer;
+    infosDessinPersos[numPerso].clrCorps.R = 255;
+    infosDessinPersos[numPerso].clrCorps.V = 0;
+    infosDessinPersos[numPerso].clrCorps.B = 0;
 }
 
 bool MapGraphique::deplacementEnCours()

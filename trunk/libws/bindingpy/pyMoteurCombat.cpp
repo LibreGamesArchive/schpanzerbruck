@@ -215,10 +215,12 @@ static PyObject* pyMoteurCombat_afficherMessage(pyMoteurCombat* self, PyObject* 
 static PyObject* pyMoteurCombat_mortPerso(pyMoteurCombat* self, PyObject* args)
 {
     int numPerso=0;
-    if( !PyArg_ParseTuple(args, "i", &numPerso) )
+    PyObject* pyRetirer=NULL;
+    if( !PyArg_ParseTuple(args, "iO", &numPerso, &pyRetirer) )
         return NULL;
     
-    self->instc->mortPerso(numPerso);
+    bool retirer = (pyRetirer == Py_True);
+    self->instc->mortPerso(numPerso, retirer);
     
     Py_RETURN_NONE;
 }
