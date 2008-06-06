@@ -32,7 +32,6 @@ class CoreClient:
         
         self.MC.setListePersos([(0, armes.EPEE, (255, 0, 255)), (10, armes.EPEE, (0, 255, 0)), (31, armes.HACHE, (255, 0, 0))])
         self.MC.setPersoCourant(True, 2, "Kadoc", 20.76, 40)
-        self.MC.deplacerPersoCourant([ws.DROITE, ws.BAS, ws.BAS, ws.BAS, ws.BAS, ws.BAS, ws.DROITE, ws.DROITE, ws.BAS], False);
         
         self.MC.setCasesPossibles(range(0, self.map.largeur*self.map.hauteur))    # Spécifie la liste des cases accessibles pour un déplacement/une attaque
         
@@ -71,3 +70,5 @@ class CoreClient:
             
             if whatHappens == ws.QUITTER:
                 running = False
+            elif whatHappens == ws.CASE_CHOISIE:
+                self.MC.deplacerPersoCourant([ws.DROITE], False);

@@ -334,7 +334,7 @@ void MoteurCombat::traiterSelectInterface(int* selec, bool clic, float delta, un
 
 unsigned int MoteurCombat::evenementsEtAffichage()
 {
-    bool clic = false;
+    bool clic = false, clicDroit = false;
     sf::Event evt;
     float delta = 0;    // Pour la rotation de la molette
     
@@ -366,6 +366,10 @@ unsigned int MoteurCombat::evenementsEtAffichage()
                 {
                     case sf::Mouse::Left:
                         clic = true;
+                        break;
+                    
+                    case sf::Mouse::Right:
+                        clicDroit = true;
                         break;
                     
                     default: break;
@@ -452,6 +456,11 @@ unsigned int MoteurCombat::evenementsEtAffichage()
             gui->pasDeSelection();
             
             zoom(delta);
+            
+            if(mapGraph->statut == DEPLACEMENT && selection[0] != -1 && clic)
+                whatHappens = CASE_CHOISIE;
+            else if(mapGraph->statut == CIBLAGE && selection[0] != -1 && clic)
+                whatHappens = CIBLE_CHOISIE;
         }
         else    // CLIC SUR L'INTERFACE
         {
@@ -465,18 +474,16 @@ unsigned int MoteurCombat::evenementsEtAffichage()
     {
         mapGraph->pasDeSelection(); gui->pasDeSelection(); gui->setInfosDsBarre();
         zoom(delta);
-        if(clic)
+    }
+    
+    if((clic && hits == 0) || clicDroit)
+    {
+        if(mapGraph->statut == DEPLACEMENT)
+            mapGraph->statut = CHOIX_ACTION;
+        else if(mapGraph->statut == CIBLAGE)
         {
-            if(mapGraph->statut == DEPLACEMENT)
-            {
-                mapGraph->statut = CHOIX_ACTION;
-                gui->menuTriangleON = true;
-            }
-            else if(mapGraph->statut == CIBLAGE)
-            {
-                mapGraph->statut = INFOS_SEULEMENT;
-                gui->fenetreMaitrisesON = true;
-            }
+            mapGraph->statut = INFOS_SEULEMENT;
+            gui->fenetreMaitrisesON = true;
         }
     }
     
