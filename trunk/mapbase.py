@@ -68,6 +68,11 @@ class MapBase(dict):
             self[i] = [int(x.strip(), 16) for x in map_strs[i].split("|")]
             if len(self[i]) != self.hauteur * self.largeur:
                 raise Exception, "Hauteur et/ou largeur ne correspondent pas à la liste de nums pour les %s dans la map %s" % (i, map)
+        
+        # Supprime les éléments qui n'ont pas de tuile en dessous d'eux
+        for i in range(0, len(self["elements"])):
+            if self["tuiles"][i] <= 0:
+                self["elements"][i] = 0
     
     
     def infosSur(self, typeObj, numCase, nomInfo):

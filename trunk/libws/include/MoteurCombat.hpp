@@ -71,8 +71,11 @@ public:
     void setMaitrisesAffichees(vector<string> listeMtr, vector<int> listeGrades);
     void setListePersos(vector<PersoGraphique> listePersos);
     void chargerImagesPersos(string cheminFantome, string cheminHalo, map<int, string> cheminsArmes);
-    void deplacerPersoCourant(list<int> chemin);
+    void deplacerPersoCourant(list<int> chemin, bool _deplEffectue);
     void setCasesPossibles(vector<int> casesPossibles);
+    void afficherMessage(string message, Couleur clr, float temps);
+    void mortPerso(int numPerso);
+    void mortElement(int numCase);
 };
 
 }

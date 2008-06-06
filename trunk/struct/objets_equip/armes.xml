@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <objs>
-    <obj nom="epeeBois" nomComplet="Epée en bois">
+    <obj nom="epeeBois" nomComplet="Epée en bois" VAL="10">
         <stats FCP="1"/>
         <requis maitrise="epees" grade="E"/>
         <desc>Une épée d'entraînement</desc>
     </obj>
-    <obj nom="arcFrene" nomComplet="Arc en frène">
+    <obj nom="arcFrene" nomComplet="Arc en frène" VAL="20">
         <stats portee="4" FCP="2" AGI="4"/>
         <requis maitrise="arcs" grades="E"/>
         <desc>Un bon arc</desc>

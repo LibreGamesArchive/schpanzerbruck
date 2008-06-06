@@ -5,14 +5,16 @@
 
 from xml.dom import minidom
 from utils import Container
-import maitrises, objequip
+from objequip import *
+import maitrises
+from maitrises import *
 
 
 
 class Personnage:
     """LA classe décrivant un personnage"""
     
-    def __init__(self):
+    def __init__(self, doc=None):
         """Définit les attributs (stats, etc.) du personnage"""
         
         self.nom = ""
@@ -26,11 +28,23 @@ class Personnage:
         # - VAL est recalculée (afin d'éviter au maximum la triche)
         # - VIE et FTG démarrent toujours à des valeurs dépendant des maîtrises (le plus souvent 100 et 0)
         
-        self.maitrises = [] # Liste des maitrises (objets de type Maitrise) possédées par le perso, on initialise avec la maitrise trouvée par le questionnaire
+        self.pos = 0   # La case sur laquelle se trouve le perso
+        self.idClient = ""
         
-        self.equipement = { "bras_droit": None, "bras_gauche": None, "tete": None, "torse": None, "pieds": None, "acc1": None, "acc2": None, "special": None }
-        # acc1 et acc2 sont les accessoires (colliers, bracelets pour booster), et special est un objet spécial (cheval, catapulte) dépendant généralement d'une maîtrise particulière
+        self.maitrises = [] # Liste des (maitrises, grade) (objets de type Maitrise) possédées par le perso, on initialise avec la maitrise trouvée par le questionnaire
+        
+        self.equipement = { "arme": None, "bouclier": None, "casque": None, "plastron": None }
         # Tous les items équipés sont des instances de la classe ObjetEquip
+        
+        if doc != None:
+            self.importerDepuisXML(doc)
+    
+    
+    def statAvecEquip(self, stat):
+        """Donne la stat du perso prenant en compte son équipement"""
+        if stat == "portee":
+            return self.equipement["arme"].stats["portee"]
+        return self.stats[stat] + sum([eq.stats[stat] for eq in self.equipement.values()])
     
     
     def ajMaitrise(self, maitrise, grade):
@@ -66,6 +80,14 @@ class Personnage:
         for typeEq, objEq in root.getElementsByTagName("equipement")[0].attributes.items():
             if objEq != "aucun":
                 self.equipement[typeEq] = objequip.ObjetEquip(typeEq, objEq)
+        
+        valEquip = 0
+        valMaitrises = 0
+        if len(self.equipement) != 0:
+            valEquip = sum([eq.VAL for eq in self.equipement.values() if eq != None])
+        if len(self.maitrises) != 0:
+            valMaitrises = sum([mtr.calcVal(grade) for mtr, grade in self.maitrises])
+        self.VAL = valEquip + valMaitrises
     
     
     def exporterEnXML(self):

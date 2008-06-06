@@ -57,6 +57,11 @@ private:
     unsigned int factAssomb;
     string infosActDsBarre[3];
     
+    string message;
+    Couleur clrMessage;
+    float tempsMessage;
+    sf::Clock clockMsg;
+    
 public:
     int mtrChoisies[3];
     int gradesChoisis[3];
@@ -81,6 +86,7 @@ public:
     void passerSelection(int* selection);
     void pasDeSelection();
     void setInfosDsBarre(string tuile="", string element="", string perso="");
+    void afficherMessage(string _message, Couleur _clr, float _temps);
 };
 
 }

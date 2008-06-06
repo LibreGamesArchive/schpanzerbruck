@@ -4,9 +4,9 @@
 namespace ws
 {
 
-struct CouleurEquipe
+struct Couleur
 {
-    int R, V, B;
+    unsigned int R, V, B;
 };
 
 // Ces infos ne sont utiles que pour le perso courant
@@ -21,7 +21,7 @@ struct InfosSuccintesSurPerso
 struct PersoGraphique   // Ne contient que des donnees visuelles sur le perso (i.e. uniquement des trucs qui servent pour le dessiner)
 {
     int pos;    // Numéro de la case sur laquelle se trouve le perso
-    CouleurEquipe clr;
+    Couleur clr;
     int arme;   // Indice du type d'arme portée par le perso
 };
 
@@ -34,7 +34,8 @@ struct MenuTriangle
 enum
 {
     TUILE, ELEMENT, PERSO, GRADE_E, GRADE_D, GRADE_C, GRADE_B, GRADE_A,
-    RAS, QUITTER, FIN_DU_TOUR, DEPLACEMENT_DEMANDE, MAITRISES_CHOISIES, CASE_CHOISIE, CIBLE_CHOISIE, LISTE_MAITRISES_DEMANDEE,
+    RAS, QUITTER, FIN_DU_TOUR, DEPLACEMENT_DEMANDE, LISTE_MAITRISES_DEMANDEE,
+    MAITRISES_CHOISIES, CASE_CHOISIE, CIBLE_CHOISIE,
     GAUCHE, DROITE, HAUT, BAS,
     // Ces constantes sont les seules utiles pour un utilisateur de WS
     
