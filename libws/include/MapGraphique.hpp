@@ -78,7 +78,7 @@ private:
 public:
     unsigned int statut;
     bool noircir;
-    int picked[2];
+    int picked[3];
     float inclinaisonElements;
     int numPersoCourant;
     bool imagesPersosChargees;      // Le MoteurCombat met ce booléen à TRUE si les images des persos (fantôme, halo, armes, etc.) ont bien été chargées dans le GestionnaireImages
@@ -106,6 +106,8 @@ public:
     
     void mortPerso(int numPerso, bool retirer);
     void mortElement(int numCase);
+    
+    void lancerAnimationCombat(int numLanceur, bool cibleEstElement, int numCible, bool aDistance, float modifLanceurVie, float modifLanceurFatigue, float modifCibleVie, float modifCibleFatigue);
     
     bool deplacementEnCours();
     bool actionEnCours();

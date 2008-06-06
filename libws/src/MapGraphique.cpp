@@ -60,10 +60,11 @@ MapGraphique::MapGraphique(GestionnaireImages* _gestImages, const DonneesMap& _D
     persoDep_offsetX=0;
     persoDep_offsetY=0;
     
-    picked[0] = -1; picked[1] = -1;     // ObjetMap sélectionné par le picking.
-    // picked == [-1, -1] : Pas d'objet sélectionné
-    // picked = [numCase, typeObjet] : Objet sélectionné :
-    //       typeObjet: ==0 : tuile; ==1 : élément; ==2 : perso
+    picked[0] = -1; picked[1] = -1; picked[2] = -1;     // ObjetMap sélectionné par le picking.
+    /* picked[0] indique la case sélectionnée
+       picked[1] indique si c'est la tuile, l'élément ou le perso
+       picked[2] indique, si c'est le perso, quel est son numéro (-1 sinon)
+    */
     
     // Edition de infosDessinElements:
     for(unsigned int i=0; i<numsElements.size(); i++)
@@ -292,9 +293,9 @@ void MapGraphique::GL_DessinPourSelection(float frameTime, const Camera& camera,
                     
                     glTranslatef(coordsCases[pAct->pos][0], coordsCases[pAct->pos][1], coordsCases[pAct->pos][2]);
                     
-                    glPushName(pAct->pos); glPushName(PERSO);
+                    glPushName(pAct->pos); glPushName(PERSO); glPushName(numPerso);
                     GL_DessinPersoPourSelection();
-                    glPopName(); glPopName();
+                    glPopName(); glPopName(); glPopName();
                     
                     glPopMatrix();
                 }
@@ -398,20 +399,20 @@ void MapGraphique::GL_Dessin(float frameTime, const Camera& camera, bool elemsON
         {
             accessible = masqueCasesPossibles[numCase];
             
+            glColor3ub(nvGris, nvGris, nvGris);
+            
+            if(accessible)
+            {
+                if(statut == DEPLACEMENT)
+                    glColor3ub(nvGris, nvGris, 0);
+                else if(statut == CIBLAGE)
+                    glColor3ub(nvGris, nvGris/3, 0);
+            }
             if (picked[0] == static_cast<int>(numCase))
             {
                 if (picked[1] == TUILE)
                     glColor3ub(0, nvGris/2, nvGris);
             }
-            else if(accessible)
-            {
-                if(statut == DEPLACEMENT)
-                    glColor3ub(nvGris, nvGris, 0);
-                else        // statut == CIBLAGE
-                    glColor3ub(nvGris, nvGris/3, 0);
-            }
-            else
-                glColor3ub(nvGris, nvGris, nvGris);
             
             GL_DessinTuile(gestImages->obtenirImage("tuiles", numTuileAct));
         }
@@ -438,18 +439,17 @@ void MapGraphique::GL_Dessin(float frameTime, const Camera& camera, bool elemsON
             glPushMatrix();
             glTranslatef(coordsCases[numCase][0], coordsCases[numCase][1], coordsCases[numCase][2]);
             
+            if(elemsON)
+                glColor4ub(infosElemAct->clrCorps.R/factAssomb, infosElemAct->clrCorps.V/factAssomb, infosElemAct->clrCorps.B/factAssomb, infosElemAct->alphaCorps);
+            else
+                glColor4ub(infosElemAct->clrCorps.R/factAssomb, infosElemAct->clrCorps.V/factAssomb, infosElemAct->clrCorps.B/factAssomb, infosElemAct->alphaCorps/5);
+            
             if (picked[0] == static_cast<int>(numCase))
             {
                 if (picked[1] == ELEMENT)
                     glColor4ub(0, nvGris/2, nvGris, infosElemAct->alphaCorps);
             }
-            else
-            {
-                if(elemsON)
-                    glColor4ub(infosElemAct->clrCorps.R/factAssomb, infosElemAct->clrCorps.V/factAssomb, infosElemAct->clrCorps.B/factAssomb, infosElemAct->alphaCorps);
-                else
-                    glColor4ub(infosElemAct->clrCorps.R/factAssomb, infosElemAct->clrCorps.V/factAssomb, infosElemAct->clrCorps.B/factAssomb, infosElemAct->alphaCorps/5);
-            }
+            
             GL_DessinElement(gestImages->obtenirImage("elements", numElemAct));
             
             if(infosElemAct->mourant)
@@ -581,6 +581,7 @@ void MapGraphique::passerSelection(int* selection)
 {
     picked[0] = selection[0];
     picked[1] = selection[1];
+    picked[2] = selection[2];
     clic = false;
 }
 
@@ -642,6 +643,11 @@ void MapGraphique::mortElement(int numCase)
     infosDessinElements[numCase].clrCorps.V = 0;
     infosDessinElements[numCase].clrCorps.B = 0;
     infosDessinElements[numCase].alphaCorps = 255;
+}
+
+void MapGraphique::lancerAnimationCombat(int numLanceur, bool cibleEstElement, int numCible, bool aDistance, float modifLanceurVie, float modifLanceurFatigue, float modifCibleVie, float modifCibleFatigue)
+{
+    
 }
 
 bool MapGraphique::deplacementEnCours()

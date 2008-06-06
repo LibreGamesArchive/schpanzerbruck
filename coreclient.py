@@ -34,12 +34,15 @@ class CoreClient:
         self.MC.setPersoCourant(True, 2, "Kadoc", 20.76, 40)
         self.MC.deplacerPersoCourant([ws.DROITE, ws.BAS, ws.BAS, ws.BAS, ws.BAS, ws.BAS, ws.DROITE, ws.DROITE, ws.BAS], False);
         
-        self.MC.setCasesPossibles([0, 1, 2, 15])    # Spécifie la liste des cases accessibles pour un déplacement/une attaque
+        self.MC.setCasesPossibles(range(0, self.map.largeur*self.map.hauteur))    # Spécifie la liste des cases accessibles pour un déplacement/une attaque
         
         self.MC.afficherMessage("Pouik", (0, 0, 255), 2)
         
         self.MC.mortPerso(1, True)      # True si le perso mort doit être retiré de la liste, False si il doit y rester mais sans être affiché (la taille de la liste reste inchangée dans ce cas)
         self.MC.mortElement(35)
+        
+        self.MC.setMaitrisesAffichees([("Poulette",ws.GRADE_D), ("Gneuh",ws.GRADE_E), ("Pouik",ws.GRADE_B), ("Argheugeuleuh",ws.GRADE_A), ("Arguuh",ws.GRADE_C)])
+    
     
     def persoActuel(self):
         return self.persos[0]
@@ -56,14 +59,13 @@ class CoreClient:
             # GESTION DES EVENEMENTS :
             whatHappens = self.MC.evenementsEtAffichage()
             
-            numCase, numObj = self.MC.selectMapActuelle()   # numObj == ws.TUILE, ws.ELEMENT ou ws.PERSO
+            numCase, obj, numPerso = self.MC.selectMapActuelle()   # numObj == ws.TUILE, ws.ELEMENT ou ws.PERSO (dans ce cas, numPerso != -1)
             # On récupère ce qui est actuellement pointé par la souris, et on met à jour les infos dans la barre en conséquence
             if numCase != -1:
                 self.MC.setInfosDsBarre(self.map.infosSur("tuiles", numCase, "nom"), self.map.infosSur("elements", numCase, "nom"), "")
             
             self.MC.setChrono(self.MC.getFPS())
             
-            #self.MC.setMaitrisesAffichees([("Poulette",ws.GRADE_D), ("Gneuh",ws.GRADE_E), ("Pouik",ws.GRADE_B), ("Pouik",ws.GRADE_A), ("Gneuh",ws.GRADE_C)])
             
             #self.MC.maitrisesChoisies()    #Pour récupérer les 3 tuples (num_maitrise, grade) choisis
             
