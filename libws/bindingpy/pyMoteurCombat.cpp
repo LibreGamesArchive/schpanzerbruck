@@ -136,7 +136,7 @@ static PyObject* pyMoteurCombat_setListePersos(pyMoteurCombat* self, PyObject* a
     if( !PyArg_ParseTuple(args, "O", &pyListePersos) )
         return NULL;
     
-    vector<ws::PersoGraphique> listePG;
+    list<ws::PersoGraphique> listePG;
     for(int i=0; i<PyList_Size(pyListePersos); i++)
     {
         ws::PersoGraphique persoAct;

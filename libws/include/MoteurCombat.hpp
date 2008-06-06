@@ -69,7 +69,7 @@ public:
     void setPersoCourant(bool possede, int numPerso, string nom, float VIE, float FTG);
     void modifVieFtgPersoCourant(float VIE, float FTG);
     void setMaitrisesAffichees(vector<string> listeMtr, vector<int> listeGrades);
-    void setListePersos(vector<PersoGraphique> listePersos);
+    void setListePersos(list<PersoGraphique> listePersos);
     void chargerImagesPersos(string cheminFantome, string cheminHalo, map<int, string> cheminsArmes);
     void deplacerPersoCourant(list<int> chemin, bool _deplEffectue);
     void setCasesPossibles(vector<int> casesPossibles);
