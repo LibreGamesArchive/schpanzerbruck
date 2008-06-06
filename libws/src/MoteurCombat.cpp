@@ -171,10 +171,10 @@ void MoteurCombat::chargerImagesPersos(string cheminFantome, string cheminHalo, 
     mapGraph->imagesPersosChargees = true;
 }
 
-void MoteurCombat::deplacerPersoCourant(list<int> chemin)
+void MoteurCombat::deplacerPersoCourant(list<int> chemin, bool _deplEffectue)
 {
     mapGraph->deplacerPersoCourant(chemin);
-    deplEffectue = true;
+    deplEffectue = _deplEffectue;
     mapGraph->statut = INFOS_SEULEMENT;
 }
 
@@ -184,6 +184,21 @@ void MoteurCombat::setCasesPossibles(vector<int> casesPossibles)
     
     for(vector<int>::iterator it=casesPossibles.begin(); it!=casesPossibles.end(); it++)
         mapGraph->masqueCasesPossibles[*it] = true;
+}
+
+void MoteurCombat::afficherMessage(string message, Couleur clr, float temps)
+{
+    gui->afficherMessage(message, clr, temps);
+}
+
+void MoteurCombat::mortPerso(int numPerso)
+{
+    //mapGraph->
+}
+
+void MoteurCombat::mortElement(int numCase)
+{
+    
 }
 
 
@@ -254,9 +269,20 @@ void MoteurCombat::traiterSelectInterface(int* selec, bool clic, float delta, un
                 
                 case SLC_VALIDER_MAITRISES:
                     if(clic)
-                    {   whatHappens = MAITRISES_CHOISIES;
-                        gui->fenetreMaitrisesON = false;
-                        mapGraph->statut = CIBLAGE;
+                    {
+                        int mtrChoisies[3], gradesChoisis[3];
+                        maitrisesChoisies(mtrChoisies, gradesChoisis);
+                        if(mtrChoisies[0] == -1 && mtrChoisies[1] == -1 && mtrChoisies[2] == -1)
+                        {
+                            Couleur clr; clr.R = 255; clr.V = 0; clr.B = 0;
+                            gui->afficherMessage("Vous devez choisir au moins une maitrise", clr, 2.5);
+                        }
+                        else
+                        {
+                            whatHappens = MAITRISES_CHOISIES;
+                            gui->fenetreMaitrisesON = false;
+                            mapGraph->statut = CIBLAGE;
+                        }
                     }
                     break;
                 
@@ -431,9 +457,22 @@ unsigned int MoteurCombat::evenementsEtAffichage()
         }
     }
     else
-    {   mapGraph->pasDeSelection(); gui->pasDeSelection(); gui->setInfosDsBarre();
-        
+    {
+        mapGraph->pasDeSelection(); gui->pasDeSelection(); gui->setInfosDsBarre();
         zoom(delta);
+        if(clic)
+        {
+            if(mapGraph->statut == DEPLACEMENT)
+            {
+                mapGraph->statut = CHOIX_ACTION;
+                gui->menuTriangleON = true;
+            }
+            else if(mapGraph->statut == CIBLAGE)
+            {
+                mapGraph->statut = INFOS_SEULEMENT;
+                gui->fenetreMaitrisesON = true;
+            }
+        }
     }
     
     
@@ -447,7 +486,6 @@ unsigned int MoteurCombat::evenementsEtAffichage()
         gui->menuTriangleON = true;
         mapGraph->statut = CHOIX_ACTION;
     }
-    
     
     
     // AFFICHAGE

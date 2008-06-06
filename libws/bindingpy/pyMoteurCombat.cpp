@@ -169,15 +169,17 @@ static PyObject* pyMoteurCombat_chargerImagesPersos(pyMoteurCombat* self, PyObje
 
 static PyObject* pyMoteurCombat_deplacerPersoCourant(pyMoteurCombat* self, PyObject* args)
 {
-    PyObject* pyChemin=NULL;
-    if( !PyArg_ParseTuple(args, "O", &pyChemin) )
+    PyObject *pyChemin=NULL, *pyDeplFini=NULL;
+    if( !PyArg_ParseTuple(args, "OO", &pyChemin, &pyDeplFini) )
         return NULL;
     
     list<int> chemin;
     for(int i=0; i<PyList_Size(pyChemin); i++)
         chemin.push_back(PyInt_AsLong(PyList_GetItem(pyChemin, i)));
     
-    self->instc->deplacerPersoCourant(chemin);
+    bool deplFini = (pyDeplFini == Py_True);
+    
+    self->instc->deplacerPersoCourant(chemin, deplFini);
     
     Py_RETURN_NONE;
 }
@@ -197,6 +199,41 @@ static PyObject* pyMoteurCombat_setCasesPossibles(pyMoteurCombat* self, PyObject
     Py_RETURN_NONE;
 }
 
+static PyObject* pyMoteurCombat_afficherMessage(pyMoteurCombat* self, PyObject* args)
+{
+    PyObject* pyMsg=NULL;
+    ws::Couleur clr;
+    float temps = 5;
+    if( !PyArg_ParseTuple(args, "O(iii)f", &pyMsg, &clr.R, &clr.V, &clr.B, &temps) )
+        return NULL;
+    
+    self->instc->afficherMessage(PyString_AsString(pyMsg), clr, temps);
+    
+    Py_RETURN_NONE;
+}
+
+static PyObject* pyMoteurCombat_mortPerso(pyMoteurCombat* self, PyObject* args)
+{
+    int numPerso=0;
+    if( !PyArg_ParseTuple(args, "i", &numPerso) )
+        return NULL;
+    
+    self->instc->mortPerso(numPerso);
+    
+    Py_RETURN_NONE;
+}
+
+static PyObject* pyMoteurCombat_mortElement(pyMoteurCombat* self, PyObject* args)
+{
+    int numCase=0;
+    if( !PyArg_ParseTuple(args, "i", &numCase) )
+        return NULL;
+    
+    self->instc->mortElement(numCase);
+    
+    Py_RETURN_NONE;
+}
+
 static PyMethodDef pyMoteurCombat_methods[] = {
     {"centrerCurseur", (PyCFunction)pyMoteurCombat_centrerCurseur, METH_NOARGS, "Centre le curseur"},
     {"evenementsEtAffichage", (PyCFunction)pyMoteurCombat_evenementsEtAffichage, METH_NOARGS, "Traite les evenements venant du clavier/de la souris et effectue les operations en decoulant (scrolling, zoom...)"},
@@ -212,6 +249,9 @@ static PyMethodDef pyMoteurCombat_methods[] = {
     {"chargerImagesPersos", (PyCFunction)pyMoteurCombat_chargerImagesPersos, METH_VARARGS, "Spécifie les images liées aux persos qu'il faut charger"},
     {"deplacerPersoCourant", (PyCFunction)pyMoteurCombat_deplacerPersoCourant, METH_VARARGS, "Lance le déplacement d'un personnage"},
     {"setCasesPossibles", (PyCFunction)pyMoteurCombat_setCasesPossibles, METH_VARARGS, "Définit les cases accessibles pour un déplacement ou une attaque"},
+    {"afficherMessage", (PyCFunction)pyMoteurCombat_afficherMessage, METH_VARARGS, "Affiche un message de la couleur choisie"},
+    {"mortPerso", (PyCFunction)pyMoteurCombat_mortPerso, METH_VARARGS, "Signale la mort d'un perso"},
+    {"mortElement", (PyCFunction)pyMoteurCombat_mortElement, METH_VARARGS, "Signale la disparition d'un element"},
     {NULL}
 };
 // FIN METHODES

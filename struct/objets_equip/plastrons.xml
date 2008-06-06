@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <objs>
-    <obj nom="chemiseCuir" nomComplet="Chemise de cuir">
+    <obj nom="chemiseCuir" nomComplet="Chemise de cuir" VAL="12">
         <stats DFP="2"/>
         <requis maitrise="armures" grade="E"/>
         <desc>Une chemise renforcée</desc>

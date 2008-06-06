@@ -36,6 +36,10 @@ InterfaceCombat::InterfaceCombat(GestionnaireImages* _gestImages, unsigned int _
     menuTriangle.btnActionY = -1;
     menuTriangle.btnPasserX = -1;
     menuTriangle.btnPasserY = -1;
+    
+    message = "";
+    tempsMessage = 5;
+    clrMessage.R = 255; clrMessage.V = 255; clrMessage.B = 255;
 }
 
 
@@ -715,6 +719,23 @@ void InterfaceCombat::GL_Dessin()
     if(infosPersoActuel.nom != "")
         GL_CadrePersoActuel();
     
+    if(message != "")
+    {
+        float largMsg = appL*(3.0/4);
+        float hautMsg = largMsg/32;
+        float decal = appL/18 + 20;     // Pour que le message s'affiche juste au dessus de la BarreInfos
+        
+        glMatrixMode(GL_MODELVIEW);
+        glPushMatrix();
+            glTranslatef(appL/2 - largMsg/2, decal, 0);
+            glColor3ub(clrMessage.R, clrMessage.V, clrMessage.B);
+            GL_LigneTexteLargeurMax(message, largMsg, hautMsg);
+        glPopMatrix();
+        
+        if(clockMsg.GetElapsedTime() >= tempsMessage)
+            message = "";
+    }
+    
     if(fenetreMaitrisesON)
         GL_FenetreMaitrises();
     
@@ -749,6 +770,17 @@ void InterfaceCombat::setInfosDsBarre(string tuile, string element, string perso
     infosActDsBarre[0] = tuile;
     infosActDsBarre[1] = element;
     infosActDsBarre[2] = perso;
+}
+
+void InterfaceCombat::afficherMessage(string _message, Couleur _clr, float _temps)
+{
+    message = _message;
+    clrMessage.R = _clr.R;
+    clrMessage.V = _clr.V;
+    clrMessage.B = _clr.B;
+    tempsMessage = _temps;
+    
+    clockMsg.Reset();
 }
 
 }
